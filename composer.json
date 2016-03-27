@@ -1,0 +1,15 @@
+{
+    "name": "extpoint/yii2",
+    "description": "ExtPoint utils for Yii2-based projects",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": ">=5.4.0",
+        "ext-mbstring": "*",
+        "lib-pcre": "*",
+        "yiisoft/yii2": "*"
+    },
+    "autoload": {
+        "psr-4": {"extpoint\\": ""}
+    }
+}
