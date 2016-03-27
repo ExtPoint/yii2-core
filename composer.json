@@ -1,5 +1,5 @@
 {
-    "name": "extpoint/yii2",
+    "name": "extpoint/base-yii2",
     "description": "ExtPoint utils for Yii2-based projects",
     "type": "library",
     "license": "MIT",
