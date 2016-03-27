@@ -1,6 +1,6 @@
 <?php
 
-namespace extpoint\base;
+namespace extpoint\yii;
 
 use yii\db\ActiveQuery;
 

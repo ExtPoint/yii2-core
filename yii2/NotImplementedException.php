@@ -1,6 +1,6 @@
 <?php
 
-namespace extpoint\base;
+namespace extpoint\yii;
 
 class NotImplementedException extends Exception {
 
