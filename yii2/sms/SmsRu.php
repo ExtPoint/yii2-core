@@ -1,7 +1,7 @@
 <?php
-namespace extpoint\yii\sms;
+namespace extpoint\yii2\sms;
 
-use extpoint\yii\Exception;
+use extpoint\yii2\Exception;
 
 class SmsRu extends \yii\base\Component {
 

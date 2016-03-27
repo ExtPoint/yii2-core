@@ -1,6 +1,6 @@
 <?php
 
-namespace extpoint\yii;
+namespace extpoint\yii2;
 
 abstract class ModelEnum {
 

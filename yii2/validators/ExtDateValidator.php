@@ -1,5 +1,5 @@
 <?php
-namespace extpoint\yii\validators;
+namespace extpoint\yii2\validators;
 
 use yii\validators\StringValidator;
 
