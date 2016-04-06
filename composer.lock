@@ -4,9 +4,47 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d01189e7accd5092c14803294cb99030",
-    "content-hash": "b5ff9291aef126e1838fc8d0ef0dbc1d",
+    "hash": "55847b9afa0f54237a4d7c2317840845",
+    "content-hash": "c9c28edfd02bbd81fdc7f5365be66564",
     "packages": [
+        {
+            "name": "bariew/yii2-module-migration-controller",
+            "version": "1.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bariew/yii2-module-migration-controller.git",
+                "reference": "47b2cb1f84e38a9826adf99a117184ce4d098f36"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bariew/yii2-module-migration-controller/zipball/47b2cb1f84e38a9826adf99a117184ce4d098f36",
+                "reference": "47b2cb1f84e38a9826adf99a117184ce4d098f36",
+                "shasum": ""
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "bariew\\moduleMigration\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Bariev Pavel",
+                    "email": "bariew@yandex.ru"
+                }
+            ],
+            "description": "Runs module migrations from module 'migrations' folder",
+            "homepage": "https://github.com/bariew/yii2-module-migration-controller",
+            "keywords": [
+                "migration",
+                "yii2"
+            ],
+            "time": "2014-05-27 00:00:00"
+        },
         {
             "name": "bower-asset/jquery",
             "version": "2.2.2",

@@ -1,5 +1,5 @@
 {
-    "name": "extpoint/base-yii2",
+    "name": "extpoint/yii2-core",
     "description": "ExtPoint utils for Yii2-based projects",
     "type": "library",
     "license": "MIT",
@@ -7,7 +7,8 @@
         "php": ">=5.4.0",
         "ext-mbstring": "*",
         "lib-pcre": "*",
-        "yiisoft/yii2": "*"
+        "yiisoft/yii2": "*",
+        "bariew/yii2-module-migration-controller": "*"
     },
     "autoload": {
         "psr-4": {"extpoint\\": ""}
