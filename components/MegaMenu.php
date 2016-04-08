@@ -1,23 +1,27 @@
 <?php
 
-namespace app\core\components;
+namespace extpoint\yii2\components;
 
-use app\core\base\AppModule;
+use extpoint\yii2\base\AppModule;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\helpers\ArrayHelper;
+use yii\rbac\Item;
 
 /**
  * Class MegaMenu
- * @package app\core\components
+ * @package extpoint\yii2\components
  * @property array $items
  * @property-read array $activeItem
  */
 class MegaMenu extends Component {
 
+    /**
+     * @var MegaMenuItem[]
+     */
     private $_items = [];
-    private $_activeItem;
+    private $_requestedRoute;
     private $isModulesFetched = false;
 
     /**
@@ -44,8 +48,7 @@ class MegaMenu extends Component {
             }
         }
 
-        // Find active item
-        return $this->fillState($this->_items);
+        return $this->_items;
     }
 
     /**
@@ -53,23 +56,29 @@ class MegaMenu extends Component {
      * @param bool|true $append
      */
     public function addItems(array $items, $append = true) {
-        $this->_items = $append ?
-            ArrayHelper::merge($this->_items, $items) :
-            ArrayHelper::merge($items, $this->_items);
+        $this->_items = $this->mergeItems($this->_items, $items, $append);
     }
 
+    /**
+     * @return MegaMenuItem
+     * @throws InvalidConfigException
+     */
     public function getActiveItem() {
-        if ($this->_activeItem === null) {
+        return $this->getItem($this->getRequestedRoute());
+    }
+
+    public function getRequestedRoute() {
+        if ($this->_requestedRoute === null) {
 
             // Set active item
             $parseInfo = \Yii::$app->urlManager->parseRequest(\Yii::$app->request);
             if ($parseInfo) {
-                $this->_activeItem = [$parseInfo[0] ? '/' . $parseInfo[0] : ''] + $parseInfo[1];
+                $this->_requestedRoute = [$parseInfo[0] ? '/' . $parseInfo[0] : ''] + $parseInfo[1];
             } else {
-                $this->_activeItem = ['/' . \Yii::$app->errorHandler->errorAction];
+                $this->_requestedRoute = ['/' . \Yii::$app->errorHandler->errorAction];
             }
         }
-        return $this->_activeItem;
+        return $this->_requestedRoute;
     }
 
     /**
@@ -79,39 +88,41 @@ class MegaMenu extends Component {
      * @throws InvalidConfigException
      */
     public function getMenu($fromItem = null, $custom = []) {
-        if ($fromItem) {
-            $fromItem = $this->getItem($fromItem);
-            $items = isset($fromItem['items']) ? $fromItem['items'] : [];
-        } else {
-            $items = $this->getItems();
-        }
+        $itemModels = $fromItem ? $this->getItem($fromItem)->items : $this->getItems();
 
-        // Level limit
         if (is_int($custom)) {
-            return $this->sliceTreeItems($items, $custom);
-        }
-
-        if (empty($custom)) {
-            return $items;
+            // Level limit
+            return $this->sliceTreeItems($itemModels, $custom);
         }
 
         $menu = [];
-        foreach ($custom as $item) {
-            $menuItem = $this->getItem($item);
+        if (empty($custom)) {
+            // All
+            $menu = $itemModels;
+        } else {
+            // Custom
+            // @todo
+            /*  foreach ($custom as $item) {
+                $menuItemModel = $this->getItem($item);
 
-            // Process items
-            if (isset($item['items'])) {
-                $menuItem['items'] = $this->getMenu($item['items']);
-            } else {
-                unset($menuItem['items']);
-            }
+                // Process items
+                if (isset($item['items'])) {
+                    $menuItemModel['items'] = $this->getMenu($item['items']);
+                } else {
+                    unset($menuItemModel['items']);
+                }
 
-            // Extend item
-            $menuItem = array_merge($menuItem, $item);
+                // Extend item
+                $menuItemModel = array_merge($menuItemModel, $item);
 
-            $menu[] = $menuItem;
+                $menu[] = $menuItemModel;
+            }*/
         }
-        return $menu;
+
+        return array_map(function($itemModel) {
+            /** @type MegaMenuItem $itemModel */
+            return $itemModel->toArray();
+        }, $menu);
     }
 
     /**
@@ -145,18 +156,20 @@ class MegaMenu extends Component {
      * @return array
      */
     public function getBreadcrumbs($url = null) {
-        $url = $url ?: $this->getActiveItem();
+        $url = $url ?: $this->getRequestedRoute();
 
         // Find child and it parents by url
-        $item = $this->getItem($url, $parents);
+        $itemModel = $this->getItem($url, $parents);
 
-        if (empty($parents) && $this->isHomeUrl($item['url'])) {
+        if (empty($parents) && $this->isHomeUrl($itemModel->url)) {
             return [];
         }
 
-        unset($item['items']);
         $parents = array_reverse((array) $parents);
-        $parents[] = $item;
+        $parents[] = [
+            'label' => $itemModel->label,
+            'url' => $itemModel->url,
+        ];
 
         return $parents;
     }
@@ -165,7 +178,7 @@ class MegaMenu extends Component {
      * Find item in menu tree
      * @param string|array $item
      * @param array $parents
-     * @return array
+     * @return MegaMenuItem
      * @throws InvalidConfigException
      */
     public function getItem($item, &$parents = []) {
@@ -183,11 +196,11 @@ class MegaMenu extends Component {
 
     public function getItemUrl($item) {
         $item = $this->getItem($item);
-        return $item ? $item['url'] : null;
+        return $item ? $item->url : null;
     }
 
     /**
-     * @param array $items
+     * @param MegaMenuItem[] $items
      * @param int $level
      * @return array
      */
@@ -197,12 +210,20 @@ class MegaMenu extends Component {
         }
 
         $menu = [];
-        foreach ($items as $item) {
-            if (isset($item['items'])) {
-                $item['items'] = $this->sliceTreeItems($item['items'], $level - 1);
-                if (empty($item['items'])) {
-                    $item['items'] = null;
+        foreach ($items as $itemModel) {
+            $item = $itemModel->toArray();
+
+            if (!empty($itemModel->items)) {
+                $nextLevel = $level;
+                if ($itemModel->url !== null) {
+                    $nextLevel--;
                 }
+
+                $item['items'] = $this->sliceTreeItems($itemModel->items, $nextLevel);
+            }
+
+            if (empty($item['items'])) {
+                $item['items'] = null;
             }
             $menu[] = $item;
         }
@@ -211,26 +232,23 @@ class MegaMenu extends Component {
 
     /**
      * @param string|array $url
-     * @param array $items
+     * @param MegaMenuItem[] $items
      * @param array $parents
-     * @return array|null
+     * @return MegaMenuItem
      */
     protected function findItemRecursive($url, array $items, &$parents) {
-        foreach ($items as $item) {
-            if (!isset($item['url'])) {
-                continue;
+        foreach ($items as $itemModel) {
+            if ($itemModel->url && $this->isUrlEquals($url, $itemModel->url)) {
+                return $itemModel;
             }
 
-            if ($this->isUrlEquals($url, $item['url'])) {
-                return $item;
-            }
-
-            if (isset($item['items'])) {
-                $finedItem = $this->findItemRecursive($url, $item['items'], $parents);
+            if (!empty($itemModel->items)) {
+                $finedItem = $this->findItemRecursive($url, $itemModel->items, $parents);
                 if ($finedItem) {
-                    $parentItem = $item;
+                    $parentItem = $itemModel->toArray();
                     unset($parentItem['items']);
                     $parents[] = $parentItem;
+
                     return $finedItem;
                 }
             }
@@ -240,11 +258,18 @@ class MegaMenu extends Component {
     }
 
     /**
-     * @param string|array $url1
+     * @param string|array|MegaMenuItem $url1
      * @param string|array $url2
      * @return bool
      */
-    protected function isUrlEquals($url1, $url2) {
+    public function isUrlEquals($url1, $url2) {
+        if ($url1 instanceof MegaMenuItem) {
+            $url1 = $url1->url;
+        }
+        if ($url2 instanceof MegaMenuItem) {
+            $url2 = $url2->url;
+        }
+
         // Is routes
         if ($this->isRoute($url1) && $this->isRoute($url2)) {
             if (self::normalizeRoute($url1[0]) !== self::normalizeRoute($url2[0])) {
@@ -286,78 +311,11 @@ class MegaMenu extends Component {
     }
 
     /**
-     * @param array $item
-     * @return bool
-     */
-    protected function isActiveItem($item) {
-        $isActive = $this->isUrlEquals($item['url'], $this->getActiveItem());
-        if ($isActive) {
-            return true;
-        }
-    }
-
-    /**
-     * @param mixed $value
-     * @return bool
-     */
-    protected function isItem($value) {
-        return is_array($value) && !$this->isRoute($value);
-    }
-
-    /**
      * @param mixed $value
      * @return bool
      */
     protected function isRoute($value) {
         return is_array($value) && isset($value[0]) && is_string($value[0]);
-    }
-
-    protected function fillState($items) {
-        foreach ($items as &$item) {
-            $item['visible'] = self::normalizeVisible($item);
-
-            if (!isset($item['active'])) {
-                $item['active'] = isset($item['url']) && $this->isUrlEquals($item['url'], $this->getActiveItem());
-            }
-
-            if (isset($item['items'])) {
-                $item['items'] = $this->fillState($item['items']);
-
-                foreach ($item['items'] as $subItem) {
-                    if ($subItem['active']) {
-                        $item['active'] = true;
-                        break;
-                    }
-                }
-            }
-        }
-
-        return $items;
-    }
-
-    protected static function normalizeVisible($item) {
-        if (isset($item['visible'])) {
-            return $item['visible'];
-        }
-
-        if (isset($item['roles'])) {
-            foreach ((array) $item['roles'] as $role) {
-                if ($role === '?') {
-                    if (\Yii::$app->user->getIsGuest()) {
-                        return true;
-                    }
-                } elseif ($role === '@') {
-                    if (!\Yii::$app->user->getIsGuest()) {
-                        return true;
-                    }
-                } elseif (\Yii::$app->user->can($role)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        return true;
     }
 
     /**
@@ -384,6 +342,49 @@ class MegaMenu extends Component {
             // relative to module
             return ltrim(\Yii::$app->controller->module->getUniqueId() . '/' . $route, '/');
         }
+    }
+
+    protected function mergeItems($baseItems, $items, $append) {
+        foreach ($items as $id => $item) {
+            // Merge item with group (as key)
+            if (is_string($id) && isset($baseItems[$id])) {
+                foreach ($item as $key => $value) {
+                    if ($key === 'items') {
+                        $baseItems[$id]->$key = $this->mergeItems($baseItems[$id]->$key, $value, $append);
+                    } elseif (is_array($baseItems[$id]) && is_array($value)) {
+                        $baseItems[$id]->$key = $append ?
+                            ArrayHelper::merge($baseItems[$id]->$key, $value) :
+                            ArrayHelper::merge($value, $baseItems[$id]->$key);
+                    } else if ($append || $baseItems[$id]->$key === null) {
+                        $baseItems[$id]->$key = $value;
+                    }
+                }
+            } else {
+
+                // Create instance
+                if (!($item instanceof MegaMenuItem)) {
+                    $item = new MegaMenuItem($item + ['owner' => $this]);
+                    $item->items = $this->mergeItems([], $item->items, true);
+                }
+
+                // Append or prepend item
+                if (is_int($id)) {
+                    if ($append) {
+                        $baseItems[] = $item;
+                    } else {
+                        array_unshift($baseItems, $item);
+                    }
+                } else {
+                    if ($append) {
+                        $baseItems[$id] = $item;
+                    } else {
+                        $baseItems = [$id => $item] + $baseItems;
+                    }
+                }
+            }
+        }
+
+        return $baseItems;
     }
 
 }

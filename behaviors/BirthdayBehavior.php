@@ -1,6 +1,6 @@
 <?php
 
-namespace app\core\behaviors;
+namespace extpoint\yii2\behaviors;
 
 use yii\base\Behavior;
 use yii\db\BaseActiveRecord;

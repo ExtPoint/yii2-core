@@ -1,6 +1,6 @@
 <?php
 
-namespace app\core\base;
+namespace extpoint\yii2\base;
 
 abstract class AppEnum {
 

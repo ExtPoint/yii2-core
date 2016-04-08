@@ -11,6 +11,6 @@
         "bariew/yii2-module-migration-controller": "*"
     },
     "autoload": {
-        "psr-4": {"extpoint\\": ""}
+        "psr-4": {"extpoint\\yii2\\": ""}
     }
 }

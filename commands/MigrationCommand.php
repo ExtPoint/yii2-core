@@ -1,6 +1,6 @@
 <?php
 
-namespace app\core\commands;
+namespace extpoint\yii2\commands;
 
 use yii\console\Exception;
 use yii\helpers\Console;

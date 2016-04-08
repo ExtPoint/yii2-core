@@ -9,7 +9,7 @@ use yii\base\Module;
 use yii\helpers\ArrayHelper;
 
 /**
- * @package app\core\base
+ * @package extpoint\yii2\base
  */
 class AppModule extends Module implements BootstrapInterface {
 
