@@ -1,5 +1,5 @@
 <?php
-namespace extpoint\yii2\components;
+namespace extpoint\yii2\base;
 
 use yii\web\Controller;
 use yii\web\HttpException;
