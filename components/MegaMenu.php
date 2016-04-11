@@ -24,6 +24,37 @@ class MegaMenu extends Component {
     private $_requestedRoute;
     private $isModulesFetched = false;
 
+    public static function getUrlRulesFromMenu($items) {
+            $rules = [];
+            foreach ($items as $item) {
+                if (isset($item['url']) && is_array($item['url']) && isset($item['urlRule'])) {
+                    $defaults = $item['url'];
+                    $route = array_shift($defaults);
+
+                    if (is_string($item['urlRule'])) {
+                        $rules[] = [
+                            'pattern' => $item['urlRule'],
+                            'route' => $route,
+                            'defaults' => $defaults,
+                        ];
+                    } elseif (is_array($item['urlRule'])) {
+                        if (!isset($item['urlRule']['route'])) {
+                            $item['urlRule']['route'] = $route;
+                        }
+                        if (!isset($item['urlRule']['defaults'])) {
+                            $item['urlRule']['defaults'] = $defaults;
+                        }
+                        $rules[] = $item['urlRule'];
+                    }
+                }
+
+                if (!empty($item['items'])) {
+                    $rules = array_merge($rules, static::getUrlRulesFromMenu($item['items']));
+                }
+            }
+            return $rules;
+    }
+
     /**
      * @param array $items
      */
@@ -345,7 +376,7 @@ class MegaMenu extends Component {
     }
 
     protected function mergeItems($baseItems, $items, $append) {
-        foreach ($items as $id => $item) {
+        foreach (array_reverse($items) as $id => $item) {
             // Merge item with group (as key)
             if (is_string($id) && isset($baseItems[$id])) {
                 foreach ($item as $key => $value) {

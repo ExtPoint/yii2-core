@@ -2,6 +2,7 @@
 
 namespace extpoint\yii2\base;
 
+use extpoint\yii2\components\MegaMenu;
 use yii\base\Application;
 use yii\base\BootstrapInterface;
 use yii\base\Exception;
@@ -33,6 +34,7 @@ class AppModule extends Module implements BootstrapInterface {
      */
     public function bootstrap($app) {
         $app->urlManager->addRules($this->coreUrlRules(), false);
+        $app->urlManager->addRules(MegaMenu::getUrlRulesFromMenu($this->coreMenus()), false);
     }
 
     /**

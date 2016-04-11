@@ -22,6 +22,11 @@ class MegaMenuItem extends Object {
     public $url;
 
     /**
+     * @var string|array
+     */
+    public $urlRule;
+
+    /**
      * @var string|string[]
      */
     public $roles;
