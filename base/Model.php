@@ -4,7 +4,7 @@ namespace extpoint\yii2\base;
 
 use extpoint\yii2\exceptions\ModelSaveException;
 
-class AppModel extends \yii\db\ActiveRecord {
+class Model extends \yii\db\ActiveRecord {
 
     /**
      * @param string[]|null $attributeNames

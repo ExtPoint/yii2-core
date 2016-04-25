@@ -1,10 +1,10 @@
 <?php
 namespace extpoint\yii2\base;
 
-use yii\web\Controller;
+use yii\web\Controller as BaseController;
 use yii\web\HttpException;
 
-class AppController extends Controller {
+class Controller extends BaseController {
 
     public function beforeAction($action) {
         if (!$this->checkUrlEndedOnSlash()) {

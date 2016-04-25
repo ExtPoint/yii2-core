@@ -2,7 +2,7 @@
 
 namespace extpoint\yii2\base;
 
-abstract class AppEnum {
+abstract class Enum {
 
     /**
      * @return array
