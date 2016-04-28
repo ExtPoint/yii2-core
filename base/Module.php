@@ -6,13 +6,12 @@ use extpoint\yii2\components\MegaMenu;
 use yii\base\Application;
 use yii\base\BootstrapInterface;
 use yii\base\Exception;
-use yii\base\Module as BaseModule;
 use yii\helpers\ArrayHelper;
 
 /**
  * @package extpoint\yii2\base
  */
-class Module extends BaseModule implements BootstrapInterface {
+class Module extends \yii\base\Module implements BootstrapInterface {
 
     public $layout = '@app/core/layouts/web';
 

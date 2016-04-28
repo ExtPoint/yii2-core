@@ -2,7 +2,7 @@
 
 namespace extpoint\yii2\components;
 
-require_once __DIR__ . '/../base/AppModule.php';
+require_once __DIR__ . '/../base/Module.php';
 
 class ModuleLoader {
 
@@ -37,6 +37,12 @@ class ModuleLoader {
 
         $appDir = $appDir ?: dirname(dirname(__DIR__)) . '/app';
 
+        // Require AppModule class from core
+        $path = $appDir . '/core/base/AppModule.php';
+        if (file_exists($path)) {
+            require_once $path;
+        }
+
         if (self::$classes === null) {
             self::$classes = [];
 
@@ -55,8 +61,8 @@ class ModuleLoader {
                 if (!class_exists($className)) {
                     throw new \Exception('Not found module class: ' . $className);
                 }
-                if (!is_subclass_of($className, '\extpoint\yii2\base\AppModule')) {
-                    throw new \Exception('Module class `' . $className . '` is not extends from `\extpoint\yii2\base\AppModule`');
+                if (!is_subclass_of($className, '\extpoint\yii2\base\Module')) {
+                    throw new \Exception('Module class `' . $className . '` is not extends from `\extpoint\yii2\base\Module`');
                 }
 
                 self::$classes[$dirName] = $className;

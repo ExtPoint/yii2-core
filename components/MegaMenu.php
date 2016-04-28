@@ -2,12 +2,11 @@
 
 namespace extpoint\yii2\components;
 
-use extpoint\yii2\base\AppModule;
+use extpoint\yii2\base\Module;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\base\InvalidParamException;
 use yii\helpers\ArrayHelper;
-use yii\rbac\Item;
 
 /**
  * Class MegaMenu
@@ -71,9 +70,9 @@ class MegaMenu extends Component {
 
             // Fetch items from modules
             foreach (\Yii::$app->getModules() as $id => $module) {
-                /** @var AppModule $module */
+                /** @var Module $module */
                 $module = \Yii::$app->getModule($id);
-                if ($module instanceof AppModule) {
+                if ($module instanceof Module) {
                     $this->addItems($module->coreMenus(), false);
                 }
             }
