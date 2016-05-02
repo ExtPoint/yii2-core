@@ -1,39 +1,24 @@
 <?php
 namespace extpoint\yii2\sms;
 
-use extpoint\yii2\Exception;
+use yii\base\Exception;
 
-class SmsRu extends \yii\base\Component {
+class SmsRu extends BaseSmsGateway {
 
+    /** @var string */
     public $apiId;
-    public $from = null;
+    
+    /** @var array|null */
+    public $lastResult;
 
     /**
      * @param string $to
      * @param string $text
-     * @param string [$from]
-     * @return mixed
+     * @param string $from
      * @throws Exception
      */
-    public function send($to, $text, $from = null)
+    public function internalSend($to, $text, $from)
     {
-        if ($from === null) {
-            $from = $this->from;
-        }
-
-        if ($this->apiId === 'debug') {
-            $r = file_put_contents(
-                \Yii::$app->runtimePath . '/sms.ru ' . date('Y-m-d H-i-s ').$to.'.txt',
-                'From: '.$from . "\n\n" . $text
-            );
-
-            if (!$r) {
-                throw new Exception('Cannot save SMS.RU debug file');
-            }
-
-            return array();
-        }
-
         $ch = curl_init("http://sms.ru/sms/send");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
@@ -52,23 +37,24 @@ class SmsRu extends \yii\base\Component {
         }
         curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
 
-        $result = curl_exec($ch);
+        $this->lastResult = curl_exec($ch);
         curl_close($ch);
 
-        if (is_string($result)) {
-            $result = explode("\n", $result);
+        // Success path
+        if (is_string($this->lastResult)) {
+            $this->lastResult = explode("\n", $this->lastResult);
 
-            if ($result[0] == 100) {
-                unset($result[0]);
-                return $result;
+            if ($this->lastResult[0] == 100) {
+                return; // OK
             }
         }
 
+        // Failure
         ob_start();
-        var_dump($result);
-        $result = ob_get_clean();
+        var_dump($this->lastResult);
+        $this->lastResult = ob_get_clean();
 
-        throw new Exception('SMS.RU request failed: '.$result);
+        throw new Exception('SMS.RU request failed: '.$this->lastResult);
     }
 
 }
