@@ -38,7 +38,7 @@ class ExtNumberValidator extends NumberValidator {
      */
     protected function transform($value)
     {
-        $raw = str_replace([' ', "'"], '', $value);
+        $raw = str_replace([' ', "'", '’'], '', $value);
         $transformed = str_replace(',', '.', $raw);
 
         return $transformed;
