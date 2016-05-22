@@ -38,7 +38,7 @@ class ExtNumberValidator extends NumberValidator {
      */
     protected function transform($value)
     {
-        $raw = str_replace([' ', "'"], '', $value);
+        $raw = str_replace([' ', "'", '’'], '', $value);
         $transformed = str_replace(',', '.', $raw);
 
         return $transformed;
@@ -49,7 +49,7 @@ class ExtNumberValidator extends NumberValidator {
 	 */
 	public function clientValidateAttribute($model, $attribute, $view)
 	{
-		$js = "value = value && value.replace(/[ ']/g, '').replace(/,/g, '.');";
+		$js = "value = value && value.replace(/[ '’]/g, '').replace(/,/g, '.');";
 		$jsExpression = new JsExpression($js) . parent::clientValidateAttribute($model, $attribute, $view);
 
 		return $jsExpression;
