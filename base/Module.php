@@ -35,7 +35,7 @@ class Module extends \yii\base\Module implements BootstrapInterface {
 
         $megaMenuClassName = '\extpoint\megamenu\MenuHelper';
         if (class_exists($megaMenuClassName)) {
-            $app->urlManager->addRules($megaMenuClassName::menuToRules($this->coreMenus()), false);
+            $app->urlManager->addRules($megaMenuClassName::menuToRules($this->coreMenu()), false);
         }
     }
 
@@ -82,7 +82,7 @@ class Module extends \yii\base\Module implements BootstrapInterface {
         return [];
     }
 
-    public function coreMenus() {
+    public function coreMenu() {
         return [];
     }
 
