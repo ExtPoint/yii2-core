@@ -83,7 +83,7 @@ class ModuleLoader {
 
                         if (file_exists($subClassPath)) {
                             self::loadClass($subClassPath, $subClassName);
-                            self::$classes[$dirName . '.' . $subDirName] = $className;
+                            self::$classes[$dirName . '.' . $subDirName] = $subClassName;
                         }
                     }
                 }
