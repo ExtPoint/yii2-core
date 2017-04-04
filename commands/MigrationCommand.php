@@ -2,10 +2,11 @@
 
 namespace extpoint\yii2\commands;
 
+use bariew\moduleMigration\ModuleMigrateController;
 use yii\console\Exception;
 use yii\helpers\Console;
 
-class MigrationCommand extends \bariew\moduleMigration\ModuleMigrateController {
+class MigrationCommand extends ModuleMigrateController {
 
     public $migrationPath = '@app';
 
@@ -16,6 +17,10 @@ class MigrationCommand extends \bariew\moduleMigration\ModuleMigrateController {
     {
         if (!preg_match('/^\w+$/', $name)) {
             throw new Exception("The migration name should contain letters, digits and/or underscore characters only.");
+        }
+
+        if (strpos($name, '/') !== false) {
+            list($module, $name) = explode('/', $name);
         }
 
         $name = 'm' . gmdate('ymd_His') . '_' . $name;

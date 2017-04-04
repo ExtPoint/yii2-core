@@ -69,7 +69,6 @@ class Module extends \yii\base\Module implements BootstrapInterface {
             } elseif (is_array($this->$id)) {
                 $config = ArrayHelper::merge($config, $this->$id);
             }
-            //$config['module'] = $this;
             $this->$id = \Yii::createObject($config);
         }
     }
@@ -78,7 +77,7 @@ class Module extends \yii\base\Module implements BootstrapInterface {
         return [];
     }
 
-    protected function coreUrlRules() {
+    public function coreUrlRules() {
         return [];
     }
 

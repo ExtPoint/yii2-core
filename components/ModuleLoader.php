@@ -32,9 +32,7 @@ class ModuleLoader {
         return $config;
     }
 
-    protected static function getClasses($appDir = null) {
-        // @todo submodules support or not need?
-
+    protected static function getClasses($appDir = null, $throw = true) {
         $appDir = $appDir ?: dirname(dirname(__DIR__)) . '/app';
 
         // Require AppModule class from core
@@ -53,7 +51,11 @@ class ModuleLoader {
 
                 $classPath = $appDir . '/' . $dirName . '/' . ucfirst($dirName) . 'Module.php';
                 if (!file_exists($classPath)) {
-                    throw new \Exception('Not found module class file: ' . $classPath);
+                    if ($throw) {
+                        throw new \Exception('Not found module class file: ' . $classPath);
+                    } else {
+                        continue;
+                    }
                 }
                 require_once $classPath;
 
@@ -66,6 +68,9 @@ class ModuleLoader {
                 }
 
                 self::$classes[$dirName] = $className;
+
+                // Scan submodules
+                static::getClasses($appDir . '/' . $dirName);
             }
         }
         return self::$classes;
