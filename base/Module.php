@@ -37,6 +37,17 @@ class Module extends \yii\base\Module implements BootstrapInterface {
         if (class_exists($megaMenuClassName)) {
             $app->urlManager->addRules($megaMenuClassName::menuToRules($this->coreMenu()), false);
         }
+
+        // Bootstrap submodules
+        foreach ($this->modules as $module) {
+            if (is_array($module)) {
+                $moduleName = explode('\\', trim($module['class'], '\\'))[2];
+                $module = $this->getModule($moduleName);
+            }
+            if ($module instanceof BootstrapInterface) {
+                $module->bootstrap($app);
+            }
+        }
     }
 
     /**

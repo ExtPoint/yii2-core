@@ -4,8 +4,7 @@ namespace extpoint\yii2\components;
 
 require_once __DIR__ . '/../base/Module.php';
 
-class ModuleLoader
-{
+class ModuleLoader {
 
     public static $skipFolders = [
         'config',
@@ -13,30 +12,41 @@ class ModuleLoader
 
     private static $classes;
 
-    public static function getBootstrap($appDir = null)
-    {
+    public static function getBootstrap($appDir = null) {
         $names = [];
         foreach (self::getClasses($appDir) as $name => $moduleClass) {
-            if (is_subclass_of($moduleClass, '\yii\base\BootstrapInterface')) {
+            if (strpos($name, '.') === false && is_subclass_of($moduleClass, '\yii\base\BootstrapInterface')) {
                 $names[] = $name;
             }
         }
         return $names;
     }
 
-    public static function getConfig($appDir = null)
-    {
+    public static function getConfig($appDir = null) {
         $config = [];
         foreach (self::getClasses($appDir) as $name => $moduleClass) {
-            $config[$name] = [
-                'class' => $moduleClass,
-            ];
+            if (strpos($name, '.') !== false) {
+                list($name, $subName) = explode('.', $name);
+
+                if (!isset($config[$name])) {
+                    $config[$name] = [];
+                }
+                if (!isset($config[$name]['modules'])) {
+                    $config[$name]['modules'] = [];
+                }
+                $config[$name]['modules'][$subName] = [
+                    'class' => $moduleClass,
+                ];
+            } else {
+                $config[$name] = [
+                    'class' => $moduleClass,
+                ];
+            }
         }
         return $config;
     }
 
-    protected static function getClasses($appDir = null)
-    {
+    protected static function getClasses($appDir = null) {
         $appDir = $appDir ?: dirname(dirname(__DIR__)) . '/app';
 
         // Require AppModule class from core
@@ -82,8 +92,7 @@ class ModuleLoader
         return self::$classes;
     }
 
-    protected static function loadClass($path, $name)
-    {
+    protected static function loadClass($path, $name) {
         if (!file_exists($path)) {
             throw new \Exception('Not found module class file: ' . $path);
         }
