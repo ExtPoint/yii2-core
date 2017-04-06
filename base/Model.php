@@ -10,6 +10,42 @@ use yii\web\NotFoundHttpException;
 class Model extends ActiveRecord
 {
     /**
+     * @return array
+     */
+    public static function meta()
+    {
+        return [];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeLabels()
+    {
+        $labels = [];
+        foreach (static::meta() as $attribute => $item) {
+            if (isset($item['label']) && is_string(isset($item['label']))) {
+                $labels[$attribute] = isset($item['label']);
+            }
+        }
+        return $labels;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function attributeHints()
+    {
+        $labels = [];
+        foreach (static::meta() as $attribute => $item) {
+            if (isset($item['hint']) && is_string(isset($item['hint']))) {
+                $labels[$attribute] = isset($item['hint']);
+            }
+        }
+        return $labels;
+    }
+
+    /**
      * @inheritdoc
      */
     public function transactions()
@@ -58,15 +94,7 @@ class Model extends ActiveRecord
      * @param Model $user
      * @return bool
      */
-    public function canUserUpdate($user)
-    {
-        return $this->canUpdated();
-    }
-
-    /**
-     * @return bool
-     */
-    public function canUpdated()
+    public function canCreate($user)
     {
         return true;
     }
@@ -75,9 +103,35 @@ class Model extends ActiveRecord
      * @param Model $user
      * @return bool
      */
-    public function canUserDelete($user)
+    public function canUpdate($user)
+    {
+        return $this->canUpdated();
+    }
+
+    /**
+     * @param Model $user
+     * @return bool
+     */
+    public function canDelete($user)
     {
         return $this->canDeleted();
+    }
+
+    /**
+     * @param Model $user
+     * @return bool
+     */
+    public function canView($user)
+    {
+        return $this->canUpdate($user);
+    }
+
+    /**
+     * @return bool
+     */
+    public function canUpdated()
+    {
+        return true;
     }
 
     public function canDeleted()
