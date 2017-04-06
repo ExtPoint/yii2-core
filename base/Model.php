@@ -25,7 +25,7 @@ class Model extends ActiveRecord
         $labels = [];
         foreach (static::meta() as $attribute => $item) {
             if (isset($item['label']) && is_string(isset($item['label']))) {
-                $labels[$attribute] = isset($item['label']);
+                $labels[$attribute] = $item['label'];
             }
         }
         return $labels;
@@ -36,13 +36,13 @@ class Model extends ActiveRecord
      */
     public function attributeHints()
     {
-        $labels = [];
+        $hints = [];
         foreach (static::meta() as $attribute => $item) {
             if (isset($item['hint']) && is_string(isset($item['hint']))) {
-                $labels[$attribute] = isset($item['hint']);
+                $hints[$attribute] = $item['hint'];
             }
         }
-        return $labels;
+        return $hints;
     }
 
     /**
