@@ -12,7 +12,7 @@ class Widget extends BaseWidget
     public function renderReact($props)
     {
         // Generate bundle name alias extpoint/yii2-frontend npm package
-        $bundleName = implode('-', array_filter(array_slice(preg_split('/\\/', __CLASS__), -1), function($name) {
+        $bundleName = implode('-', array_filter(array_slice(preg_split('/\\\\/', get_class($this)), 0, -1), function ($name) {
             return preg_match('/[a-z0-9_-]+/', $name) && !in_array($name, ['app', 'widgets']);
         }));
 
