@@ -57,18 +57,6 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public function init()
     {
-        // Submodules support
-        $ids = [];
-        $module = $this;
-        while (true) {
-            if (!$module || $module instanceof Application) {
-                break;
-            }
-            $ids[] = $module->id;
-            $module = $module->module;
-        }
-        $this->controllerNamespace = 'app\\' . implode('\\', array_reverse($ids)) . '\controllers';
-
         // Layout for admin modules (as submodule in application modules)
         if ($this->id === 'admin') {
             $this->layout = '@app/core/admin/layouts/web';
