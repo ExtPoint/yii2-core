@@ -4,16 +4,20 @@ namespace extpoint\yii2\components;
 
 require_once __DIR__ . '/../base/Module.php';
 
-class ModuleLoader
-{
+class ModuleLoader {
+
     public static $skipFolders = [
         'config',
     ];
 
     private static $classes;
+    private static $addedClasses = [];
 
-    public static function getBootstrap($appDir = null)
-    {
+    public static function add($name, $className) {
+        self::$addedClasses[$name] = $className;
+    }
+
+    public static function getBootstrap($appDir = null) {
         $names = [];
         foreach (self::getClasses($appDir) as $name => $moduleClass) {
             if (strpos($name, '.') === false && is_subclass_of($moduleClass, '\yii\base\BootstrapInterface')) {
@@ -23,8 +27,7 @@ class ModuleLoader
         return $names;
     }
 
-    public static function getConfig($appDir = null)
-    {
+    public static function getConfig($appDir = null) {
         $config = [];
         foreach (self::getClasses($appDir) as $name => $moduleClass) {
             if (strpos($name, '.') !== false) {
@@ -48,8 +51,7 @@ class ModuleLoader
         return $config;
     }
 
-    protected static function getClasses($appDir = null)
-    {
+    protected static function getClasses($appDir = null) {
         $appDir = $appDir ?: dirname(dirname(__DIR__)) . '/app';
 
         // Require AppModule class from core
@@ -92,11 +94,14 @@ class ModuleLoader
                 }
             }
         }
-        return self::$classes;
+
+        return array_merge(
+            self::$addedClasses,
+            self::$classes
+        );
     }
 
-    protected static function loadClass($path, $name)
-    {
+    protected static function loadClass($path, $name) {
         if (!file_exists($path)) {
             throw new \Exception('Not found module class file: ' . $path);
         }
@@ -108,6 +113,7 @@ class ModuleLoader
         if (!is_subclass_of($name, '\extpoint\yii2\base\Module')) {
             throw new \Exception('Module class `' . $name . '` is not extends from `\extpoint\yii2\base\Module`');
         }
+
     }
 
 }
