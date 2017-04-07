@@ -6,14 +6,15 @@ use yii\base\Behavior;
 use yii\db\BaseActiveRecord;
 use yii\helpers\Json;
 
-class JsonStringBehavior extends Behavior {
-
+class JsonStringBehavior extends Behavior
+{
     public $map = [];
 
     /**
      * @inheritdoc
      */
-    public function events() {
+    public function events()
+    {
         return [
             BaseActiveRecord::EVENT_INIT => 'onFind',
             BaseActiveRecord::EVENT_AFTER_FIND => 'onFind',
@@ -22,7 +23,8 @@ class JsonStringBehavior extends Behavior {
         ];
     }
 
-    public function onFind() {
+    public function onFind()
+    {
         foreach ($this->map as $dbKey => $modelKey) {
             if (empty($this->owner->$dbKey)) {
                 $this->owner->$modelKey = [];
@@ -32,7 +34,8 @@ class JsonStringBehavior extends Behavior {
         }
     }
 
-    public function onUpdate() {
+    public function onUpdate()
+    {
         foreach ($this->map as $dbKey => $modelKey) {
             if (empty($this->owner->$modelKey)) {
                 $this->owner->$dbKey = '';

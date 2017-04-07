@@ -2,6 +2,6 @@
 
 namespace extpoint\yii2\exceptions;
 
-class ModelDeleteException extends ApplicationException {
-
+class ModelDeleteException extends ApplicationException
+{
 }

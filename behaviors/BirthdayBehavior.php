@@ -6,14 +6,15 @@ use yii\base\Behavior;
 use yii\db\BaseActiveRecord;
 use yii\helpers\Json;
 
-class BirthdayBehavior extends Behavior {
-
+class BirthdayBehavior extends Behavior
+{
     public $attribute = 'birthday';
 
     /**
      * @inheritdoc
      */
-    public function events() {
+    public function events()
+    {
         return [
             BaseActiveRecord::EVENT_INIT => 'onFind',
             BaseActiveRecord::EVENT_AFTER_FIND => 'onFind',
@@ -22,13 +23,15 @@ class BirthdayBehavior extends Behavior {
         ];
     }
 
-    public function onFind() {
+    public function onFind()
+    {
         $this->owner->{$this->attribute} = !empty($this->owner->{$this->attribute}) ?
             date('d.m.Y', strtotime($this->owner->{$this->attribute})) :
             '';
     }
 
-    public function onUpdate() {
+    public function onUpdate()
+    {
         $this->owner->{$this->attribute} = !empty($this->owner->{$this->attribute}) ?
             date('Y-m-d H:i:s', strtotime($this->owner->{$this->attribute})) :
             '';

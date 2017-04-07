@@ -1,4 +1,5 @@
 <?php
+
 namespace extpoint\yii2\sms;
 
 use yii\base\Component;
@@ -16,7 +17,8 @@ abstract class BaseSmsGateway extends Component
      * @param string|null $from Phone number or text id to select sender. Global default must be available.
      * @throws Exception
      */
-    public function send($to, $text, $from = null) {
+    public function send($to, $text, $from = null)
+    {
 
         if ($from === null) {
             $from = $this->from;
@@ -24,8 +26,8 @@ abstract class BaseSmsGateway extends Component
 
         if ($this->debug) {
             $r = file_put_contents(
-                \Yii::$app->runtimePath . '/' . str_replace('\\', '.', $this->className()) . ' ' . date('Y-m-d H-i-s ').$to.'.txt',
-                'From: '.$from . "\n\n" . $text
+                \Yii::$app->runtimePath . '/' . str_replace('\\', '.', $this->className()) . ' ' . date('Y-m-d H-i-s ') . $to . '.txt',
+                'From: ' . $from . "\n\n" . $text
             );
 
             if (!$r) {

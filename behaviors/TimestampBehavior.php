@@ -4,10 +4,9 @@ namespace extpoint\yii2\behaviors;
 
 use yii\db\BaseActiveRecord;
 
-class TimestampBehavior extends \yii\behaviors\TimestampBehavior {
-
+class TimestampBehavior extends \yii\behaviors\TimestampBehavior
+{
     public $createdAtAttribute = 'createTime';
-
     public $updatedAtAttribute = 'updateTime';
 
     /**
@@ -31,7 +30,8 @@ class TimestampBehavior extends \yii\behaviors\TimestampBehavior {
         }
     }
 
-    public function getValue($event) {
+    public function getValue($event)
+    {
         return date('Y-m-d H:i:s');
     }
 

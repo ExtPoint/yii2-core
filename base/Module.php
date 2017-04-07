@@ -10,15 +10,16 @@ use yii\helpers\ArrayHelper;
 /**
  * @package extpoint\yii2\base
  */
-class Module extends \yii\base\Module implements BootstrapInterface {
-
+class Module extends \yii\base\Module implements BootstrapInterface
+{
     public $layout = '@app/core/layouts/web';
 
     /**
      * @return static
      * @throws Exception
      */
-    public static function getInstance() {
+    public static function getInstance()
+    {
         if (!preg_match('/([^\\\]+)Module$/', static::className(), $match)) {
             throw new Exception('Cannot auto get module id by class name: ' . static::className());
         }
@@ -30,7 +31,8 @@ class Module extends \yii\base\Module implements BootstrapInterface {
     /**
      * @param Application $app
      */
-    public function bootstrap($app) {
+    public function bootstrap($app)
+    {
         $app->urlManager->addRules($this->coreUrlRules(), false);
 
         $megaMenuClassName = '\extpoint\megamenu\MenuHelper';
@@ -53,7 +55,8 @@ class Module extends \yii\base\Module implements BootstrapInterface {
     /**
      * @inheritdoc
      */
-    public function init() {
+    public function init()
+    {
         // Submodules support
         $ids = [];
         $module = $this;
@@ -66,12 +69,18 @@ class Module extends \yii\base\Module implements BootstrapInterface {
         }
         $this->controllerNamespace = 'app\\' . implode('\\', array_reverse($ids)) . '\controllers';
 
+        // Layout for admin modules (as submodule in application modules)
+        if ($this->id === 'admin') {
+            $this->layout = '@app/core/admin/layouts/web';
+        }
+
         parent::init();
 
         $this->initCoreComponents();
     }
 
-    protected function initCoreComponents() {
+    protected function initCoreComponents()
+    {
         // Create core components
         $coreComponents = $this->coreComponents();
         foreach ($coreComponents as $id => $config) {
@@ -84,15 +93,18 @@ class Module extends \yii\base\Module implements BootstrapInterface {
         }
     }
 
-    protected function coreComponents() {
+    protected function coreComponents()
+    {
         return [];
     }
 
-    public function coreUrlRules() {
+    public function coreUrlRules()
+    {
         return [];
     }
 
-    public function coreMenu() {
+    public function coreMenu()
+    {
         return [];
     }
 

@@ -1,13 +1,14 @@
 <?php
+
 namespace extpoint\yii2\sms;
 
 use yii\base\Exception;
 
-class SmsRu extends BaseSmsGateway {
-
+class SmsRu extends BaseSmsGateway
+{
     /** @var string */
     public $apiId;
-    
+
     /** @var array|null */
     public $lastResult;
 
@@ -25,8 +26,8 @@ class SmsRu extends BaseSmsGateway {
 
         $post = [
             "api_id" => $this->apiId,
-            "to"     => $to,
-            "text"   => $text,
+            "to" => $to,
+            "text" => $text,
         ];
         // check from
         if ($from) {
@@ -54,7 +55,7 @@ class SmsRu extends BaseSmsGateway {
         var_dump($this->lastResult);
         $this->lastResult = ob_get_clean();
 
-        throw new Exception('SMS.RU request failed: '.$this->lastResult);
+        throw new Exception('SMS.RU request failed: ' . $this->lastResult);
     }
 
 }

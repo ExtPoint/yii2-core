@@ -2,9 +2,10 @@
 
 namespace extpoint\yii2\exceptions;
 
-class NotImplementedException extends ApplicationException {
-
-    public function __construct() {
+class NotImplementedException extends ApplicationException
+{
+    public function __construct()
+    {
         $message = 'Not implemented';
         $backtrace = debug_backtrace(0, 2);
         if (isset($backtrace[1]['class'])) {

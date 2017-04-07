@@ -2,42 +2,45 @@
 
 namespace extpoint\yii2\base;
 
-abstract class Enum {
-
+abstract class Enum
+{
     /**
      * @return array
      */
-	public static function getLabels() {
-		return [];
-	}
+    public static function getLabels()
+    {
+        return [];
+    }
 
     /**
      * @return string[]
      */
-    public static function getKeys() {
+    public static function getKeys()
+    {
         return array_keys(static::getLabels());
     }
 
-	/**
-	 * @param string $id
-	 * @throws \Exception if label doesn't exist
-	 * @return mixed
-	 */
-	public static function getLabel($id)
-	{
-		$idLabelMap = static::getLabels();
+    /**
+     * @param string $id
+     * @throws \Exception if label doesn't exist
+     * @return mixed
+     */
+    public static function getLabel($id)
+    {
+        $idLabelMap = static::getLabels();
 
-		if (!isset($idLabelMap[$id])) {
-			throw new \Exception('Unknown enum id: ' . $id);
-		}
-		return $idLabelMap[$id];
-	}
+        if (!isset($idLabelMap[$id])) {
+            throw new \Exception('Unknown enum id: ' . $id);
+        }
+        return $idLabelMap[$id];
+    }
 
     /**
      * @param string|null $default
      * @return string
      */
-    public static function toMysqlEnum($default = null) {
+    public static function toMysqlEnum($default = null)
+    {
         $keys = static::getKeys();
         if ($default === true) {
             $default = reset($keys);

@@ -2,9 +2,10 @@
 
 namespace extpoint\yii2\exceptions;
 
-class UnexpectedCaseException extends ApplicationException {
-
-    public function __construct() {
+class UnexpectedCaseException extends ApplicationException
+{
+    public function __construct()
+    {
         $message = 'Unexpected case';
         $backtrace = debug_backtrace(0, 2);
         if (isset($backtrace[1]['class'])) {

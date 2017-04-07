@@ -6,8 +6,8 @@ use yii\base\InvalidConfigException;
 use yii\db\BaseActiveRecord;
 use yii\validators\Validator;
 
-class PhoneValidator extends Validator {
-
+class PhoneValidator extends Validator
+{
     public $countyCode = 7;
 
     public $enableClientValidation = false;
@@ -15,7 +15,8 @@ class PhoneValidator extends Validator {
     /**
      * @inheritdoc
      */
-    public function init() {
+    public function init()
+    {
         parent::init();
 
         if ($this->message === null) {
@@ -28,7 +29,8 @@ class PhoneValidator extends Validator {
      * @param string $attribute the name of the attribute to be validated.
      * @throws \Exception
      */
-    public function validateAttribute($model, $attribute) {
+    public function validateAttribute($model, $attribute)
+    {
         // Normalize
         if ($model->$attribute) {
             $model->$attribute = '+' . preg_replace('/^8/', $this->countyCode, preg_replace('/[^0-9]/', '', $model->$attribute));

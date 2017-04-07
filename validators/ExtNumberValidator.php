@@ -1,4 +1,5 @@
 <?php
+
 namespace extpoint\yii2\validators;
 
 use yii\validators\NumberValidator;
@@ -10,8 +11,8 @@ use yii\web\JsExpression;
  * Deletes spaces and single quotes, and replaces commas with dots before passing values to the NumberValidator.
  * Example: converts "' 24  , 345  '    " to "24.345" and passes latter to the parent validator.
  */
-class ExtNumberValidator extends NumberValidator {
-
+class ExtNumberValidator extends NumberValidator
+{
     /**
      * @param \yii\base\Model $model
      * @param string $attribute
@@ -44,14 +45,14 @@ class ExtNumberValidator extends NumberValidator {
         return $transformed;
     }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function clientValidateAttribute($model, $attribute, $view)
-	{
-		$js = "value = value && value.replace(/[ '’]/g, '').replace(/,/g, '.');";
-		$jsExpression = new JsExpression($js) . parent::clientValidateAttribute($model, $attribute, $view);
+    /**
+     * @inheritdoc
+     */
+    public function clientValidateAttribute($model, $attribute, $view)
+    {
+        $js = "value = value && value.replace(/[ '’]/g, '').replace(/,/g, '.');";
+        $jsExpression = new JsExpression($js) . parent::clientValidateAttribute($model, $attribute, $view);
 
-		return $jsExpression;
-	}
+        return $jsExpression;
+    }
 }

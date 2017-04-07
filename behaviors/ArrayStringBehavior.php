@@ -9,17 +9,18 @@ use yii\db\BaseActiveRecord;
 /**
  * @property \yii\db\BaseActiveRecord $owner
  */
-class ArrayStringBehavior extends Behavior {
-
-	public $map = [];
-	public $separator = ',';
+class ArrayStringBehavior extends Behavior
+{
+    public $map = [];
+    public $separator = ',';
 
     /**
      * @param string $string
      * @param string $separator
      * @return array
      */
-    public static function stringToArray($string, $separator = ',') {
+    public static function stringToArray($string, $separator = ',')
+    {
         return preg_split('/\s*' . $separator . '\s*/', trim($string), -1, PREG_SPLIT_NO_EMPTY);
     }
 
@@ -28,30 +29,34 @@ class ArrayStringBehavior extends Behavior {
      * @param string $separator
      * @return string
      */
-    public static function arrayToString(array $arr, $separator = ',') {
+    public static function arrayToString(array $arr, $separator = ',')
+    {
         return implode($separator, $arr);
     }
 
-	/**
-	 * @inheritdoc
-	 */
-	public function events() {
-		return [
-			BaseActiveRecord::EVENT_INIT => 'onFind',
-			BaseActiveRecord::EVENT_AFTER_FIND => 'onFind',
-			BaseActiveRecord::EVENT_BEFORE_VALIDATE => 'onValidate',
-			BaseActiveRecord::EVENT_BEFORE_INSERT => 'onUpdate',
-			BaseActiveRecord::EVENT_BEFORE_UPDATE => 'onUpdate',
-		];
-	}
+    /**
+     * @inheritdoc
+     */
+    public function events()
+    {
+        return [
+            BaseActiveRecord::EVENT_INIT => 'onFind',
+            BaseActiveRecord::EVENT_AFTER_FIND => 'onFind',
+            BaseActiveRecord::EVENT_BEFORE_VALIDATE => 'onValidate',
+            BaseActiveRecord::EVENT_BEFORE_INSERT => 'onUpdate',
+            BaseActiveRecord::EVENT_BEFORE_UPDATE => 'onUpdate',
+        ];
+    }
 
-	public function onFind() {
-		foreach ($this->map as $dbKey => $modelKey) {
+    public function onFind()
+    {
+        foreach ($this->map as $dbKey => $modelKey) {
             $this->attributeToArray($dbKey, $modelKey);
-		}
-	}
+        }
+    }
 
-    public function onValidate() {
+    public function onValidate()
+    {
         foreach ($this->map as $dbKey => $modelKey) {
             if ($this->owner->isAttributeChanged($dbKey)) {
                 $this->attributeToArray($dbKey, $modelKey);
@@ -61,13 +66,15 @@ class ArrayStringBehavior extends Behavior {
         }
     }
 
-	public function onUpdate() {
-		foreach ($this->map as $dbKey => $modelKey) {
+    public function onUpdate()
+    {
+        foreach ($this->map as $dbKey => $modelKey) {
             $this->attributeToString($dbKey, $modelKey);
-		}
-	}
+        }
+    }
 
-    protected function attributeToArray($dbKey, $modelKey) {
+    protected function attributeToArray($dbKey, $modelKey)
+    {
         if ($this->owner->isNewRecord) {
             return;
         }
@@ -83,7 +90,8 @@ class ArrayStringBehavior extends Behavior {
         }
     }
 
-    protected function attributeToString($dbKey, $modelKey) {
+    protected function attributeToString($dbKey, $modelKey)
+    {
         if (empty($this->owner->$modelKey)) {
             $this->owner->$dbKey = null;
         } elseif (is_array($this->owner->$modelKey) || is_object($this->owner->$modelKey)) {

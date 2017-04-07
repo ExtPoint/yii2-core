@@ -1,10 +1,11 @@
 <?php
+
 namespace extpoint\yii2\validators;
 
 use yii\validators\StringValidator;
 
-class ExtDateValidator extends StringValidator {
-
+class ExtDateValidator extends StringValidator
+{
     public function init()
     {
         if ($this->message === null) {
@@ -24,8 +25,7 @@ class ExtDateValidator extends StringValidator {
         // Validate
         if ($int === false) {
             $this->addError($model, $attribute, $this->message);
-        }
-        else {
+        } else {
 
             // Normalize for DBMS
             $value = date('Y-m-d', $int);

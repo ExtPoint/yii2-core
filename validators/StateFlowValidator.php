@@ -6,8 +6,8 @@ use yii\base\InvalidConfigException;
 use yii\db\BaseActiveRecord;
 use yii\validators\Validator;
 
-class StateFlowValidator extends Validator {
-
+class StateFlowValidator extends Validator
+{
     public $flow = [];
     public $advanced = [];
 
@@ -62,7 +62,8 @@ class StateFlowValidator extends Validator {
         }
     }
 
-    protected function findNextAvailableStates($state) {
+    protected function findNextAvailableStates($state)
+    {
         $returnNext = false;
         foreach ($this->flow as $states) {
             if (!is_array($states)) {

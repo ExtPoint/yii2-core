@@ -6,14 +6,14 @@ use bariew\moduleMigration\ModuleMigrateController;
 use yii\console\Exception;
 use yii\helpers\Console;
 
-class MigrationCommand extends ModuleMigrateController {
-
+class MigrationCommand extends ModuleMigrateController
+{
     public $migrationPath = '@app';
 
     /**
      * @inheritdoc
      */
-    public function actionCreate($name, $module='core')
+    public function actionCreate($name, $module = 'core')
     {
         if (!preg_match('/^\w+$/', $name)) {
             throw new Exception("The migration name should contain letters, digits and/or underscore characters only.");

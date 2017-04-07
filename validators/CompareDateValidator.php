@@ -6,8 +6,8 @@ use yii\base\InvalidConfigException;
 use yii\db\BaseActiveRecord;
 use yii\validators\Validator;
 
-class CompareDateValidator extends Validator {
-
+class CompareDateValidator extends Validator
+{
     public $format = 'Y-m-d H:i:s';
     public $operator;
     public $compareAttribute;
@@ -15,7 +15,8 @@ class CompareDateValidator extends Validator {
     /**
      * @inheritdoc
      */
-    public function init() {
+    public function init()
+    {
         parent::init();
 
         if ($this->message === null) {
@@ -35,7 +36,8 @@ class CompareDateValidator extends Validator {
      * @param string $attribute the name of the attribute to be validated.
      * @throws \Exception
      */
-    public function validateAttribute($model, $attribute) {
+    public function validateAttribute($model, $attribute)
+    {
         $left = \DateTime::createFromFormat($this->format, $model->$attribute);
         $right = \DateTime::createFromFormat($this->format, $model->{$this->compareAttribute});
 

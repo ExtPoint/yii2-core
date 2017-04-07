@@ -65,8 +65,8 @@ class Migration extends \yii\db\Migration
      */
     public static function getForeignKeyName($table, $columns, $refTable, $refColumns)
     {
-        $columns = implode(',', (array) $columns);
-        $refColumns = implode(',', (array) $refColumns);
+        $columns = implode(',', (array)$columns);
+        $refColumns = implode(',', (array)$refColumns);
         return sprintf('%s:%s-%s:%s', $table, $columns, $refTable, $refColumns);
     }
 
