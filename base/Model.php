@@ -18,6 +18,27 @@ class Model extends ActiveRecord
     }
 
     /**
+     * @return string
+     */
+    public static function getRequestParamName()
+    {
+        return lcfirst(substr(strrchr(static::className(), "\\"), 1)) . ucfirst(static::primaryKey()[0]);
+    }
+
+    /**
+     * @return string
+     */
+    public function getModelLabel() {
+        foreach (['title', 'label', 'name'] as $attribute) {
+            $label = $this->getAttribute($attribute);
+            if ($label) {
+                return $label;
+            }
+        }
+        return '#' . $this->primaryKey;
+    }
+
+    /**
      * @inheritdoc
      */
     public function attributeLabels()
@@ -136,7 +157,7 @@ class Model extends ActiveRecord
 
     public function canDeleted()
     {
-        return !$this->isNewRecord;
+        return $this->canUpdated() && !$this->isNewRecord;
     }
 
     public function beforeSave($insert)

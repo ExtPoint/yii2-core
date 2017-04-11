@@ -65,8 +65,11 @@ class Migration extends \yii\db\Migration
      */
     public static function getForeignKeyName($table, $columns, $refTable, $refColumns)
     {
-        $columns = implode(',', (array)$columns);
-        $refColumns = implode(',', (array)$refColumns);
+        $pattern = '/[^0-9a-z-_]+/i';
+        $columns = preg_replace($pattern, '', implode(',', (array)$columns));
+        $refColumns = preg_replace($pattern, '', implode(',', (array)$refColumns));
+        $table = preg_replace($pattern, '', $table);
+        $refTable = preg_replace($pattern, '', $refTable);
         return sprintf('%s:%s-%s:%s', $table, $columns, $refTable, $refColumns);
     }
 
