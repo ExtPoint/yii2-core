@@ -4,9 +4,57 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "55847b9afa0f54237a4d7c2317840845",
-    "content-hash": "c9c28edfd02bbd81fdc7f5365be66564",
+    "hash": "0ada9a29454e17de3301e20589a91dad",
+    "content-hash": "c389ad40aa70d2e0fca07e52717e5244",
     "packages": [
+        {
+            "name": "arogachev/yii2-many-to-many",
+            "version": "0.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/arogachev/yii2-many-to-many.git",
+                "reference": "0c277acbfabf7675aeec213dd56e8232b5bc73cf"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/arogachev/yii2-many-to-many/zipball/0c277acbfabf7675aeec213dd56e8232b5bc73cf",
+                "reference": "0c277acbfabf7675aeec213dd56e8232b5bc73cf",
+                "shasum": ""
+            },
+            "require": {
+                "yiisoft/yii2": "*"
+            },
+            "require-dev": {
+                "phpunit/dbunit": "~1.4",
+                "phpunit/phpunit": "~5.2"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "arogachev\\ManyToMany\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Alexey Rogachev",
+                    "email": "arogachev90@gmail.com"
+                }
+            ],
+            "description": "Many-to-many ActiveRecord relation for Yii 2 framework",
+            "homepage": "https://github.com/arogachev/yii2-many-to-many",
+            "keywords": [
+                "Behavior",
+                "many-to-many",
+                "relation",
+                "validator",
+                "yii2"
+            ],
+            "time": "2016-03-04 10:40:29"
+        },
         {
             "name": "bariew/yii2-module-migration-controller",
             "version": "1.3.0",
@@ -243,6 +291,38 @@
                 "markdown-extra"
             ],
             "time": "2015-03-06 05:28:07"
+        },
+        {
+            "name": "extpoint/yii2-file",
+            "version": "1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ExtPoint/yii2-file.git",
+                "reference": "2c11b37fbd19ab07816b7d46e671f7b618f5ef9c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ExtPoint/yii2-file/zipball/2c11b37fbd19ab07816b7d46e671f7b618f5ef9c",
+                "reference": "2c11b37fbd19ab07816b7d46e671f7b618f5ef9c",
+                "shasum": ""
+            },
+            "require": {
+                "extpoint/yii2-core": "*",
+                "php": ">=5.4.0",
+                "yiisoft/yii2": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "extpoint\\yii2\\file\\": "lib"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Yii2 File module for POST/PUT upload and download files",
+            "time": "2017-04-12 03:44:47"
         },
         {
             "name": "ezyang/htmlpurifier",

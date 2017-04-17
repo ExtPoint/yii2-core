@@ -8,7 +8,9 @@
         "ext-mbstring": "*",
         "lib-pcre": "*",
         "yiisoft/yii2": "*",
-        "bariew/yii2-module-migration-controller": "*"
+        "bariew/yii2-module-migration-controller": "*",
+        "extpoint/yii2-file": "^1.0",
+        "arogachev/yii2-many-to-many": "^0.2.1"
     },
     "autoload": {
         "psr-4": {"extpoint\\yii2\\": ""}

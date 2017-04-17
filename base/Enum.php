@@ -36,6 +36,14 @@ abstract class Enum
     }
 
     /**
+     * @param string $id
+     * @return string
+     */
+    public static function getCssClass($id) {
+        return '';
+    }
+
+    /**
      * @param string|null $default
      * @return string
      */

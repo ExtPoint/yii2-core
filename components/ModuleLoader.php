@@ -51,6 +51,14 @@ class ModuleLoader {
         return $config;
     }
 
+    public static function getMigrationNamespaces($appDir) {
+        $namespaces = [];
+        foreach (self::getClasses($appDir) as $name => $moduleClass) {
+            $namespaces[] = preg_replace('/[^\\]+$/', 'migrations', $moduleClass);
+        }
+        return $namespaces;
+    }
+
     protected static function getClasses($appDir = null) {
         $appDir = $appDir ?: dirname(dirname(__DIR__)) . '/app';
 
