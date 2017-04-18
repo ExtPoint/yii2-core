@@ -4,6 +4,7 @@ namespace extpoint\yii2\types;
 
 use extpoint\yii2\base\Type;
 use extpoint\yii2\file\FileModule;
+use extpoint\yii2\file\models\File;
 use extpoint\yii2\file\models\ImageMeta;
 use extpoint\yii2\file\widgets\FileInput\FileInput;
 use yii\db\Schema;
@@ -30,15 +31,17 @@ class FileType extends Type
      */
     public function renderForView($model, $attribute, $item, $options = []) {
         if ($model->$attribute) {
-            $processor = ArrayHelper::remove($item, 'processor', FileModule::PROCESSOR_NAME_DEFAULT);
-            $imageMeta = ImageMeta::findByProcessor($model->$attribute, $processor);
-            if ($imageMeta) {
-                return Html::img($imageMeta->url, array_merge([
-                    'alt' => $model->getModelLabel(),
-                    'width' => 100,
-                    'height' => 100,
-                ], $options));
+            $file = File::findOne($model->$attribute);
+            $url = $file ? $file->previewImageUrl : null;
+            if (!$url) {
+                return '';
             }
+
+            return Html::img($url, array_merge([
+                'width' => 64,
+                'height' => 64,
+                'alt' => $model->modelLabel,
+            ], $options));
         }
         return '';
     }

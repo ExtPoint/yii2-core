@@ -3,8 +3,10 @@
 namespace extpoint\yii2\types;
 
 use extpoint\yii2\base\ArrayType;
+use extpoint\yii2\file\models\File;
 use extpoint\yii2\file\widgets\FileInput\FileInput;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 class FilesType extends ArrayType
 {
@@ -17,7 +19,9 @@ class FilesType extends ArrayType
                 'model' => $field->model,
                 'attribute' => $field->attribute,
             ],
-            $options
+            array_merge($options, [
+                'multiple' => true,
+            ])
         ));
     }
 
@@ -25,7 +29,19 @@ class FilesType extends ArrayType
      * @inheritdoc
      */
     public function renderForView($model, $attribute, $item, $options = []) {
+        return implode(' ', array_map(function($file) use ($model, $options) {
+            /** @type File $file */
+            $url = $file->previewImageUrl;
+            if (!$url) {
+                return '';
+            }
 
+            return Html::img($url, array_merge([
+                'width' => 64,
+                'height' => 64,
+                'alt' => $model->modelLabel,
+            ], $options));
+        }, $model->$attribute));
     }
 
     /**
