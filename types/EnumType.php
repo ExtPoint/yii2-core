@@ -17,9 +17,9 @@ class EnumType extends Type
     /**
      * @inheritdoc
      */
-    public function renderField($field, $options = []) {
+    public function renderField($field, $item, $options = []) {
         /** @var Enum $className */
-        $className = ArrayHelper::getValue($options, self::OPTION_CLASS_NAME);
+        $className = ArrayHelper::getValue($item, self::OPTION_CLASS_NAME);
 
         $field->dropDownList($className::getLabels(), $options);
     }
@@ -27,9 +27,9 @@ class EnumType extends Type
     /**
      * @inheritdoc
      */
-    public function renderForView($model, $attribute, $options = []) {
+    public function renderForView($model, $attribute, $item, $options = []) {
         /** @var Enum $className */
-        $className = ArrayHelper::getValue($options, self::OPTION_CLASS_NAME);
+        $className = ArrayHelper::getValue($item, self::OPTION_CLASS_NAME);
 
         $label = $className::getLabel($model->$attribute);
         $cssClass = $className::getCssClass($model->$attribute);

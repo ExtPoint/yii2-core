@@ -15,7 +15,7 @@ class FileType extends Type
     /**
      * @inheritdoc
      */
-    public function renderField($field, $options = []) {
+    public function renderField($field, $item, $options = []) {
         $field->parts['{input}'] = FileInput::widget(ArrayHelper::merge(
             [
                 'model' => $field->model,
@@ -28,9 +28,9 @@ class FileType extends Type
     /**
      * @inheritdoc
      */
-    public function renderForView($model, $attribute, $options = []) {
+    public function renderForView($model, $attribute, $item, $options = []) {
         if ($model->$attribute) {
-            $processor = ArrayHelper::remove($options, 'processor', FileModule::PROCESSOR_NAME_DEFAULT);
+            $processor = ArrayHelper::remove($item, 'processor', FileModule::PROCESSOR_NAME_DEFAULT);
             $imageMeta = ImageMeta::findByProcessor($model->$attribute, $processor);
             if ($imageMeta) {
                 return Html::img($imageMeta->url, array_merge([
@@ -49,12 +49,12 @@ class FileType extends Type
      * @param array $options
      * @return string
      */
-    public function renderForTable($model, $attribute, $options = []) {
+    public function renderForTable($model, $attribute, $item, $options = []) {
         $options = array_merge([
             'width' => 22,
             'height' => 22,
         ], $options);
-        return $this->renderForView($model, $attribute, $options);
+        return $this->renderForView($model, $attribute, $item, $options);
     }
 
     /**

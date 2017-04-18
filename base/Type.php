@@ -17,30 +17,33 @@ abstract class Type extends Object
 
     /**
      * @param ActiveField $field
+     * @param array $item
      * @param array $options
      */
-    public function renderField($field, $options = []) {
+    public function renderField($field, $item, $options = []) {
         $field->textInput($options);
     }
 
     /**
      * @param \extpoint\yii2\base\Model $model
      * @param string $attribute
+     * @param array $item
      * @param array $options
      * @return string
      */
-    public function renderForView($model, $attribute, $options = []) {
+    public function renderForView($model, $attribute, $item, $options = []) {
         return Html::encode($model->$attribute);
     }
 
     /**
      * @param \extpoint\yii2\base\Model $model
      * @param string $attribute
+     * @param array $item
      * @param array $options
      * @return string
      */
-    public function renderForTable($model, $attribute, $options = []) {
-        return $this->renderForView($model, $attribute, $options);
+    public function renderForTable($model, $attribute, $item, $options = []) {
+        return $this->renderForView($model, $attribute, $item, $options);
     }
 
     /**
@@ -72,7 +75,7 @@ abstract class Type extends Object
      * @param MetaItem $metaItem
      * @return array
      */
-    public function getGiiBehaviours($metaItem) {
+    public function getGiiBehaviors($metaItem) {
         return [];
     }
 }

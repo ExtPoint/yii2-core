@@ -12,15 +12,15 @@ class IntegerType extends Type
     /**
      * @inheritdoc
      */
-    public function renderField($field, $options = []) {
+    public function renderField($field, $item, $options = []) {
         $field->textInput($options);
     }
 
     /**
      * @inheritdoc
      */
-    public function renderForView($model, $attribute, $options = []) {
-        if (!empty($options[self::OPTION_IS_DECIMAL])) {
+    public function renderForView($model, $attribute, $item, $options = []) {
+        if (!empty($item[self::OPTION_IS_DECIMAL])) {
             return \Yii::$app->formatter->asDecimal($model->$attribute);
         } else {
             return \Yii::$app->formatter->asInteger($model->$attribute);

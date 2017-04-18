@@ -2,6 +2,7 @@
 
 namespace extpoint\yii2\base;
 
+use arogachev\ManyToMany\components\ManyToManyRelation;
 use extpoint\yii2\exceptions\ModelDeleteException;
 use extpoint\yii2\exceptions\ModelSaveException;
 use yii\db\ActiveRecord;
@@ -108,6 +109,21 @@ class Model extends ActiveRecord
     {
         if (!$this->delete()) {
             throw new ModelDeleteException($this);
+        }
+    }
+
+    /**
+     * @param string[]|null $names
+     */
+    public function fillManyMany($names = null) {
+        if (isset($this->manyToManyRelations)) {
+            foreach ($this->manyToManyRelations as $relation) {
+                /** @type ManyToManyRelation $relation */
+
+                if ($names === null || in_array($relation->name, $names)) {
+                    $relation->fill();
+                }
+            }
         }
     }
 

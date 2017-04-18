@@ -10,7 +10,7 @@ class SizeType extends Type
     /**
      * @inheritdoc
      */
-    public function renderForView($model, $attribute, $options = []) {
+    public function renderForView($model, $attribute, $item, $options = []) {
         return \Yii::$app->formatter->asShortSize($model->$attribute);
     }
 

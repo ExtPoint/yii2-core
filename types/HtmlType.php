@@ -11,7 +11,7 @@ class HtmlType extends Type
     /**
      * @inheritdoc
      */
-    public function renderField($field, $options = []) {
+    public function renderField($field, $item, $options = []) {
         $field->parts['{input}'] = CKEditor::widget([
             'model' => $field->model,
             'attribute' => $field->attribute,
@@ -41,7 +41,7 @@ class HtmlType extends Type
     /**
      * @inheritdoc
      */
-    public function renderForView($model, $attribute, $options = []) {
+    public function renderForView($model, $attribute, $item, $options = []) {
         return \Yii::$app->formatter->asRaw($model->$attribute);
     }
 

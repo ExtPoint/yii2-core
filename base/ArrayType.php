@@ -12,30 +12,38 @@ abstract class ArrayType extends Type
     /**
      * @inheritdoc
      */
-    public function renderField($field, $options = []) {
-        $relationName = ArrayHelper::remove($options, self::OPTION_RELATION_NAME);
+    public function renderField($field, $item, $options = []) {
+        $relationName = ArrayHelper::remove($item, self::OPTION_RELATION_NAME);
 
         /** @var Model $model */
         $model = $field->model;
 
         /** @var Model $relationClass */
-        $relationClass = $model->getRelation($relationName)->modelClass;
+        $relation = $model->getRelation($relationName);
+        $relationClass = $relation->modelClass;
 
-        if ($relationClass::find()->count() > 50) {
-            $field->textInput($options);
-        } else {
-            $items = ArrayHelper::getColumn($relationClass::find()->all(), 'modelLabel');
-            $field->dropDownList($items, $options);
-        }
-
+        $models = $relationClass::find()->all();
+        $items = ArrayHelper::getColumn(ArrayHelper::index($models, $relationClass::primaryKey()[0]), 'modelLabel');
+        $field->dropDownList($items, array_merge($options, [
+            'multiple' => $relation->multiple,
+        ]));
     }
 
     /**
      * @inheritdoc
      */
-    public function renderForView($model, $attribute, $options = []) {
-        $relationName = ArrayHelper::remove($options, self::OPTION_RELATION_NAME);
-        return implode(', ', ArrayHelper::getColumn($model->$relationName, 'modelLabel'));
+    public function renderForView($model, $attribute, $item, $options = []) {
+        $relationName = ArrayHelper::remove($item, self::OPTION_RELATION_NAME);
+        if (is_array($model->$relationName)) {
+            return implode(', ', array_map(function($model) {
+                /** @type Model $model */
+                return $model->modelLabel;
+            }, $model->$relationName));
+        } else if ($model->$relationName instanceof Model) {
+            return $model->$relationName->modelLabel;
+        }
+
+        return null;
     }
 
     /**
@@ -55,7 +63,7 @@ abstract class ArrayType extends Type
     /**
      * @inheritdoc
      */
-    public function getGiiBehaviours($metaItem) {
+    public function getGiiBehaviors($metaItem) {
         return [
             [
                 'class' => ManyToManyBehavior::className(),
@@ -63,6 +71,7 @@ abstract class ArrayType extends Type
                     [
                         'name' => $metaItem->relationName,
                         'editableAttribute' => $metaItem->name,
+                        'autoFill' => false,
                     ]
                 ]
             ],

@@ -10,14 +10,14 @@ class BooleanType extends Type
     /**
      * @inheritdoc
      */
-    public function renderField($field, $options = []) {
+    public function renderField($field, $item, $options = []) {
         $field->checkbox($options);
     }
 
     /**
      * @inheritdoc
      */
-    public function renderForView($model, $attribute, $options = []) {
+    public function renderForView($model, $attribute, $item, $options = []) {
         return \Yii::$app->formatter->asBoolean($model->$attribute);
     }
 

@@ -54,7 +54,19 @@ class ModuleLoader {
     public static function getMigrationNamespaces($appDir) {
         $namespaces = [];
         foreach (self::getClasses($appDir) as $name => $moduleClass) {
-            $namespaces[] = preg_replace('/[^\\]+$/', 'migrations', $moduleClass);
+            $namespace = preg_replace('/[^\\\\]+$/', 'migrations', $moduleClass);
+
+            // Set alias for load migrations
+            if (!preg_match('/^\\\\?app\\\\/', $moduleClass)) {
+                $moduleDir = dirname((new \ReflectionClass($moduleClass))->getFileName());
+
+                \Yii::setAlias(
+                    '@' . str_replace('\\', '/', $namespace),
+                    $moduleDir . '/migrations'
+                );
+            }
+
+            $namespaces[] = $namespace;
         }
         return $namespaces;
     }

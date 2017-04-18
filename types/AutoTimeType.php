@@ -18,10 +18,9 @@ class AutoTimeType extends DateTimeType
     /**
      * @inheritdoc
      */
-    public function getGiiBehaviours($metaItem) {
-        $useClasses[] = TimestampBehavior::className();
+    public function getGiiBehaviors($metaItem) {
         return [
-            'TimestampBehavior::className()',
+            TimestampBehavior::className(),
         ];
     }
 

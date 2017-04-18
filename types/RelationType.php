@@ -18,6 +18,13 @@ class RelationType extends ArrayType
     /**
      * @inheritdoc
      */
+    public function getGiiBehaviors($metaItem) {
+        return !$this->getGiiDbType($metaItem) ? parent::getGiiBehaviors($metaItem) : [];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function renderGiiValidator($metaItem, $indent = '', &$useClasses = []) {
         $relation = $metaItem->metaClass->getRelation($metaItem->relationName);
         return $relation && $relation->isHasOne ? 'integer' : false;

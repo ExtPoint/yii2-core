@@ -13,10 +13,10 @@ class CurrencyType extends Type
     /**
      * @inheritdoc
      */
-    public function renderField($field, $options = []) {
+    public function renderField($field, $item, $options = []) {
         $field->textInput($options);
 
-        $currency = ArrayHelper::remove($options, 'currency');
+        $currency = ArrayHelper::remove($item, 'currency');
         $icon = in_array($currency, $this->getBootstrapCurrencies())
             ? '<span class="glyphicon glyphicon-' . strtolower($currency) . '"></span>'
             : $currency;
@@ -26,7 +26,7 @@ class CurrencyType extends Type
     /**
      * @inheritdoc
      */
-    public function renderForView($model, $attribute, $options = []) {
+    public function renderForView($model, $attribute, $item, $options = []) {
         return \Yii::$app->formatter->asCurrency($model->$attribute);
     }
 

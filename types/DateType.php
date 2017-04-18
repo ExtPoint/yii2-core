@@ -14,7 +14,7 @@ class DateType extends Type
     /**
      * @inheritdoc
      */
-    public function renderField($field, $options = []) {
+    public function renderField($field, $item, $options = []) {
         $field->parts['{input}'] = DatePicker::widget([
             'model' => $field->model,
             'attribute' => $field->attribute,
@@ -28,8 +28,8 @@ class DateType extends Type
     /**
      * @inheritdoc
      */
-    public function renderForView($model, $attribute, $options = []) {
-        $format = ArrayHelper::remove($options, self::OPTION_FORMAT);
+    public function renderForView($model, $attribute, $item, $options = []) {
+        $format = ArrayHelper::remove($item, self::OPTION_FORMAT);
         return \Yii::$app->formatter->asDate($model->$attribute, $format);
     }
 

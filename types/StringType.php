@@ -17,8 +17,8 @@ class StringType extends Type
     /**
      * @inheritdoc
      */
-    public function renderField($field, $options = []) {
-        $type = ArrayHelper::remove($options, self::OPTION_TYPE);
+    public function renderField($field, $item, $options = []) {
+        $type = ArrayHelper::remove($item, self::OPTION_TYPE);
         switch ($type) {
             case self::TYPE_EMAIL:
                 $field->textInput($options);
@@ -44,8 +44,8 @@ class StringType extends Type
     /**
      * @inheritdoc
      */
-    public function renderForView($model, $attribute, $options = []) {
-        $type = ArrayHelper::remove($options, self::OPTION_TYPE);
+    public function renderForView($model, $attribute, $item, $options = []) {
+        $type = ArrayHelper::remove($item, self::OPTION_TYPE);
         switch ($type) {
             case self::TYPE_EMAIL:
                 \Yii::$app->formatter->asEmail($model->$attribute);
@@ -55,7 +55,7 @@ class StringType extends Type
                 return '********';
         }
 
-        return parent::renderForView($model, $attribute, $options);
+        return parent::renderForView($model, $attribute, $item, $options);
     }
 
     /**

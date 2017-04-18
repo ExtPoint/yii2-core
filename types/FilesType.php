@@ -11,7 +11,7 @@ class FilesType extends ArrayType
     /**
      * @inheritdoc
      */
-    public function renderField($field, $options = []) {
+    public function renderField($field, $item, $options = []) {
         $field->parts['{input}'] = FileInput::widget(ArrayHelper::merge(
             [
                 'model' => $field->model,
@@ -24,7 +24,7 @@ class FilesType extends ArrayType
     /**
      * @inheritdoc
      */
-    public function renderForView($model, $attribute, $options = []) {
+    public function renderForView($model, $attribute, $item, $options = []) {
 
     }
 
@@ -34,12 +34,12 @@ class FilesType extends ArrayType
      * @param array $options
      * @return string
      */
-    public function renderForTable($model, $attribute, $options = []) {
+    public function renderForTable($model, $attribute, $item, $options = []) {
         $options = array_merge([
             'width' => 22,
             'height' => 22,
         ], $options);
-        return $this->renderForView($model, $attribute, $options);
+        return $this->renderForView($model, $attribute, $item, $options);
     }
 
     /**
