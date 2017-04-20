@@ -3,6 +3,7 @@
 namespace extpoint\yii2\types;
 
 use extpoint\yii2\base\Type;
+use yii\bootstrap\Html;
 use yii\db\Schema;
 use yii\helpers\ArrayHelper;
 
@@ -13,14 +14,14 @@ class CurrencyType extends Type
     /**
      * @inheritdoc
      */
-    public function renderField($field, $item, $options = []) {
-        $field->textInput($options);
+    public function renderField($model, $attribute, $item, $options = []) {
+        $html = Html::activeTextInput($model, $attribute, array_merge(['class' => 'form-control'], $options));
 
         $currency = ArrayHelper::remove($item, 'currency');
         $icon = in_array($currency, $this->getBootstrapCurrencies())
             ? '<span class="glyphicon glyphicon-' . strtolower($currency) . '"></span>'
             : $currency;
-        $field->parts['{input}'] = '<div class="input-group"><span class="input-group-addon">' . $icon . '</span>' . $field->parts['{input}'] . '</div>';
+        return '<div class="input-group"><span class="input-group-addon">' . $icon . '</span>' . $html . '</div>';
     }
 
     /**

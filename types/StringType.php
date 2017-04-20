@@ -3,6 +3,7 @@
 namespace extpoint\yii2\types;
 
 use extpoint\yii2\base\Type;
+use yii\bootstrap\Html;
 use yii\db\Schema;
 use yii\helpers\ArrayHelper;
 
@@ -17,27 +18,27 @@ class StringType extends Type
     /**
      * @inheritdoc
      */
-    public function renderField($field, $item, $options = []) {
+    public function renderField($model, $attribute, $item, $options = []) {
         $type = ArrayHelper::remove($item, self::OPTION_TYPE);
+        $options = array_merge(['class' => 'form-control'], $options);
+
         switch ($type) {
             case self::TYPE_EMAIL:
-                $field->textInput($options);
-                $field->parts['{input}'] = '<div class="input-group"><span class="input-group-addon">@</span>' . $field->parts['{input}'] . '</div>';
-                break;
+                return '<div class="input-group"><span class="input-group-addon">@</span>'
+                    . Html::activeTextInput($model, $attribute, $options)
+                    . '</div>';
 
             case self::TYPE_PHONE:
-                $field->textInput($options);
-                $field->parts['{input}'] = '<div class="input-group"><span class="input-group-addon"><span class="glyphicon glyphicon-phone"></span></span>' . $field->parts['{input}'] . '</div>';
-                break;
+                return '<div class="input-group"><span class="input-group-addon"><span class="glyphicon glyphicon-phone"></span></span>'
+                    . Html::activeTextInput($model, $attribute, $options)
+                    . '</div>';
 
             case self::TYPE_PASSWORD:
-                $field->passwordInput($options);
-                break;
+                return Html::activePasswordInput($model, $attribute, $options);
 
             case self::TYPE_TEXT:
             default:
-                $field->textInput($options);
-                break;
+                return Html::activeTextInput($model, $attribute, $options);
         }
     }
 

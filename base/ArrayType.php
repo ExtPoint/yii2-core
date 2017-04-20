@@ -4,6 +4,7 @@ namespace extpoint\yii2\base;
 
 use yii\helpers\ArrayHelper;
 use arogachev\ManyToMany\behaviors\ManyToManyBehavior;
+use yii\helpers\Html;
 
 abstract class ArrayType extends Type
 {
@@ -12,11 +13,8 @@ abstract class ArrayType extends Type
     /**
      * @inheritdoc
      */
-    public function renderField($field, $item, $options = []) {
+    public function renderField($model, $attribute, $item, $options = []) {
         $relationName = ArrayHelper::remove($item, self::OPTION_RELATION_NAME);
-
-        /** @var Model $model */
-        $model = $field->model;
 
         /** @var Model $relationClass */
         $relation = $model->getRelation($relationName);
@@ -24,7 +22,15 @@ abstract class ArrayType extends Type
 
         $models = $relationClass::find()->all();
         $items = ArrayHelper::getColumn(ArrayHelper::index($models, $relationClass::primaryKey()[0]), 'modelLabel');
-        $field->dropDownList($items, array_merge($options, [
+
+        // Prepend empty value
+        $emptyLabel = ArrayHelper::remove($options, 'emptyLabel');
+        if (!empty($item['isRequired']) || $emptyLabel !== null) {
+            $items = ArrayHelper::merge(['' => $emptyLabel ?: ''], $items);
+        }
+
+        return Html::activeDropDownList($model, $attribute, $items, array_merge($options, [
+            'class' => 'form-control',
             'multiple' => $relation->multiple,
         ]));
     }
@@ -32,18 +38,32 @@ abstract class ArrayType extends Type
     /**
      * @inheritdoc
      */
+    public function renderSearchField($model, $attribute, $item, $options = []) {
+        $options['emptyLabel'] = '';
+        return $this->renderField($model, $attribute, $item, $options);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function renderForView($model, $attribute, $item, $options = []) {
         $relationName = ArrayHelper::remove($item, self::OPTION_RELATION_NAME);
-        if (is_array($model->$relationName)) {
-            return implode(', ', array_map(function($model) {
-                /** @type Model $model */
-                return $model->modelLabel;
-            }, $model->$relationName));
-        } else if ($model->$relationName instanceof Model) {
-            return $model->$relationName->modelLabel;
-        }
+        $models = !is_array($model->$relationName) ? [$model->$relationName] : $model->$relationName;
 
-        return null;
+        return implode(', ', array_map(function($model) use ($options) {
+            /** @type Model $model */
+            if (!($model instanceof Model)) {
+                return '';
+            }
+
+            foreach ($model->getModelLinks(\Yii::$app->user->model) as $url) {
+                if (\Yii::$app->megaMenu->isAllowAccess($url)) {
+                    return Html::a($model->modelLabel, $url, $options);
+                }
+            }
+
+            return $model->modelLabel;
+        }, $models));
     }
 
     /**

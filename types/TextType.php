@@ -3,6 +3,7 @@
 namespace extpoint\yii2\types;
 
 use extpoint\yii2\base\Type;
+use yii\bootstrap\Html;
 use yii\db\Schema;
 
 class TextType extends Type
@@ -10,8 +11,8 @@ class TextType extends Type
     /**
      * @inheritdoc
      */
-    public function renderField($field, $item, $options = []) {
-        $field->textarea($options);
+    public function renderField($model, $attribute, $item, $options = []) {
+        return Html::activeTextarea($model, $attribute, array_merge(['class' => 'form-control'], $options));
     }
 
     /**

@@ -16,11 +16,11 @@ class FileType extends Type
     /**
      * @inheritdoc
      */
-    public function renderField($field, $item, $options = []) {
-        $field->parts['{input}'] = FileInput::widget(ArrayHelper::merge(
+    public function renderField($model, $attribute, $item, $options = []) {
+        return FileInput::widget(ArrayHelper::merge(
             [
-                'model' => $field->model,
-                'attribute' => $field->attribute,
+                'model' => $model,
+                'attribute' => $attribute,
             ],
             $options
         ));

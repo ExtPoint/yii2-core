@@ -3,6 +3,7 @@
 namespace extpoint\yii2\types;
 
 use extpoint\yii2\base\Type;
+use yii\bootstrap\Html;
 use yii\db\Schema;
 
 class BooleanType extends Type
@@ -10,8 +11,8 @@ class BooleanType extends Type
     /**
      * @inheritdoc
      */
-    public function renderField($field, $item, $options = []) {
-        $field->checkbox($options);
+    public function renderField($model, $attribute, $item, $options = []) {
+        return Html::activeCheckbox($model, $attribute, $options);
     }
 
     /**

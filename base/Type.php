@@ -16,12 +16,25 @@ abstract class Type extends Object
     public $name;
 
     /**
-     * @param ActiveField $field
+     * @param Model $model
+     * @param string $attribute
      * @param array $item
      * @param array $options
+     * @return string
      */
-    public function renderField($field, $item, $options = []) {
-        $field->textInput($options);
+    public function renderField($model, $attribute, $item, $options = []) {
+        return Html::activeTextInput($model, $attribute, array_merge(['class' => 'form-control'], $options));
+    }
+
+    /**
+     * @param Model $model
+     * @param string $attribute
+     * @param array $item
+     * @param array $options
+     * @return string
+     */
+    public function renderSearchField($model, $attribute, $item, $options = []) {
+        return $this->renderField($model, $attribute, $item, $options);
     }
 
     /**

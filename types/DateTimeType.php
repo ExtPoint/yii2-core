@@ -11,13 +11,13 @@ class DateTimeType extends DateType
     /**
      * @inheritdoc
      */
-    public function renderField($field, $item, $options = []) {
-        $field->parts['{input}'] = DateTimePicker::widget([
-            'model' => $field->model,
-            'attribute' => $field->attribute,
+    public function renderField($model, $attribute, $item, $options = []) {
+        return DateTimePicker::widget([
+            'model' => $model,
+            'attribute' => $attribute,
             'options' => $options,
             'pluginOptions' => [
-                'format' => 'php:Y-m-d H:i',
+                'format' => 'yyyy-mm-dd',
             ],
         ]);
     }

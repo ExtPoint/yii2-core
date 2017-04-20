@@ -8,6 +8,9 @@ use extpoint\yii2\exceptions\ModelSaveException;
 use yii\db\ActiveRecord;
 use yii\web\NotFoundHttpException;
 
+/**
+ * @property-read string $modelLabel
+ */
 class Model extends ActiveRecord
 {
     /**
@@ -37,6 +40,14 @@ class Model extends ActiveRecord
             }
         }
         return '#' . $this->primaryKey;
+    }
+
+    /**
+     * @param Model|null $user
+     * @return array
+     */
+    public function getModelLinks($user) {
+        return [];
     }
 
     /**

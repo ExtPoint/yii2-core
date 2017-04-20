@@ -11,10 +11,10 @@ class HtmlType extends Type
     /**
      * @inheritdoc
      */
-    public function renderField($field, $item, $options = []) {
-        $field->parts['{input}'] = CKEditor::widget([
-            'model' => $field->model,
-            'attribute' => $field->attribute,
+    public function renderField($model, $attribute, $item, $options = []) {
+        return CKEditor::widget([
+            'model' => $model,
+            'attribute' => $attribute,
             'options' => $options,
             'clientOptions' => [
                 'toolbarGroups' => [

@@ -2,32 +2,31 @@
 
 namespace extpoint\yii2\behaviors;
 
-use yii\db\BaseActiveRecord;
+use extpoint\yii2\base\Model;
+use yii\helpers\ArrayHelper;
 
+/**
+ * @property-read Model $owner
+ */
 class TimestampBehavior extends \yii\behaviors\TimestampBehavior
 {
     public $createdAtAttribute = 'createTime';
     public $updatedAtAttribute = 'updateTime';
 
-    /**
-     * @inheritdoc
-     */
-    public function init()
+    public function evaluateAttributes($event)
     {
-        parent::init();
-
-        if (empty($this->attributes)) {
-            if ($this->createdAtAttribute || $this->updatedAtAttribute) {
-                $this->attributes[BaseActiveRecord::EVENT_BEFORE_INSERT] = [];
-            }
-            if ($this->createdAtAttribute) {
-                $this->attributes[BaseActiveRecord::EVENT_BEFORE_INSERT][] = $this->createdAtAttribute;
-            }
-            if ($this->updatedAtAttribute) {
-                $this->attributes[BaseActiveRecord::EVENT_BEFORE_INSERT][] = $this->updatedAtAttribute;
-                $this->attributes[BaseActiveRecord::EVENT_BEFORE_UPDATE] = $this->updatedAtAttribute;
+        if ($this->createdAtAttribute && !$this->owner->hasAttribute($this->createdAtAttribute)) {
+            foreach ($this->attributes as &$attributes) {
+                ArrayHelper::removeValue($attributes, $this->createdAtAttribute);
             }
         }
+        if ($this->updatedAtAttribute && !$this->owner->hasAttribute($this->updatedAtAttribute)) {
+            foreach ($this->attributes as &$attributes) {
+                ArrayHelper::removeValue($attributes, $this->updatedAtAttribute);
+            }
+        }
+
+        parent::evaluateAttributes($event);
     }
 
     public function getValue($event)
