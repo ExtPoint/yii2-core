@@ -7,7 +7,7 @@ use yii\bootstrap\Html;
 use yii\db\Schema;
 use yii\helpers\ArrayHelper;
 
-class CurrencyType extends Type
+class MoneyType extends Type
 {
     const OPTION_CURRENCY = 'currency';
 

@@ -5,6 +5,7 @@ namespace extpoint\yii2\types;
 use dosamigos\ckeditor\CKEditor;
 use extpoint\yii2\base\Type;
 use yii\db\Schema;
+use yii\helpers\Url;
 
 class HtmlType extends Type
 {
@@ -32,7 +33,7 @@ class HtmlType extends Type
                 ],
                 'removeButtons' => 'Form,Checkbox,Radio,TextField,Textarea,Select,Button,HiddenField',
                 'extraPlugins' => 'filebrowser',
-                'filebrowserUploadUrl' => '/file/upload/editor/'
+                'filebrowserUploadUrl' => Url::to(['/file/upload/editor'])
             ],
             'preset' => 'custom',
         ]);

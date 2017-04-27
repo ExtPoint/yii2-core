@@ -3,6 +3,7 @@
 namespace extpoint\yii2\types;
 
 use extpoint\yii2\base\Type;
+use extpoint\yii2\gii\models\MetaItem;
 use yii\bootstrap\Html;
 use yii\db\Schema;
 use yii\helpers\ArrayHelper;
@@ -10,6 +11,8 @@ use yii\helpers\ArrayHelper;
 class StringType extends Type
 {
     const OPTION_TYPE = 'stringType';
+    const OPTION_LENGTH = 'stringLength';
+
     const TYPE_TEXT = 'text';
     const TYPE_EMAIL = 'email';
     const TYPE_PHONE = 'phone';
@@ -60,6 +63,14 @@ class StringType extends Type
     }
 
     /**
+     * @param MetaItem $metaItem
+     * @return string|false
+     */
+    public function getGiiDbType($metaItem) {
+        return Schema::TYPE_STRING . ($metaItem->stringLength ? '(' . $metaItem->stringLength . ')' : '');
+    }
+
+    /**
      * @inheritdoc
      */
     public function getGiiFieldProps() {
@@ -74,6 +85,14 @@ class StringType extends Type
                     self::TYPE_PHONE => 'Phone',
                     self::TYPE_PASSWORD => 'Password',
                 ],
+            ],
+            self::OPTION_LENGTH => [
+                'component' => 'input',
+                'type' => 'number',
+                'label' => 'Length',
+                'style' => [
+                    'width' => '80px'
+                ]
             ],
         ];
     }

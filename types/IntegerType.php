@@ -49,7 +49,7 @@ class IntegerType extends Type
         return [
             self::OPTION_IS_DECIMAL => [
                 'component' => 'input',
-                'label' => 'Is decimal',
+                'label' => 'Decimal formatter',
                 'type' => 'checkbox',
             ],
         ];

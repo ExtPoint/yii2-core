@@ -3,10 +3,10 @@
 namespace extpoint\yii2\base;
 
 use extpoint\yii2\gii\models\MetaItem;
+use extpoint\yii2\widgets\ActiveField;
 use yii\base\Object;
 use yii\db\Schema;
 use yii\helpers\Html;
-use yii\widgets\ActiveField;
 
 abstract class Type extends Object
 {
@@ -24,6 +24,16 @@ abstract class Type extends Object
      */
     public function renderField($model, $attribute, $item, $options = []) {
         return Html::activeTextInput($model, $attribute, array_merge(['class' => 'form-control'], $options));
+    }
+
+    /**
+     * @param ActiveField $field
+     * @param array $item
+     * @param array $options
+     * @return string
+     */
+    public function renderFormField($field, $item, $options = []) {
+        return $this->renderField($field->model, $field->attribute, $item, $options);
     }
 
     /**
