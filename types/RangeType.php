@@ -3,6 +3,7 @@
 namespace extpoint\yii2\types;
 
 use extpoint\yii2\base\Type;
+use extpoint\yii2\gii\models\MetaItem;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
@@ -57,6 +58,22 @@ class RangeType extends Type
     /**
      * @inheritdoc
      */
+    public function getItems($metaItem) {
+        if ($metaItem->refAttribute) {
+            return [
+                new MetaItem([
+                    'metaClass' => $metaItem->metaClass,
+                    'name' => $metaItem->refAttribute,
+                    'appType' => $metaItem->subAppType,
+                ]),
+            ];
+        }
+        return [];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function getGiiDbType($metaItem)
     {
         return \Yii::$app->types->getType($metaItem->subAppType)->getGiiDbType($metaItem);
@@ -93,9 +110,7 @@ class RangeType extends Type
             ],
             self::OPTION_REF_ATTRIBUTE => [
                 'component' => 'input',
-                'label' => 'To attribute',
-                'type' => 'text',
-                'list' => 'attributes',
+                'label' => 'Attribute "to"',
             ],
         ];
     }

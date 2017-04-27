@@ -71,6 +71,14 @@ abstract class Type extends Object
 
     /**
      * @param MetaItem $metaItem
+     * @return array
+     */
+    public function getItems($metaItem) {
+        return [];
+    }
+
+    /**
+     * @param MetaItem $metaItem
      * @return string|false
      */
     public function getGiiDbType($metaItem) {
