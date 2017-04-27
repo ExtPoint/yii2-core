@@ -10,14 +10,16 @@ class SizeType extends Type
     /**
      * @inheritdoc
      */
-    public function renderForView($model, $attribute, $item, $options = []) {
+    public function renderForView($model, $attribute, $item, $options = [])
+    {
         return \Yii::$app->formatter->asShortSize($model->$attribute);
     }
 
     /**
      * @inheritdoc
      */
-    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = []) {
+    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = [])
+    {
         return 'number';
     }
 }

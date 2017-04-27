@@ -16,7 +16,8 @@ class FileType extends Type
     /**
      * @inheritdoc
      */
-    public function renderField($model, $attribute, $item, $options = []) {
+    public function renderField($model, $attribute, $item, $options = [])
+    {
         return FileInput::widget(ArrayHelper::merge(
             [
                 'model' => $model,
@@ -29,7 +30,8 @@ class FileType extends Type
     /**
      * @inheritdoc
      */
-    public function renderForView($model, $attribute, $item, $options = []) {
+    public function renderForView($model, $attribute, $item, $options = [])
+    {
         if ($model->$attribute) {
             $file = File::findOne($model->$attribute);
             $url = $file ? $file->previewImageUrl : null;
@@ -52,7 +54,8 @@ class FileType extends Type
      * @param array $options
      * @return string
      */
-    public function renderForTable($model, $attribute, $item, $options = []) {
+    public function renderForTable($model, $attribute, $item, $options = [])
+    {
         $options = array_merge([
             'width' => 22,
             'height' => 22,
@@ -63,14 +66,16 @@ class FileType extends Type
     /**
      * @inheritdoc
      */
-    public function getGiiDbType($metaItem) {
+    public function getGiiDbType($metaItem)
+    {
         return Schema::TYPE_INTEGER;
     }
 
     /**
      * @inheritdoc
      */
-    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = []) {
+    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = [])
+    {
         return 'integer';
     }
 }

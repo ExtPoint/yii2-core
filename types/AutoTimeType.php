@@ -11,14 +11,16 @@ class AutoTimeType extends DateTimeType
     /**
      * @inheritdoc
      */
-    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = []) {
+    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = [])
+    {
         return false;
     }
 
     /**
      * @inheritdoc
      */
-    public function getGiiBehaviors($metaItem) {
+    public function getGiiBehaviors($metaItem)
+    {
         return [
             TimestampBehavior::className(),
         ];
@@ -27,7 +29,8 @@ class AutoTimeType extends DateTimeType
     /**
      * @inheritdoc
      */
-    public function getGiiFieldProps() {
+    public function getGiiFieldProps()
+    {
         return [
             self::OPTION_TOUCH_ON_UPDATE => [
                 'component' => 'input',

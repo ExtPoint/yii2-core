@@ -19,7 +19,8 @@ class RangeType extends Type
     /**
      * @inheritdoc
      */
-    public function renderField($model, $attribute, $item, $options = []) {
+    public function renderField($model, $attribute, $item, $options = [])
+    {
         $subAppType = ArrayHelper::remove($item, self::OPTION_SUB_APP_TYPE);
         $refAttribute = ArrayHelper::remove($item, self::OPTION_REF_ATTRIBUTE);
         if ($refAttribute) {
@@ -39,7 +40,8 @@ class RangeType extends Type
     /**
      * @inheritdoc
      */
-    public function renderForView($model, $attribute, $item, $options = []) {
+    public function renderForView($model, $attribute, $item, $options = [])
+    {
         $subAppType = ArrayHelper::remove($item, self::OPTION_SUB_APP_TYPE);
         $refAttribute = ArrayHelper::remove($item, self::OPTION_REF_ATTRIBUTE);
         if ($refAttribute) {
@@ -55,28 +57,32 @@ class RangeType extends Type
     /**
      * @inheritdoc
      */
-    public function getGiiDbType($metaItem) {
+    public function getGiiDbType($metaItem)
+    {
         return \Yii::$app->types->getType($metaItem->subAppType)->getGiiDbType($metaItem);
     }
 
     /**
      * @inheritdoc
      */
-    public function getGiiBehaviors($metaItem) {
+    public function getGiiBehaviors($metaItem)
+    {
         return \Yii::$app->types->getType($metaItem->subAppType)->getGiiBehaviors($metaItem);
     }
 
     /**
      * @inheritdoc
      */
-    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = []) {
+    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = [])
+    {
         return \Yii::$app->types->getType($metaItem->subAppType)->renderGiiValidator($metaItem, $indent, $useClasses);
     }
 
     /**
      * @inheritdoc
      */
-    public function getGiiFieldProps() {
+    public function getGiiFieldProps()
+    {
         return [
             self::OPTION_SUB_APP_TYPE => [
                 'component' => 'input',

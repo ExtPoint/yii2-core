@@ -17,7 +17,8 @@ class EnumType extends Type
     /**
      * @inheritdoc
      */
-    public function renderField($model, $attribute, $item, $options = []) {
+    public function renderField($model, $attribute, $item, $options = [])
+    {
         /** @var Enum $className */
         $className = ArrayHelper::getValue($item, self::OPTION_CLASS_NAME);
 
@@ -27,7 +28,8 @@ class EnumType extends Type
     /**
      * @inheritdoc
      */
-    public function renderForView($model, $attribute, $item, $options = []) {
+    public function renderForView($model, $attribute, $item, $options = [])
+    {
         /** @var Enum $className */
         $className = ArrayHelper::getValue($item, self::OPTION_CLASS_NAME);
 
@@ -40,14 +42,16 @@ class EnumType extends Type
     /**
      * @inheritdoc
      */
-    public function getGiiDbType($metaItem) {
+    public function getGiiDbType($metaItem)
+    {
         return Schema::TYPE_STRING;
     }
 
     /**
      * @inheritdoc
      */
-    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = []) {
+    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = [])
+    {
         /** @var Enum $className */
         $className = $metaItem->enumClassName;
 
@@ -57,7 +61,8 @@ class EnumType extends Type
     /**
      * @return array
      */
-    public function getGiiFieldProps() {
+    public function getGiiFieldProps()
+    {
         return [
             self::OPTION_CLASS_NAME => [
                 'component' => 'input',

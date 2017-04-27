@@ -14,7 +14,8 @@ class DateType extends Type
     /**
      * @inheritdoc
      */
-    public function renderField($model, $attribute, $item, $options = []) {
+    public function renderField($model, $attribute, $item, $options = [])
+    {
         return DatePicker::widget([
             'model' => $model,
             'attribute' => $attribute,
@@ -28,7 +29,8 @@ class DateType extends Type
     /**
      * @inheritdoc
      */
-    public function renderForView($model, $attribute, $item, $options = []) {
+    public function renderForView($model, $attribute, $item, $options = [])
+    {
         $format = ArrayHelper::remove($item, self::OPTION_FORMAT);
         return \Yii::$app->formatter->asDate($model->$attribute, $format);
     }
@@ -36,21 +38,24 @@ class DateType extends Type
     /**
      * @inheritdoc
      */
-    public function getGiiDbType($metaItem) {
+    public function getGiiDbType($metaItem)
+    {
         return Schema::TYPE_DATE;
     }
 
     /**
      * @inheritdoc
      */
-    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = []) {
+    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = [])
+    {
         return "['date', 'format' => 'php:Y-m-d']";
     }
 
     /**
      * @inheritdoc
      */
-    public function getGiiFieldProps() {
+    public function getGiiFieldProps()
+    {
         return [
             self::OPTION_FORMAT => [
                 'component' => 'input',

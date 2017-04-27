@@ -21,7 +21,8 @@ class StringType extends Type
     /**
      * @inheritdoc
      */
-    public function renderField($model, $attribute, $item, $options = []) {
+    public function renderField($model, $attribute, $item, $options = [])
+    {
         $type = ArrayHelper::remove($item, self::OPTION_TYPE);
         $options = array_merge(['class' => 'form-control'], $options);
 
@@ -48,7 +49,8 @@ class StringType extends Type
     /**
      * @inheritdoc
      */
-    public function renderForView($model, $attribute, $item, $options = []) {
+    public function renderForView($model, $attribute, $item, $options = [])
+    {
         $type = ArrayHelper::remove($item, self::OPTION_TYPE);
         switch ($type) {
             case self::TYPE_EMAIL:
@@ -66,14 +68,16 @@ class StringType extends Type
      * @param MetaItem $metaItem
      * @return string|false
      */
-    public function getGiiDbType($metaItem) {
+    public function getGiiDbType($metaItem)
+    {
         return Schema::TYPE_STRING . ($metaItem->stringLength ? '(' . $metaItem->stringLength . ')' : '');
     }
 
     /**
      * @inheritdoc
      */
-    public function getGiiFieldProps() {
+    public function getGiiFieldProps()
+    {
         return [
             self::OPTION_TYPE => [
                 'component' => 'select',

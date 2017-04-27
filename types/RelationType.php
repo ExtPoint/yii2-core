@@ -10,7 +10,8 @@ class RelationType extends ArrayType
     /**
      * @inheritdoc
      */
-    public function getGiiDbType($metaItem) {
+    public function getGiiDbType($metaItem)
+    {
         $relation = $metaItem->metaClass->getRelation($metaItem->relationName);
         return $relation && $relation->isHasOne ? Schema::TYPE_INTEGER : false;
     }
@@ -18,14 +19,16 @@ class RelationType extends ArrayType
     /**
      * @inheritdoc
      */
-    public function getGiiBehaviors($metaItem) {
+    public function getGiiBehaviors($metaItem)
+    {
         return !$this->getGiiDbType($metaItem) ? parent::getGiiBehaviors($metaItem) : [];
     }
 
     /**
      * @inheritdoc
      */
-    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = []) {
+    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = [])
+    {
         $relation = $metaItem->metaClass->getRelation($metaItem->relationName);
         return $relation && $relation->isHasOne ? 'integer' : false;
     }

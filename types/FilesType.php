@@ -13,7 +13,8 @@ class FilesType extends ArrayType
     /**
      * @inheritdoc
      */
-    public function renderField($model, $attribute, $item, $options = []) {
+    public function renderField($model, $attribute, $item, $options = [])
+    {
         return FileInput::widget(ArrayHelper::merge(
             [
                 'model' => $model,
@@ -28,8 +29,9 @@ class FilesType extends ArrayType
     /**
      * @inheritdoc
      */
-    public function renderForView($model, $attribute, $item, $options = []) {
-        return implode(' ', array_map(function($file) use ($model, $options) {
+    public function renderForView($model, $attribute, $item, $options = [])
+    {
+        return implode(' ', array_map(function ($file) use ($model, $options) {
             /** @type File $file */
             $url = $file->previewImageUrl;
             if (!$url) {
@@ -50,7 +52,8 @@ class FilesType extends ArrayType
      * @param array $options
      * @return string
      */
-    public function renderForTable($model, $attribute, $item, $options = []) {
+    public function renderForTable($model, $attribute, $item, $options = [])
+    {
         $options = array_merge([
             'width' => 22,
             'height' => 22,
@@ -61,14 +64,16 @@ class FilesType extends ArrayType
     /**
      * @inheritdoc
      */
-    public function getGiiDbType($metaItem) {
+    public function getGiiDbType($metaItem)
+    {
         return false;
     }
 
     /**
      * @inheritdoc
      */
-    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = []) {
+    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = [])
+    {
         return false;
     }
 

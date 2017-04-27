@@ -14,7 +14,8 @@ class MoneyType extends Type
     /**
      * @inheritdoc
      */
-    public function renderField($model, $attribute, $item, $options = []) {
+    public function renderField($model, $attribute, $item, $options = [])
+    {
         $html = Html::activeTextInput($model, $attribute, array_merge(['class' => 'form-control'], $options));
 
         $currency = ArrayHelper::remove($item, 'currency');
@@ -27,28 +28,32 @@ class MoneyType extends Type
     /**
      * @inheritdoc
      */
-    public function renderForView($model, $attribute, $item, $options = []) {
+    public function renderForView($model, $attribute, $item, $options = [])
+    {
         return \Yii::$app->formatter->asCurrency($model->$attribute);
     }
 
     /**
      * @inheritdoc
      */
-    public function getGiiDbType($metaItem) {
+    public function getGiiDbType($metaItem)
+    {
         return Schema::TYPE_DECIMAL . '(19, 4)';
     }
 
     /**
      * @inheritdoc
      */
-    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = []) {
+    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = [])
+    {
         return 'number';
     }
 
     /**
      * @inheritdoc
      */
-    public function getGiiFieldProps() {
+    public function getGiiFieldProps()
+    {
         return [
             self::OPTION_CURRENCY => [
                 'component' => 'input',
@@ -58,7 +63,8 @@ class MoneyType extends Type
         ];
     }
 
-    protected function getBootstrapCurrencies() {
+    protected function getBootstrapCurrencies()
+    {
         return ['RUB', 'USD', 'EUR', 'BTC', 'XBT', 'YEN', 'JPY', 'GBP'];
     }
 }
