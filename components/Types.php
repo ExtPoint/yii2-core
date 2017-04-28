@@ -6,6 +6,7 @@ use extpoint\yii2\base\Model;
 use extpoint\yii2\base\Type;
 use extpoint\yii2\types\AutoTimeType;
 use extpoint\yii2\types\BooleanType;
+use extpoint\yii2\types\DoubleType;
 use extpoint\yii2\types\MoneyType;
 use extpoint\yii2\types\CustomType;
 use extpoint\yii2\types\DateTimeType;
@@ -32,6 +33,7 @@ use yii\helpers\Html;
  * @property-read CustomType $custom
  * @property-read DateTimeType $dateTime
  * @property-read DateType $date
+ * @property-read DoubleType $double
  * @property-read EnumType $enum
  * @property-read FilesType $files
  * @property-read FileType $file
@@ -181,6 +183,7 @@ class Types extends Component
             'custom' => '\extpoint\yii2\types\CustomType',
             'dateTime' => '\extpoint\yii2\types\DateTimeType',
             'date' => '\extpoint\yii2\types\DateType',
+            'double' => '\extpoint\yii2\types\DoubleType',
             'enum' => '\extpoint\yii2\types\EnumType',
             'files' => '\extpoint\yii2\types\FilesType',
             'file' => '\extpoint\yii2\types\FileType',

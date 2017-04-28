@@ -2,7 +2,9 @@
 
 namespace extpoint\yii2\base;
 
-abstract class Enum
+use yii\base\Object;
+
+abstract class Enum extends Object
 {
     /**
      * @return array
