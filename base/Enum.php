@@ -38,11 +38,22 @@ abstract class Enum extends Object
     }
 
     /**
+     * @return array
+     */
+    public static function getCssClasses()
+    {
+        return [];
+    }
+
+    /**
      * @param string $id
+     * @param string $prefix
      * @return string
      */
-    public static function getCssClass($id) {
-        return '';
+    public static function getCssClass($id, $prefix = '')
+    {
+        $idLabelMap = static::getCssClasses();
+        return isset($idLabelMap[$id]) ? $prefix . $idLabelMap[$id] : '';
     }
 
     /**

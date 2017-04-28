@@ -2,13 +2,18 @@
 
 namespace extpoint\yii2\base;
 
+use yii\db\mysql\Schema;
+
 class Migration extends \yii\db\Migration
 {
     /**
      * @inheritdoc
      */
-    public function createTable($table, $columns, $options = 'CHARACTER SET utf8 COLLATE utf8_general_ci ENGINE=InnoDB')
+    public function createTable($table, $columns, $options = null)
     {
+        if (!$options && $this->db->schema instanceof Schema) {
+            $options = 'CHARACTER SET utf8 COLLATE utf8_general_ci ENGINE=InnoDB';
+        }
         return parent::createTable($table, $columns, $options);
     }
 
