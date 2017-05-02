@@ -2,6 +2,7 @@
 
 namespace extpoint\yii2\base;
 
+use yii\db\Exception;
 use yii\db\mysql\Schema;
 
 class Migration extends \yii\db\Migration
@@ -59,6 +60,14 @@ class Migration extends \yii\db\Migration
     {
         $name = $this->getForeignKeyName($table, $columns, $refTable, $refColumns);
         parent::dropForeignKey($name, $table);
+
+        // Mysql innodb auto create index on add FK, but command `DROP FK..` do not delete it. Fix: Remove index, if exists
+        if ($this->db->schema instanceof Schema) {
+            try {
+                $this->dropIndex($name, $table);
+            } catch (Exception $e) {
+            }
+        }
     }
 
     /**
