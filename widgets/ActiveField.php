@@ -25,121 +25,132 @@ class ActiveField extends \yii\bootstrap\ActiveField
 
     /**
      * @param array $options
-     * @return string
+     * @return static
      */
     public function textInput($options = [])
     {
-        return static::getTypes()->string->renderFormField($this, $this->getMetaItem([
+        static::getTypes()->string->renderFormField($this, $this->getMetaItem([
             'appType' => 'string',
             StringType::OPTION_TYPE => StringType::TYPE_TEXT,
         ]), $options);
+        return $this;
     }
 
     /**
      * @param array $options
-     * @return string
+     * @return static
      */
     public function passwordInput($options = [])
     {
-        return static::getTypes()->string->renderFormField($this, $this->getMetaItem([
+        static::getTypes()->string->renderFormField($this, $this->getMetaItem([
             'appType' => 'string',
             StringType::OPTION_TYPE => StringType::TYPE_PASSWORD,
         ]), $options);
+        return $this;
     }
 
     /**
      * @param array $options
-     * @return string
+     * @return static
      */
     public function email($options = [])
     {
-        return static::getTypes()->string->renderFormField($this, $this->getMetaItem([
+        static::getTypes()->string->renderFormField($this, $this->getMetaItem([
             'appType' => 'string',
             StringType::OPTION_TYPE => StringType::TYPE_EMAIL,
         ]), $options);
+        return $this;
     }
 
     /**
      * @param array $options
-     * @return string
+     * @return static
      */
     public function phone($options = [])
     {
-        return static::getTypes()->string->renderFormField($this, $this->getMetaItem([
+        static::getTypes()->string->renderFormField($this, $this->getMetaItem([
             'appType' => 'string',
             StringType::OPTION_TYPE => StringType::TYPE_PHONE,
         ]), $options);
+        return $this;
     }
 
     /**
      * @param array $options
-     * @return string
+     * @return static
      */
     public function file($options = [])
     {
-        return static::getTypes()->file->renderFormField($this, $this->getMetaItem(['appType' => 'file']), $options);
+        static::getTypes()->file->renderFormField($this, $this->getMetaItem(['appType' => 'file']), $options);
+        return $this;
     }
 
     /**
      * @param array $options
-     * @return string
+     * @return static
      */
     public function files($options = [])
     {
-        return static::getTypes()->files->renderFormField($this, $this->getMetaItem(['appType' => 'files']), $options);
+        static::getTypes()->files->renderFormField($this, $this->getMetaItem(['appType' => 'files']), $options);
+        return $this;
     }
 
     /**
      * @param array $options
-     * @return string
+     * @return static
      */
     public function date($options = [])
     {
-        return static::getTypes()->date->renderFormField($this, $this->getMetaItem(['appType' => 'date']), $options);
+        static::getTypes()->date->renderFormField($this, $this->getMetaItem(['appType' => 'date']), $options);
+        return $this;
     }
 
     /**
      * @param array $options
-     * @return string
+     * @return static
      */
     public function dateTime($options = [])
     {
-        return static::getTypes()->dateTime->renderFormField($this, $this->getMetaItem(['appType' => 'dateTime']), $options);
+        static::getTypes()->dateTime->renderFormField($this, $this->getMetaItem(['appType' => 'dateTime']), $options);
+        return $this;
     }
 
     /**
      * @param string $enumClassName
      * @param array $options
-     * @return string
+     * @return static
      */
     public function enum($enumClassName, $options = [])
     {
-        return static::getTypes()->enum->renderFormField($this, $this->getMetaItem([
+        static::getTypes()->enum->renderFormField($this, $this->getMetaItem([
             'appType' => 'enum',
             EnumType::OPTION_CLASS_NAME => $enumClassName,
         ]), $options);
+        return $this;
     }
 
     /**
      * @param array $options
-     * @return string
+     * @return static
      */
     public function wysiwyg($options = [])
     {
-        return static::getTypes()->html->renderFormField($this, $this->getMetaItem(['appType' => 'html']), $options);
+        static::getTypes()->html->renderFormField($this, $this->getMetaItem(['appType' => 'html']), $options);
+        return $this;
     }
 
     /**
      * @param string $currency
      * @param array $options
-     * @return string
+     * @return static
      */
     public function money($currency, $options = [])
     {
-        return static::getTypes()->money->renderFormField($this, $this->getMetaItem([
+        static::getTypes()->money->renderFormField($this, $this->getMetaItem([
             'appType' => 'money',
             MoneyType::OPTION_CURRENCY => $currency,
         ]), $options);
+        return $this;
     }
 
     /**

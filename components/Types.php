@@ -102,10 +102,7 @@ class Types extends Component
     public function renderFormField($field, $options = [])
     {
         $item = $this->getMetaItem($field->model, $field->attribute);
-        if ($item) {
-            $this->getTypeByItem($item)->renderFormField($field, $item, $options);
-        }
-        return $field;
+        return $item ? $this->getTypeByItem($item)->renderFormField($field, $item, $options) : '';
     }
 
     /**
