@@ -22,6 +22,7 @@ class TimestampBehavior extends \yii\behaviors\TimestampBehavior
         }
         if ($this->updatedAtAttribute && !$this->owner->hasAttribute($this->updatedAtAttribute)) {
             foreach ($this->attributes as &$attributes) {
+                $attributes = (array) $attributes;
                 ArrayHelper::removeValue($attributes, $this->updatedAtAttribute);
             }
         }

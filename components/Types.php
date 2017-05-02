@@ -91,7 +91,7 @@ class Types extends Component
     public function renderField($model, $attribute, $options = [])
     {
         $item = $this->getMetaItem($model, $attribute);
-        return $this->getTypeByItem($item)->renderField($model, $attribute, $item, $options);
+        return $item ? $this->getTypeByItem($item)->renderField($model, $attribute, $item, $options) : '';
     }
 
     /**
@@ -102,7 +102,7 @@ class Types extends Component
     public function renderFormField($field, $options = [])
     {
         $item = $this->getMetaItem($field->model, $field->attribute);
-        return $this->getTypeByItem($item)->renderFormField($field, $item, $options);
+        return $item ? $this->getTypeByItem($item)->renderFormField($field, $item, $options) : '';
     }
 
     /**
@@ -114,7 +114,7 @@ class Types extends Component
     public function renderSearchField($model, $attribute, $options = [])
     {
         $item = $this->getMetaItem($model, $attribute);
-        return $this->getTypeByItem($item)->renderSearchField($model, $attribute, $item, $options);
+        return $item ? $this->getTypeByItem($item)->renderSearchField($model, $attribute, $item, $options) : '';
     }
 
     /**
@@ -126,7 +126,7 @@ class Types extends Component
     public function renderForTable($model, $attribute, $options = [])
     {
         $item = $this->getMetaItem($model, $attribute);
-        return $this->getTypeByItem($item)->renderForTable($model, $attribute, $item, $options);
+        return $item ? $this->getTypeByItem($item)->renderForTable($model, $attribute, $item, $options) : '';
     }
 
     /**
@@ -138,7 +138,7 @@ class Types extends Component
     public function renderForView($model, $attribute, $options = [])
     {
         $item = $this->getMetaItem($model, $attribute);
-        return $this->getTypeByItem($item)->renderForView($model, $attribute, $item, $options);
+        return $item ? $this->getTypeByItem($item)->renderForView($model, $attribute, $item, $options) : '';
     }
 
     /**
@@ -164,14 +164,18 @@ class Types extends Component
     /**
      * @param Model $modelClass
      * @param string $attribute
-     * @return mixed
+     * @return array|null
      */
     protected function getMetaItem($modelClass, $attribute)
     {
         if (is_object($modelClass)) {
             $modelClass = get_class($modelClass);
         }
-        return $modelClass::meta()[Html::getAttributeName($attribute)];
+
+        $meta = $modelClass::meta();
+        $attribute = Html::getAttributeName($attribute);
+
+        return isset($meta[$attribute]) ? $meta[$attribute] : null;
     }
 
     protected function getDefaultTypes()

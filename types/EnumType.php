@@ -28,6 +28,17 @@ class EnumType extends Type
     /**
      * @inheritdoc
      */
+    public function renderSearchField($model, $attribute, $item, $options = []) {
+        /** @var Enum $className */
+        $className = ArrayHelper::getValue($item, self::OPTION_CLASS_NAME);
+
+        $items = ['' => ''] + $className::getLabels();
+        return Html::activeDropDownList($model, $attribute, $items, array_merge(['class' => 'form-control'], $options));
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function renderForView($model, $attribute, $item, $options = [])
     {
         /** @var Enum $className */

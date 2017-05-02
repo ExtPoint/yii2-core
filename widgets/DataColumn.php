@@ -10,12 +10,13 @@ class DataColumn extends \yii\grid\DataColumn
     {
         $model = $this->grid->filterModel;
         if ($this->filter === null && $this->attribute && $model instanceof Model) {
-            $item = $model::meta()[$this->attribute];
-            if (empty($item['showInFilter'])) {
-                return $this->grid->emptyCell;
+            $meta = $model::meta();
+            if (isset($meta[$this->attribute])) {
+                if (empty($meta[$this->attribute]['showInFilter'])) {
+                    return $this->grid->emptyCell;
+                }
+                return \Yii::$app->types->renderSearchField($model, $this->attribute);
             }
-
-            return \Yii::$app->types->renderSearchField($model, $this->attribute);
         }
 
         return parent::renderFilterCellContent();

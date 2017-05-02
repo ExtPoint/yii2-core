@@ -30,6 +30,7 @@ class ActiveField extends \yii\bootstrap\ActiveField
     public function textInput($options = [])
     {
         return static::getTypes()->string->renderFormField($this, $this->getMetaItem([
+            'appType' => 'string',
             StringType::OPTION_TYPE => StringType::TYPE_TEXT,
         ]), $options);
     }
@@ -41,6 +42,7 @@ class ActiveField extends \yii\bootstrap\ActiveField
     public function passwordInput($options = [])
     {
         return static::getTypes()->string->renderFormField($this, $this->getMetaItem([
+            'appType' => 'string',
             StringType::OPTION_TYPE => StringType::TYPE_PASSWORD,
         ]), $options);
     }
@@ -52,6 +54,7 @@ class ActiveField extends \yii\bootstrap\ActiveField
     public function email($options = [])
     {
         return static::getTypes()->string->renderFormField($this, $this->getMetaItem([
+            'appType' => 'string',
             StringType::OPTION_TYPE => StringType::TYPE_EMAIL,
         ]), $options);
     }
@@ -63,6 +66,7 @@ class ActiveField extends \yii\bootstrap\ActiveField
     public function phone($options = [])
     {
         return static::getTypes()->string->renderFormField($this, $this->getMetaItem([
+            'appType' => 'string',
             StringType::OPTION_TYPE => StringType::TYPE_PHONE,
         ]), $options);
     }
@@ -73,7 +77,7 @@ class ActiveField extends \yii\bootstrap\ActiveField
      */
     public function file($options = [])
     {
-        return static::getTypes()->file->renderFormField($this, $this->getMetaItem(), $options);
+        return static::getTypes()->file->renderFormField($this, $this->getMetaItem(['appType' => 'file']), $options);
     }
 
     /**
@@ -82,7 +86,7 @@ class ActiveField extends \yii\bootstrap\ActiveField
      */
     public function files($options = [])
     {
-        return static::getTypes()->files->renderFormField($this, $this->getMetaItem(), $options);
+        return static::getTypes()->files->renderFormField($this, $this->getMetaItem(['appType' => 'files']), $options);
     }
 
     /**
@@ -91,7 +95,7 @@ class ActiveField extends \yii\bootstrap\ActiveField
      */
     public function date($options = [])
     {
-        return static::getTypes()->date->renderFormField($this, $this->getMetaItem(), $options);
+        return static::getTypes()->date->renderFormField($this, $this->getMetaItem(['appType' => 'date']), $options);
     }
 
     /**
@@ -100,7 +104,7 @@ class ActiveField extends \yii\bootstrap\ActiveField
      */
     public function dateTime($options = [])
     {
-        return static::getTypes()->dateTime->renderFormField($this, $this->getMetaItem(), $options);
+        return static::getTypes()->dateTime->renderFormField($this, $this->getMetaItem(['appType' => 'dateTime']), $options);
     }
 
     /**
@@ -111,6 +115,7 @@ class ActiveField extends \yii\bootstrap\ActiveField
     public function enum($enumClassName, $options = [])
     {
         return static::getTypes()->enum->renderFormField($this, $this->getMetaItem([
+            'appType' => 'enum',
             EnumType::OPTION_CLASS_NAME => $enumClassName,
         ]), $options);
     }
@@ -121,7 +126,7 @@ class ActiveField extends \yii\bootstrap\ActiveField
      */
     public function wysiwyg($options = [])
     {
-        return static::getTypes()->html->renderFormField($this, $this->getMetaItem(), $options);
+        return static::getTypes()->html->renderFormField($this, $this->getMetaItem(['appType' => 'html']), $options);
     }
 
     /**
@@ -132,6 +137,7 @@ class ActiveField extends \yii\bootstrap\ActiveField
     public function money($currency, $options = [])
     {
         return static::getTypes()->money->renderFormField($this, $this->getMetaItem([
+            'appType' => 'money',
             MoneyType::OPTION_CURRENCY => $currency,
         ]), $options);
     }
@@ -145,7 +151,12 @@ class ActiveField extends \yii\bootstrap\ActiveField
         if ($this->model instanceof Model) {
             /** @var Model $modelClass */
             $modelClass = get_class($this->model);
-            $item = $modelClass::meta()[Html::getAttributeName($this->attribute)];
+
+            $meta = $modelClass::meta();
+            $attribute = Html::getAttributeName($this->attribute);
+            if (isset($meta[$attribute])) {
+                $item = $meta[$attribute];
+            }
         }
 
         return array_merge($item, $custom);
