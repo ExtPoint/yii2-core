@@ -24,6 +24,20 @@ class ActiveField extends \yii\bootstrap\ActiveField
     }
 
     /**
+     * @inheritdoc
+     */
+    public function render($content = null)
+    {
+        if ($content === null && !isset($this->parts['{input}']) && $this->model instanceof Model) {
+            $html = \Yii::$app->types->renderFormField($this, $this->inputOptions);
+            if ($html) {
+                $this->parts['{input}'] = $html;
+            }
+        }
+        return parent::render($content);
+    }
+
+    /**
      * @param array $options
      * @return static
      */

@@ -84,7 +84,13 @@ class Migration extends \yii\db\Migration
         $refColumns = preg_replace($pattern, '', implode(',', (array)$refColumns));
         $table = preg_replace($pattern, '', $table);
         $refTable = preg_replace($pattern, '', $refTable);
-        return sprintf('%s:%s-%s:%s', $table, $columns, $refTable, $refColumns);
+        $name = sprintf('%s:%s-%s:%s', $table, $columns, $refTable, $refColumns);
+
+        if (strlen($name) > 64) {
+            $name = substr($name, 0, 55) . ':' . substr(md5($name), 0, 8);
+        }
+
+        return $name;
     }
 
 }

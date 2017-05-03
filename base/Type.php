@@ -33,7 +33,11 @@ abstract class Type extends Object
      * @return string
      */
     public function renderFormField($field, $item, $options = []) {
-        return $this->renderField($field->model, $field->attribute, $item, $options);
+        $html = $this->renderField($field->model, $field->attribute, $item, $options);
+        if ($html) {
+            $field->parts['{input}'] = $html;
+        }
+        return $html;
     }
 
     /**

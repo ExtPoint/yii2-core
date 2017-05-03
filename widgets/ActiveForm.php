@@ -31,14 +31,6 @@ class ActiveForm extends \yii\bootstrap\ActiveForm
             $this->layout = $prevLayout;
         }
 
-        // Render field by type
-        if ($model instanceof Model) {
-            $html = \Yii::$app->types->renderFormField($result, $result->inputOptions);
-            if ($html) {
-                $result->parts['{input}'] = $html;
-            }
-        }
-
         return $result;
     }
 
