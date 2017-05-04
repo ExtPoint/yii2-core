@@ -4,7 +4,9 @@ namespace extpoint\yii2\types;
 
 use dosamigos\ckeditor\CKEditor;
 use extpoint\yii2\base\Type;
+use extpoint\yii2\file\widgets\EditorUploadButton\EditorUploadButton;
 use yii\db\Schema;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 
 class HtmlType extends Type
@@ -14,28 +16,45 @@ class HtmlType extends Type
      */
     public function renderField($model, $attribute, $item, $options = [])
     {
+        $clientOptions = ArrayHelper::remove($options, 'clientOptions', []);
+        EditorUploadButton::widget();
+
         return CKEditor::widget([
             'model' => $model,
             'attribute' => $attribute,
             'options' => $options,
-            'clientOptions' => [
-                'toolbarGroups' => [
-                    ['name' => 'styles'],
-                    ['name' => 'clipboard', 'groups' => ['clipboard', 'undo']],
-                    ['name' => 'document', 'groups' => ['mode']],
-                    ['name' => 'links'],
-                    ['name' => 'forms'],
-                    ['name' => 'tools'],
-                    ['name' => 'tools'],
-                    '/',
-                    ['name' => 'basicstyles', 'groups' => ['basicstyles', 'colors', 'cleanup']],
-                    ['name' => 'paragraph', 'groups' => ['list', 'indent', 'blocks', 'align', 'bidi']],
-                    ['name' => 'insert'],
+            'clientOptions' => array_merge([
+                'toolbar' => [
+                    ['name' => 'styles', 'items' => [
+                        'Format'
+                    ]],
+                    ['name' => 'basicstyles', 'groups' => ['basicstyles', 'cleanup'], 'items' => [
+                        'Bold',
+                        'Italic',
+                        'Underline',
+                        '-',
+                        'RemoveFormat',
+                    ]],
+                    ['name' => 'paragraph', 'groups' => ['list', 'blocks', 'align'], 'items' => [
+                        'NumberedList',
+                        'BulletedList',
+                        '-',
+                        'Blockquote',
+                        '-',
+                        'JustifyLeft',
+                        'JustifyCenter',
+                        'JustifyRight',
+                    ]],
+                    ['name' => 'links', 'items' => [
+                        'Link'
+                    ]],
+                    ['name' => 'insert', 'items' => [
+                        'Image'
+                    ]],
                 ],
-                'removeButtons' => 'Form,Checkbox,Radio,TextField,Textarea,Select,Button,HiddenField',
-                'extraPlugins' => 'filebrowser',
-                'filebrowserUploadUrl' => Url::to(['/file/upload/editor'])
-            ],
+                'extraPlugins' => 'fileup',
+                'uploadUrl' => Url::to(['/file/upload/editor']),
+            ], $clientOptions),
             'preset' => 'custom',
         ]);
     }

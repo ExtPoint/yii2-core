@@ -29,11 +29,15 @@ abstract class Enum extends Object
      */
     public static function getLabel($id)
     {
-        $idLabelMap = static::getLabels();
-
-        if (!isset($idLabelMap[$id])) {
-            throw new \Exception('Unknown enum id: ' . $id);
+        if (!$id) {
+            return '';
         }
+
+        $idLabelMap = static::getLabels();
+        if (!isset($idLabelMap[$id])) {
+            throw new \Exception('Unknown enum id: `' . $id . '`');
+        }
+
         return $idLabelMap[$id];
     }
 
