@@ -52,6 +52,7 @@ class HtmlType extends Type
                         'Image'
                     ]],
                 ],
+                'allowedContent' => 'p h1{text-align}; a[!href]; strong em; p(tip); img[alt,width,!src]',
                 'extraPlugins' => 'fileup',
                 'uploadUrl' => Url::to(['/file/upload/editor']),
             ], $clientOptions),
