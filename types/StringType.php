@@ -23,6 +23,14 @@ class StringType extends Type
      */
     public function renderField($model, $attribute, $item, $options = [])
     {
+        if ($this->inputWidget) {
+            return $this->renderInputWidget($item, [
+                'model' => $model,
+                'attribute' => $attribute,
+                'options' => $options,
+            ]);
+        }
+
         $type = ArrayHelper::remove($item, self::OPTION_TYPE);
         $options = array_merge(['class' => 'form-control'], $options);
 
@@ -82,7 +90,6 @@ class StringType extends Type
             self::OPTION_TYPE => [
                 'component' => 'select',
                 'label' => 'Type',
-                'type' => 'checkbox',
                 'options' => [
                     self::TYPE_TEXT => 'Text',
                     self::TYPE_EMAIL => 'Email',

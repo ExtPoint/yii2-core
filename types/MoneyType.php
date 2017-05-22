@@ -16,6 +16,14 @@ class MoneyType extends Type
      */
     public function renderField($model, $attribute, $item, $options = [])
     {
+        if ($this->inputWidget) {
+            return $this->renderInputWidget($item, [
+                'model' => $model,
+                'attribute' => $attribute,
+                'options' => $options,
+            ]);
+        }
+
         $html = Html::activeTextInput($model, $attribute, array_merge(['class' => 'form-control'], $options));
 
         $currency = ArrayHelper::remove($item, 'currency');

@@ -4,19 +4,20 @@ namespace extpoint\yii2\types;
 
 use extpoint\yii2\base\Type;
 use yii\db\Schema;
-use kartik\widgets\DatePicker;
 use yii\helpers\ArrayHelper;
 
 class DateType extends Type
 {
     const OPTION_FORMAT = 'format';
 
+    public $inputWidget = '\kartik\widgets\DatePicker';
+
     /**
      * @inheritdoc
      */
     public function renderField($model, $attribute, $item, $options = [])
     {
-        return DatePicker::widget([
+        return $this->renderInputWidget($item, [
             'model' => $model,
             'attribute' => $attribute,
             'options' => $options,

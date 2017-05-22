@@ -3,17 +3,18 @@
 namespace extpoint\yii2\types;
 
 use yii\db\Schema;
-use kartik\widgets\DateTimePicker;
 use yii\helpers\ArrayHelper;
 
 class DateTimeType extends DateType
 {
+    public $inputWidget = '\kartik\widgets\DateTimePicker';
+
     /**
      * @inheritdoc
      */
     public function renderField($model, $attribute, $item, $options = [])
     {
-        return DateTimePicker::widget([
+        return $this->renderInputWidget($item, [
             'model' => $model,
             'attribute' => $attribute,
             'options' => $options,

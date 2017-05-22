@@ -7,6 +7,7 @@ use extpoint\yii2\widgets\ActiveField;
 use yii\base\Object;
 use yii\db\Schema;
 use yii\helpers\Html;
+use yii\widgets\InputWidget;
 
 abstract class Type extends Object
 {
@@ -16,13 +17,27 @@ abstract class Type extends Object
     public $name;
 
     /**
+     * @var InputWidget
+     */
+    public $inputWidget;
+
+    /**
      * @param Model $model
      * @param string $attribute
      * @param array $item
      * @param array $options
      * @return string
      */
-    public function renderField($model, $attribute, $item, $options = []) {
+    public function renderField($model, $attribute, $item, $options = [])
+    {
+        if ($this->inputWidget) {
+            return $this->renderInputWidget($item, [
+                'model' => $model,
+                'attribute' => $attribute,
+                'options' => $options,
+            ]);
+        }
+
         return Html::activeTextInput($model, $attribute, array_merge(['class' => 'form-control'], $options));
     }
 
@@ -32,7 +47,15 @@ abstract class Type extends Object
      * @param array $options
      * @return string
      */
-    public function renderFormField($field, $item, $options = []) {
+    public function renderFormField($field, $item, $options = [])
+    {
+        if ($this->inputWidget) {
+            return $this->renderInputWidget($item, [
+                'field' => $field,
+                'options' => $options,
+            ]);
+        }
+
         $html = $this->renderField($field->model, $field->attribute, $item, $options);
         if ($html) {
             $field->parts['{input}'] = $html;
@@ -47,7 +70,8 @@ abstract class Type extends Object
      * @param array $options
      * @return string
      */
-    public function renderSearchField($model, $attribute, $item, $options = []) {
+    public function renderSearchField($model, $attribute, $item, $options = [])
+    {
         return $this->renderField($model, $attribute, $item, $options);
     }
 
@@ -58,7 +82,8 @@ abstract class Type extends Object
      * @param array $options
      * @return string
      */
-    public function renderForView($model, $attribute, $item, $options = []) {
+    public function renderForView($model, $attribute, $item, $options = [])
+    {
         return Html::encode($model->$attribute);
     }
 
@@ -69,7 +94,8 @@ abstract class Type extends Object
      * @param array $options
      * @return string
      */
-    public function renderForTable($model, $attribute, $item, $options = []) {
+    public function renderForTable($model, $attribute, $item, $options = [])
+    {
         return $this->renderForView($model, $attribute, $item, $options);
     }
 
@@ -77,7 +103,8 @@ abstract class Type extends Object
      * @param MetaItem $metaItem
      * @return array
      */
-    public function getItems($metaItem) {
+    public function getItems($metaItem)
+    {
         return [];
     }
 
@@ -85,14 +112,16 @@ abstract class Type extends Object
      * @param MetaItem $metaItem
      * @return string|false
      */
-    public function getGiiDbType($metaItem) {
+    public function getGiiDbType($metaItem)
+    {
         return Schema::TYPE_STRING;
     }
 
     /**
      * @return array
      */
-    public function getGiiFieldProps() {
+    public function getGiiFieldProps()
+    {
         return [];
     }
 
@@ -102,7 +131,8 @@ abstract class Type extends Object
      * @param string[] $useClasses
      * @return string|false
      */
-    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = []) {
+    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = [])
+    {
         return "['string']";
     }
 
@@ -110,7 +140,37 @@ abstract class Type extends Object
      * @param MetaItem $metaItem
      * @return array
      */
-    public function getGiiBehaviors($metaItem) {
+    public function getGiiBehaviors($metaItem)
+    {
         return [];
+    }
+
+    /**
+     * @param array $item
+     * @param array $config
+     * @return object
+     */
+    protected function renderInputWidget($item, $config = [])
+    {
+        if (isset($config['field'])) {
+            $config['model'] = $config['field']->model;
+            $config['attribute'] = $config['field']->attribute;
+        }
+
+        if (is_string($this->inputWidget)) {
+            $config['class'] = $this->inputWidget;
+        } elseif (is_array($this->inputWidget)) {
+            $config = array_merge($this->inputWidget, $config);
+        }
+
+        if (property_exists($config['class'], 'item')) {
+            $config['item'] = $item;
+        }
+
+        /** @var \yii\base\Widget $class */
+        $class = $config['class'];
+        unset($config['class']);
+
+        return $class::widget($config);
     }
 }

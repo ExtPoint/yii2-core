@@ -22,6 +22,14 @@ class RangeType extends Type
      */
     public function renderField($model, $attribute, $item, $options = [])
     {
+        if ($this->inputWidget) {
+            return $this->renderInputWidget($item, [
+                'model' => $model,
+                'attribute' => $attribute,
+                'options' => $options,
+            ]);
+        }
+
         $subAppType = ArrayHelper::remove($item, self::OPTION_SUB_APP_TYPE);
         $refAttribute = ArrayHelper::remove($item, self::OPTION_REF_ATTRIBUTE);
         if ($refAttribute) {

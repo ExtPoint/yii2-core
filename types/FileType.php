@@ -13,18 +13,18 @@ use yii\helpers\Html;
 
 class FileType extends Type
 {
+    public $inputWidget = '\extpoint\yii2\file\widgets\FileInput\FileInput';
+
     /**
      * @inheritdoc
      */
     public function renderField($model, $attribute, $item, $options = [])
     {
-        return FileInput::widget(ArrayHelper::merge(
-            [
-                'model' => $model,
-                'attribute' => $attribute,
-            ],
-            $options
-        ));
+        return $this->renderInputWidget($item, [
+            'model' => $model,
+            'attribute' => $attribute,
+            'options' => $options,
+        ]);
     }
 
     /**

@@ -13,6 +13,14 @@ class BooleanType extends Type
      */
     public function renderField($model, $attribute, $item, $options = [])
     {
+        if ($this->inputWidget) {
+            return $this->renderInputWidget($item, [
+                'model' => $model,
+                'attribute' => $attribute,
+                'options' => $options,
+            ]);
+        }
+
         return Html::activeCheckbox($model, $attribute, $options);
     }
 

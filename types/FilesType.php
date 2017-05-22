@@ -4,26 +4,24 @@ namespace extpoint\yii2\types;
 
 use extpoint\yii2\base\ArrayType;
 use extpoint\yii2\file\models\File;
-use extpoint\yii2\file\widgets\FileInput\FileInput;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 class FilesType extends ArrayType
 {
+    public $inputWidget = '\extpoint\yii2\file\widgets\FileInput\FileInput';
+
     /**
      * @inheritdoc
      */
     public function renderField($model, $attribute, $item, $options = [])
     {
-        return FileInput::widget(ArrayHelper::merge(
-            [
-                'model' => $model,
-                'attribute' => $attribute,
-            ],
-            array_merge($options, [
+        return $this->renderInputWidget($item, [
+            'model' => $model,
+            'attribute' => $attribute,
+            'options' => array_merge($options, [
                 'multiple' => true,
-            ])
-        ));
+            ]),
+        ]);
     }
 
     /**

@@ -21,8 +21,18 @@ class EnumType extends Type
     {
         /** @var Enum $className */
         $className = ArrayHelper::getValue($item, self::OPTION_CLASS_NAME);
+        $items = $className::getLabels();
 
-        return Html::activeDropDownList($model, $attribute, $className::getLabels(), array_merge(['class' => 'form-control'], $options));
+        if ($this->inputWidget) {
+            return $this->renderInputWidget($item, [
+                'model' => $model,
+                'attribute' => $attribute,
+                'items' => $items,
+                'options' => $options,
+            ]);
+        }
+
+        return Html::activeDropDownList($model, $attribute, $items, array_merge(['class' => 'form-control'], $options));
     }
 
     /**

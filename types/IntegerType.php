@@ -15,6 +15,14 @@ class IntegerType extends Type
      */
     public function renderField($model, $attribute, $item, $options = [])
     {
+        if ($this->inputWidget) {
+            return $this->renderInputWidget($item, [
+                'model' => $model,
+                'attribute' => $attribute,
+                'options' => $options,
+            ]);
+        }
+
         return Html::activeTextInput($model, $attribute, array_merge(['class' => 'form-control'], $options));
     }
 

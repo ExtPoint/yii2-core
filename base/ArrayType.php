@@ -13,7 +13,16 @@ abstract class ArrayType extends Type
     /**
      * @inheritdoc
      */
-    public function renderField($model, $attribute, $item, $options = []) {
+    public function renderField($model, $attribute, $item, $options = [])
+    {
+        if ($this->inputWidget) {
+            return $this->renderInputWidget($item, [
+                'model' => $model,
+                'attribute' => $attribute,
+                'options' => $options,
+            ]);
+        }
+
         $relationName = ArrayHelper::remove($item, self::OPTION_RELATION_NAME);
 
         /** @var Model $relationClass */
@@ -38,7 +47,8 @@ abstract class ArrayType extends Type
     /**
      * @inheritdoc
      */
-    public function renderSearchField($model, $attribute, $item, $options = []) {
+    public function renderSearchField($model, $attribute, $item, $options = [])
+    {
         $options['emptyLabel'] = '';
         return $this->renderField($model, $attribute, $item, $options);
     }
@@ -46,11 +56,12 @@ abstract class ArrayType extends Type
     /**
      * @inheritdoc
      */
-    public function renderForView($model, $attribute, $item, $options = []) {
+    public function renderForView($model, $attribute, $item, $options = [])
+    {
         $relationName = ArrayHelper::remove($item, self::OPTION_RELATION_NAME);
         $models = !is_array($model->$relationName) ? [$model->$relationName] : $model->$relationName;
 
-        return implode(', ', array_map(function($model) use ($options) {
+        return implode(', ', array_map(function ($model) use ($options) {
             /** @type Model $model */
             if (!($model instanceof Model)) {
                 return '';
@@ -69,21 +80,24 @@ abstract class ArrayType extends Type
     /**
      * @inheritdoc
      */
-    public function getGiiDbType($metaItem) {
+    public function getGiiDbType($metaItem)
+    {
         return false;
     }
 
     /**
      * @inheritdoc
      */
-    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = []) {
+    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = [])
+    {
         return false;
     }
 
     /**
      * @inheritdoc
      */
-    public function getGiiBehaviors($metaItem) {
+    public function getGiiBehaviors($metaItem)
+    {
         return [
             [
                 'class' => ManyToManyBehavior::className(),
@@ -101,7 +115,8 @@ abstract class ArrayType extends Type
     /**
      * @return array
      */
-    public function getGiiFieldProps() {
+    public function getGiiFieldProps()
+    {
         return [
             self::OPTION_RELATION_NAME => [
                 'component' => 'input',

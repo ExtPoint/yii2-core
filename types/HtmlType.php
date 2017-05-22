@@ -16,6 +16,14 @@ class HtmlType extends Type
      */
     public function renderField($model, $attribute, $item, $options = [])
     {
+        if ($this->inputWidget) {
+            return $this->renderInputWidget($item, [
+                'model' => $model,
+                'attribute' => $attribute,
+                'options' => $options,
+            ]);
+        }
+
         $clientOptions = ArrayHelper::remove($options, 'clientOptions', []);
         EditorUploadButton::widget();
 
