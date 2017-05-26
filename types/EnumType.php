@@ -38,6 +38,26 @@ class EnumType extends Type
     /**
      * @inheritdoc
      */
+    public function renderFormField($field, $item, $options = [])
+    {
+        /** @var Enum $className */
+        $className = ArrayHelper::getValue($item, self::OPTION_CLASS_NAME);
+        $items = $className::getLabels();
+
+        if ($this->inputWidget) {
+            return $this->renderInputWidget($item, [
+                'field' => $field,
+                'options' => $options,
+                'items' => $items,
+            ]);
+        }
+
+        return $this->renderField($field->model, $field->attribute, $item, $options);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function renderSearchField($model, $attribute, $item, $options = []) {
         /** @var Enum $className */
         $className = ArrayHelper::getValue($item, self::OPTION_CLASS_NAME);

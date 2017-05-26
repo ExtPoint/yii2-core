@@ -56,11 +56,7 @@ abstract class Type extends Object
             ]);
         }
 
-        $html = $this->renderField($field->model, $field->attribute, $item, $options);
-        if ($html) {
-            $field->parts['{input}'] = $html;
-        }
-        return $html;
+        return $this->renderField($field->model, $field->attribute, $item, $options);
     }
 
     /**
