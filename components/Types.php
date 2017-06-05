@@ -24,6 +24,7 @@ use extpoint\yii2\types\StringType;
 use extpoint\yii2\types\TextType;
 use extpoint\yii2\widgets\ActiveField;
 use yii\base\Component;
+use yii\base\Exception;
 use yii\helpers\Html;
 
 /**
@@ -154,11 +155,17 @@ class Types extends Component
     /**
      * @param array $item
      * @return Type|null
+     * @throws Exception
      */
     protected function getTypeByItem($item)
     {
         $appType = !empty($item['appType']) ? $item['appType'] : 'string';
-        return $this->getType($appType);
+        $component = $this->getType($appType);
+        if (!$component) {
+            throw new Exception('Not found app type `' . $appType . '`');
+        }
+
+        return $component;
     }
 
     /**
