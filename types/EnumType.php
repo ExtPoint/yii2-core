@@ -5,10 +5,12 @@ namespace extpoint\yii2\types;
 use extpoint\yii2\base\Enum;
 use extpoint\yii2\base\Type;
 use extpoint\yii2\gii\models\EnumClass;
+use extpoint\yii2\gii\models\ValueExpression;
 use yii\db\Schema;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use extpoint\yii2\gii\helpers\GiiHelper;
+use yii\helpers\StringHelper;
 
 class EnumType extends Type
 {
@@ -91,12 +93,17 @@ class EnumType extends Type
     /**
      * @inheritdoc
      */
-    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = [])
+    public function getGiiRules($metaItem, &$useClasses = [])
     {
         /** @var Enum $className */
         $className = $metaItem->enumClassName;
+        $shortClassName = StringHelper::basename($metaItem->enumClassName);
 
-        return "['in', 'range' => $className::getKeys()]";
+        $useClasses[] = $className;
+
+        return [
+            [$metaItem->name, 'in', 'range' => new ValueExpression("$shortClassName::getKeys()")],
+        ];
     }
 
     /**

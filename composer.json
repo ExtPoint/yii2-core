@@ -1,7 +1,7 @@
 {
     "name": "extpoint/yii2-core",
     "description": "ExtPoint utils for Yii2-based projects",
-    "type": "library",
+    "type": "yii2-extension",
     "license": "MIT",
     "require": {
         "php": ">=5.4.0",

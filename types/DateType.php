@@ -47,9 +47,11 @@ class DateType extends Type
     /**
      * @inheritdoc
      */
-    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = [])
+    public function getGiiRules($metaItem, &$useClasses = [])
     {
-        return "['date', 'format' => 'php:Y-m-d']";
+        return [
+            [$metaItem->name, 'date', 'format' => 'php:Y-m-d'],
+        ];
     }
 
     /**

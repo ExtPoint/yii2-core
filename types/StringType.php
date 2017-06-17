@@ -82,6 +82,18 @@ class StringType extends Type
     }
 
     /**
+     * @param MetaItem $metaItem
+     * @param string[] $useClasses
+     * @return string|false
+     */
+    public function getGiiRules($metaItem, &$useClasses = [])
+    {
+        return [
+            [$metaItem->name, 'string', 'max' => $metaItem->stringLength ?: 255],
+        ];
+    }
+
+    /**
      * @inheritdoc
      */
     public function getGiiFieldProps()

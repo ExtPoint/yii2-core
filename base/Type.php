@@ -123,13 +123,14 @@ abstract class Type extends Object
 
     /**
      * @param MetaItem $metaItem
-     * @param string $indent
      * @param string[] $useClasses
      * @return string|false
      */
-    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = [])
+    public function getGiiRules($metaItem, &$useClasses = [])
     {
-        return "['string']";
+        return [
+            [$metaItem->name, 'string'],
+        ];
     }
 
     /**

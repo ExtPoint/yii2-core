@@ -43,8 +43,10 @@ class TextType extends Type
     /**
      * @inheritdoc
      */
-    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = [])
+    public function getGiiRules($metaItem, &$useClasses = [])
     {
-        return 'safe';
+        return [
+            [$metaItem->name, 'string'],
+        ];
     }
 }

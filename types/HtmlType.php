@@ -87,9 +87,11 @@ class HtmlType extends Type
     /**
      * @inheritdoc
      */
-    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = [])
+    public function getGiiRules($metaItem, &$useClasses = [])
     {
         // TODO Html validator
-        return 'safe';
+        return [
+            [$metaItem->name, 'string']
+        ];
     }
 }

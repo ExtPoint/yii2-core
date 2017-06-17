@@ -49,9 +49,11 @@ class IntegerType extends Type
     /**
      * @inheritdoc
      */
-    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = [])
+    public function getGiiRules($metaItem, &$useClasses = [])
     {
-        return 'integer';
+        return [
+            [$metaItem->name, 'integer'],
+        ];
     }
 
     /**

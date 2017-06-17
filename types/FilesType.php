@@ -70,9 +70,11 @@ class FilesType extends ArrayType
     /**
      * @inheritdoc
      */
-    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = [])
+    public function getGiiRules($metaItem, &$useClasses = [])
     {
-        return false;
+        return [
+            [$metaItem->name, 'each', 'rule' => ['integer']],
+        ];
     }
 
 }

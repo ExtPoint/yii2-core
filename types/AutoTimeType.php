@@ -11,7 +11,7 @@ class AutoTimeType extends DateTimeType
     /**
      * @inheritdoc
      */
-    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = [])
+    public function getGiiRules($metaItem, &$useClasses = [])
     {
         return false;
     }

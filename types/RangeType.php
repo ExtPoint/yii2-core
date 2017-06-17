@@ -98,9 +98,9 @@ class RangeType extends Type
     /**
      * @inheritdoc
      */
-    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = [])
+    public function getGiiRules($metaItem, &$useClasses = [])
     {
-        return \Yii::$app->types->getType($metaItem->subAppType)->renderGiiValidator($metaItem, $indent, $useClasses);
+        return \Yii::$app->types->getType($metaItem->subAppType)->getGiiRules($metaItem, $useClasses);
     }
 
     /**

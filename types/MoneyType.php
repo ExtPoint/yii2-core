@@ -52,9 +52,11 @@ class MoneyType extends Type
     /**
      * @inheritdoc
      */
-    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = [])
+    public function getGiiRules($metaItem, &$useClasses = [])
     {
-        return 'number';
+        return [
+            [$metaItem->name, 'number'],
+        ];
     }
 
     /**
