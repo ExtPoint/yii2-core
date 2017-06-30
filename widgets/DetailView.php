@@ -43,7 +43,7 @@ class DetailView extends \yii\widgets\DetailView
     protected function renderValue($attribute, $index) {
         if (isset($attribute['attribute']) && $this->model instanceof Model) {
             $options = ArrayHelper::getValue($attribute, 'options', []);
-            return \Yii::$app->types->renderForView($this->model, $attribute['attribute'], $options);
+            return \Yii::$app->types->renderValue($this->model, $attribute['attribute'], $options);
         }
 
         return $this->formatter->format($attribute['value'], $attribute['format']);

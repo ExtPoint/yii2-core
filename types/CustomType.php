@@ -4,8 +4,6 @@ namespace extpoint\yii2\types;
 
 use extpoint\yii2\base\Type;
 use extpoint\yii2\gii\helpers\GiiHelper;
-use yii\db\Schema;
-use yii\helpers\ArrayHelper;
 
 class CustomType extends Type
 {
@@ -14,7 +12,7 @@ class CustomType extends Type
     /**
      * @inheritdoc
      */
-    public function getGiiDbType($metaItem)
+    public function giiDbType($metaItem)
     {
         return $metaItem->dbType;
     }
@@ -22,7 +20,7 @@ class CustomType extends Type
     /**
      * @inheritdoc
      */
-    public function getGiiRules($metaItem, &$useClasses = [])
+    public function giiRules($metaItem, &$useClasses = [])
     {
         return [
             [$metaItem->name, 'safe'],
@@ -32,7 +30,7 @@ class CustomType extends Type
     /**
      * @inheritdoc
      */
-    public function getGiiFieldProps()
+    public function giiOptions()
     {
         return [
             self::OPTION_DB_TYPE => [

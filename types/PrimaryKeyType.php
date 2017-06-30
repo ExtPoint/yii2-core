@@ -8,9 +8,21 @@ use yii\db\Schema;
 class PrimaryKeyType extends Type
 {
     /**
+     * @return array
+     */
+    public function frontendConfig()
+    {
+        return [
+            'field' => [
+                'component' => 'HiddenField',
+            ]
+        ];
+    }
+
+    /**
      * @inheritdoc
      */
-    public function getGiiDbType($metaItem)
+    public function giiDbType($metaItem)
     {
         return Schema::TYPE_PK;
     }
@@ -18,7 +30,7 @@ class PrimaryKeyType extends Type
     /**
      * @inheritdoc
      */
-    public function getGiiRules($metaItem, &$useClasses = [])
+    public function giiRules($metaItem, &$useClasses = [])
     {
         return false;
     }

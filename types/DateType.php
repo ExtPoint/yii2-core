@@ -10,27 +10,22 @@ class DateType extends Type
 {
     const OPTION_FORMAT = 'format';
 
-    public $inputWidget = '\kartik\widgets\DatePicker';
-
     /**
-     * @inheritdoc
+     * @return array
      */
-    public function renderField($model, $attribute, $item, $options = [])
+    public function frontendConfig()
     {
-        return $this->renderInputWidget($item, [
-            'model' => $model,
-            'attribute' => $attribute,
-            'options' => $options,
-            'pluginOptions' => [
-                'format' => 'yyyy-mm-dd',
-            ],
-        ]);
+        return [
+            'field' => [
+                'component' => 'DateField',
+            ]
+        ];
     }
 
     /**
      * @inheritdoc
      */
-    public function renderForView($model, $attribute, $item, $options = [])
+    public function renderValue($model, $attribute, $item, $options = [])
     {
         $format = ArrayHelper::remove($item, self::OPTION_FORMAT);
         return \Yii::$app->formatter->asDate($model->$attribute, $format);
@@ -39,7 +34,7 @@ class DateType extends Type
     /**
      * @inheritdoc
      */
-    public function getGiiDbType($metaItem)
+    public function giiDbType($metaItem)
     {
         return Schema::TYPE_DATE;
     }
@@ -47,7 +42,7 @@ class DateType extends Type
     /**
      * @inheritdoc
      */
-    public function getGiiRules($metaItem, &$useClasses = [])
+    public function giiRules($metaItem, &$useClasses = [])
     {
         return [
             [$metaItem->name, 'date', 'format' => 'php:Y-m-d'],
@@ -57,7 +52,7 @@ class DateType extends Type
     /**
      * @inheritdoc
      */
-    public function getGiiFieldProps()
+    public function giiOptions()
     {
         return [
             self::OPTION_FORMAT => [

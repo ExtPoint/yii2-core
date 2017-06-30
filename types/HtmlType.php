@@ -2,84 +2,32 @@
 
 namespace extpoint\yii2\types;
 
-use dosamigos\ckeditor\CKEditor;
 use extpoint\yii2\base\Type;
-use extpoint\yii2\file\widgets\EditorUploadButton\EditorUploadButton;
 use yii\db\Schema;
-use yii\helpers\ArrayHelper;
-use yii\helpers\Url;
 
 class HtmlType extends Type
 {
+    public $formatter = 'raw';
+
     /**
-     * @inheritdoc
+     * @return array
      */
-    public function renderField($model, $attribute, $item, $options = [])
+    public function frontendConfig()
     {
-        if ($this->inputWidget) {
-            return $this->renderInputWidget($item, [
-                'model' => $model,
-                'attribute' => $attribute,
-                'options' => $options,
-            ]);
-        }
-
-        $clientOptions = ArrayHelper::remove($options, 'clientOptions', []);
-        EditorUploadButton::widget();
-
-        return CKEditor::widget([
-            'model' => $model,
-            'attribute' => $attribute,
-            'options' => $options,
-            'clientOptions' => array_merge([
-                'toolbar' => [
-                    ['name' => 'styles', 'items' => [
-                        'Format'
-                    ]],
-                    ['name' => 'basicstyles', 'groups' => ['basicstyles', 'cleanup'], 'items' => [
-                        'Bold',
-                        'Italic',
-                        'Underline',
-                        '-',
-                        'RemoveFormat',
-                    ]],
-                    ['name' => 'paragraph', 'groups' => ['list', 'blocks', 'align'], 'items' => [
-                        'NumberedList',
-                        'BulletedList',
-                        '-',
-                        'Blockquote',
-                        '-',
-                        'JustifyLeft',
-                        'JustifyCenter',
-                        'JustifyRight',
-                    ]],
-                    ['name' => 'links', 'items' => [
-                        'Link'
-                    ]],
-                    ['name' => 'insert', 'items' => [
-                        'Image'
-                    ]],
+        return [
+            'field' => [
+                'component' => 'HtmlField',
+                'editorConfig' => [
+                    'contentsCss' => \Yii::getAlias('@static/assets/bundle-style.js'),
                 ],
-                'allowedContent' => 'p h1{text-align}; a[!href]; strong em; p(tip); img[alt,width,!src]',
-                'extraPlugins' => 'fileup',
-                'uploadUrl' => Url::to(['/file/upload/editor']),
-            ], $clientOptions),
-            'preset' => 'custom',
-        ]);
+            ]
+        ];
     }
 
     /**
      * @inheritdoc
      */
-    public function renderForView($model, $attribute, $item, $options = [])
-    {
-        return \Yii::$app->formatter->asRaw($model->$attribute);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getGiiDbType($metaItem)
+    public function giiDbType($metaItem)
     {
         return Schema::TYPE_TEXT;
     }
@@ -87,7 +35,7 @@ class HtmlType extends Type
     /**
      * @inheritdoc
      */
-    public function getGiiRules($metaItem, &$useClasses = [])
+    public function giiRules($metaItem, &$useClasses = [])
     {
         // TODO Html validator
         return [

@@ -23,8 +23,10 @@ use extpoint\yii2\types\SizeType;
 use extpoint\yii2\types\StringType;
 use extpoint\yii2\types\TextType;
 use extpoint\yii2\widgets\ActiveField;
+use extpoint\yii2\widgets\FrontendField;
 use yii\base\Component;
 use yii\base\Exception;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
 /**
@@ -46,9 +48,13 @@ use yii\helpers\Html;
  * @property-read SizeType $size
  * @property-read StringType $string
  * @property-read TextType $text
+ * @property-read array $frontendConfig
  */
 class Types extends Component
 {
+    /**
+     * @var Type[]
+     */
     public $types = [];
 
     public function init()
@@ -86,24 +92,45 @@ class Types extends Component
     /**
      * @param Model $model
      * @param string $attribute
+     * @param array|null $field
      * @param array $options
-     * @return string
+     * @return object|string
      */
-    public function renderField($model, $attribute, $options = [])
+    public function renderField($model, $attribute, $field = null, $options = [])
     {
         $item = $this->getMetaItem($model, $attribute);
-        return $item ? $this->getTypeByItem($item)->renderField($model, $attribute, $item, $options) : '';
-    }
+        if (!$item) {
+            return '';
+        }
 
-    /**
-     * @param ActiveField $field
-     * @param array $options
-     * @return string
-     */
-    public function renderFormField($field, $options = [])
-    {
-        $item = $this->getMetaItem($field->model, $field->attribute);
-        return $item ? $this->getTypeByItem($item)->renderFormField($field, $item, $options) : '';
+        $type = $this->getTypeByItem($item);
+        $config = [
+            'class' => FrontendField::className(),
+            'model' => $model,
+            'attribute' => $attribute,
+            'field' => $field,
+            'options' => $options,
+        ];
+        if (is_string($type->inputWidget)) {
+            $config['class'] = $type->inputWidget;
+        } elseif (is_array($type->inputWidget)) {
+            $config = array_merge($config, $type->inputWidget);
+        }
+
+        if (property_exists($config['class'], 'metaItem')) {
+            $config['metaItem'] = $item;
+        }
+
+        /** @var \yii\base\Widget $class */
+        $class = $config['class'];
+        unset($config['class']);
+
+        $value = $type->renderInputWidget($item, $class, $config);
+        if ($value !== null) {
+            return $value;
+        }
+
+        return $class::widget($config);
     }
 
     /**
@@ -112,34 +139,43 @@ class Types extends Component
      * @param array $options
      * @return string
      */
-    public function renderSearchField($model, $attribute, $options = [])
+    public function renderValue($model, $attribute, $options = [])
     {
         $item = $this->getMetaItem($model, $attribute);
-        return $item ? $this->getTypeByItem($item)->renderSearchField($model, $attribute, $item, $options) : '';
+        if (!$item) {
+            return '';
+        }
+
+        $type = $this->getTypeByItem($item);
+        $value = $type->renderValue($model, $attribute, $item, $options);
+        if ($value !== null) {
+            return $value;
+        }
+        if (is_callable($type->formatter)) {
+            return call_user_func($type->formatter, $model->$attribute, $model, $attribute, $item, $options);
+        } elseif (is_array($type->formatter) || is_string($type->formatter)) {
+            return \Yii::$app->formatter->format($model->$attribute, $type->formatter);
+        }
+
+        return Html::encode($model->$attribute);
     }
 
     /**
-     * @param Model $model
-     * @param string $attribute
-     * @param array $options
-     * @return string
+     * @return array
      */
-    public function renderForTable($model, $attribute, $options = [])
+    public function getFrontendConfig()
     {
-        $item = $this->getMetaItem($model, $attribute);
-        return $item ? $this->getTypeByItem($item)->renderForTable($model, $attribute, $item, $options) : '';
-    }
-
-    /**
-     * @param Model $model
-     * @param string $attribute
-     * @param array $options
-     * @return string
-     */
-    public function renderForView($model, $attribute, $options = [])
-    {
-        $item = $this->getMetaItem($model, $attribute);
-        return $item ? $this->getTypeByItem($item)->renderForView($model, $attribute, $item, $options) : '';
+        $config = [];
+        foreach ($this->getTypes() as $type) {
+            $params = ArrayHelper::merge(
+                ($type->frontendConfig() ?: []),
+                $type->frontendConfig
+            );
+            if (!empty($params)) {
+                $config[$type->name] = $params;
+            }
+        }
+        return $config;
     }
 
     /**
@@ -190,16 +226,19 @@ class Types extends Component
         return [
             'autoTime' => '\extpoint\yii2\types\AutoTimeType',
             'boolean' => '\extpoint\yii2\types\BooleanType',
-            'money' => '\extpoint\yii2\types\MoneyType',
             'custom' => '\extpoint\yii2\types\CustomType',
             'dateTime' => '\extpoint\yii2\types\DateTimeType',
             'date' => '\extpoint\yii2\types\DateType',
             'double' => '\extpoint\yii2\types\DoubleType',
+            'email' => '\extpoint\yii2\types\EmailType',
             'enum' => '\extpoint\yii2\types\EnumType',
             'files' => '\extpoint\yii2\types\FilesType',
             'file' => '\extpoint\yii2\types\FileType',
             'html' => '\extpoint\yii2\types\HtmlType',
             'integer' => '\extpoint\yii2\types\IntegerType',
+            'money' => '\extpoint\yii2\types\MoneyType',
+            'password' => '\extpoint\yii2\types\PasswordType',
+            'phone' => '\extpoint\yii2\types\PhoneType',
             'primaryKey' => '\extpoint\yii2\types\PrimaryKeyType',
             'range' => '\extpoint\yii2\types\RangeType',
             'relation' => '\extpoint\yii2\types\RelationType',

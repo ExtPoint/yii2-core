@@ -3,48 +3,30 @@
 namespace extpoint\yii2\types;
 
 use extpoint\yii2\base\Type;
-use yii\bootstrap\Html;
 use yii\db\Schema;
-use yii\helpers\ArrayHelper;
 
 class MoneyType extends Type
 {
     const OPTION_CURRENCY = 'currency';
 
+    public $formatter = 'currency';
+
     /**
-     * @inheritdoc
+     * @return array
      */
-    public function renderField($model, $attribute, $item, $options = [])
+    public function frontendConfig()
     {
-        if ($this->inputWidget) {
-            return $this->renderInputWidget($item, [
-                'model' => $model,
-                'attribute' => $attribute,
-                'options' => $options,
-            ]);
-        }
-
-        $html = Html::activeTextInput($model, $attribute, array_merge(['class' => 'form-control'], $options));
-
-        $currency = ArrayHelper::remove($item, 'currency');
-        $icon = in_array($currency, $this->getBootstrapCurrencies())
-            ? '<span class="glyphicon glyphicon-' . strtolower($currency) . '"></span>'
-            : $currency;
-        return '<div class="input-group"><span class="input-group-addon">' . $icon . '</span>' . $html . '</div>';
+        return [
+            'field' => [
+                'component' => 'MoneyField',
+            ]
+        ];
     }
 
     /**
      * @inheritdoc
      */
-    public function renderForView($model, $attribute, $item, $options = [])
-    {
-        return \Yii::$app->formatter->asCurrency($model->$attribute);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getGiiDbType($metaItem)
+    public function giiDbType($metaItem)
     {
         return Schema::TYPE_DECIMAL . '(19, 4)';
     }
@@ -52,7 +34,7 @@ class MoneyType extends Type
     /**
      * @inheritdoc
      */
-    public function getGiiRules($metaItem, &$useClasses = [])
+    public function giiRules($metaItem, &$useClasses = [])
     {
         return [
             [$metaItem->name, 'number'],
@@ -62,19 +44,14 @@ class MoneyType extends Type
     /**
      * @inheritdoc
      */
-    public function getGiiFieldProps()
+    public function giiOptions()
     {
         return [
             self::OPTION_CURRENCY => [
                 'component' => 'input',
                 'label' => 'Currency',
-                'list' => $this->getBootstrapCurrencies(),
+                'list' => ['RUB', 'USD', 'EUR', 'BTC', 'XBT', 'YEN', 'JPY', 'GBP'],
             ],
         ];
-    }
-
-    protected function getBootstrapCurrencies()
-    {
-        return ['RUB', 'USD', 'EUR', 'BTC', 'XBT', 'YEN', 'JPY', 'GBP'];
     }
 }

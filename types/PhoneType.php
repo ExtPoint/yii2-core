@@ -3,12 +3,11 @@
 namespace extpoint\yii2\types;
 
 use extpoint\yii2\base\Type;
+use extpoint\yii2\gii\models\MetaItem;
 use yii\db\Schema;
 
-class TextType extends Type
+class PhoneType extends Type
 {
-    public $formatter = 'ntext';
-
     /**
      * @return array
      */
@@ -16,17 +15,18 @@ class TextType extends Type
     {
         return [
             'field' => [
-                'component' => 'TextAreaField',
+                'component' => 'PhoneField',
             ]
         ];
     }
 
     /**
-     * @inheritdoc
+     * @param MetaItem $metaItem
+     * @return string|false
      */
     public function giiDbType($metaItem)
     {
-        return Schema::TYPE_TEXT;
+        return Schema::TYPE_STRING;
     }
 
     /**
@@ -34,8 +34,9 @@ class TextType extends Type
      */
     public function giiRules($metaItem, &$useClasses = [])
     {
+        // TODO Phone validator
         return [
-            [$metaItem->name, 'string'],
+            [$metaItem->name, 'string', 'max' => $metaItem->stringLength ?: 255],
         ];
     }
 }

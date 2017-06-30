@@ -11,7 +11,7 @@ class AutoTimeType extends DateTimeType
     /**
      * @inheritdoc
      */
-    public function getGiiRules($metaItem, &$useClasses = [])
+    public function giiRules($metaItem, &$useClasses = [])
     {
         return false;
     }
@@ -19,7 +19,7 @@ class AutoTimeType extends DateTimeType
     /**
      * @inheritdoc
      */
-    public function getGiiBehaviors($metaItem)
+    public function giiBehaviors($metaItem)
     {
         return [
             TimestampBehavior::className(),
@@ -29,7 +29,7 @@ class AutoTimeType extends DateTimeType
     /**
      * @inheritdoc
      */
-    public function getGiiFieldProps()
+    public function giiOptions()
     {
         return [
             self::OPTION_TOUCH_ON_UPDATE => [

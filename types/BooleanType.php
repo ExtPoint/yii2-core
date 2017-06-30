@@ -3,39 +3,28 @@
 namespace extpoint\yii2\types;
 
 use extpoint\yii2\base\Type;
-use yii\bootstrap\Html;
 use yii\db\Schema;
 
 class BooleanType extends Type
 {
-    /**
-     * @inheritdoc
-     */
-    public function renderField($model, $attribute, $item, $options = [])
-    {
-        if ($this->inputWidget) {
-            return $this->renderInputWidget($item, [
-                'model' => $model,
-                'attribute' => $attribute,
-                'options' => $options,
-            ]);
-        }
+    public $formatter = 'boolean';
 
-        return Html::activeCheckbox($model, $attribute, $options);
+    /**
+     * @return array
+     */
+    public function frontendConfig()
+    {
+        return [
+            'field' => [
+                'component' => 'CheckboxField',
+            ]
+        ];
     }
 
     /**
      * @inheritdoc
      */
-    public function renderForView($model, $attribute, $item, $options = [])
-    {
-        return \Yii::$app->formatter->asBoolean($model->$attribute);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getGiiDbType($metaItem)
+    public function giiDbType($metaItem)
     {
         return Schema::TYPE_BOOLEAN;
     }
@@ -43,7 +32,7 @@ class BooleanType extends Type
     /**
      * @inheritdoc
      */
-    public function getGiiRules($metaItem, &$useClasses = [])
+    public function giiRules($metaItem, &$useClasses = [])
     {
         return [
             [$metaItem->name, 'boolean'],

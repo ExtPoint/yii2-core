@@ -2,190 +2,244 @@
 
 namespace extpoint\yii2\widgets;
 
+use extpoint\yii2\base\Enum;
 use extpoint\yii2\base\Model;
-use extpoint\yii2\types\EnumType;
 use extpoint\yii2\types\MoneyType;
-use extpoint\yii2\types\StringType;
+use yii\base\Component;
+use yii\base\ErrorHandler;
+use yii\base\Exception;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Json;
+use yii\web\View;
 
-class ActiveField extends \yii\bootstrap\ActiveField
+class ActiveField extends Component
 {
+
+    public static $idCounter = 1;
+
+    /**
+     * @var ActiveForm
+     */
+    public $id;
+
+    /**
+     * @var ActiveForm
+     */
+    public $form;
+
     /**
      * @var Model
      */
     public $model;
 
     /**
-     * @return \extpoint\yii2\components\Types
+     * @var string
      */
-    public static function getTypes()
-    {
-        return \Yii::$app->types;
-    }
+    public $attribute;
 
     /**
-     * @inheritdoc
+     * @var array
      */
-    public function render($content = null)
+    public $metaItem = [];
+
+    /**
+     * @var array
+     */
+    public $componentProps = [];
+
+    public function init()
     {
-        if ($content === null && !isset($this->parts['{input}']) && $this->model instanceof Model) {
-            $html = \Yii::$app->types->renderFormField($this, $this->inputOptions);
-            if ($html) {
-                $this->parts['{input}'] = $html;
+        parent::init();
+
+        if (!$this->id) {
+            $this->id = 'f' . self::$idCounter++;
+        }
+    }
+
+    public function label($label)
+    {
+        $this->metaItem['label'] = $label;
+        return $this;
+    }
+
+    public function hint($label)
+    {
+        $this->metaItem['label'] = $label;
+        return $this;
+    }
+
+    public function render()
+    {
+        // Get meta item
+        $model = $this->model;
+        $meta = $model::meta();
+        $attribute = Html::getAttributeName($this->attribute);
+        $metaItem = isset($meta[$attribute]) ? $meta[$attribute] : [];
+        $metaItem = array_merge($metaItem, $this->metaItem);
+
+        // Get app type
+        $appType = !empty($metaItem['appType']) ? $metaItem['appType'] : 'string';
+        $type = \Yii::$app->types->getType($appType);
+        if (!$type) {
+            throw new Exception('Not found app type `' . $appType . '`');
+        }
+
+        // Initial values
+        if ($model->formName()) {
+            $this->form->initialValues[$model->formName()][$attribute] = $model->$attribute;
+        } else {
+            $this->form->initialValues[$attribute] = $model->$attribute;
+        }
+        foreach (ArrayHelper::getValue($type->frontendConfig(), 'field.refAttributeOptions', []) as $key) {
+            $refAttribute = ArrayHelper::getValue($metaItem, $key);
+            if ($refAttribute) {
+                if ($model->formName()) {
+                    $this->form->initialValues[$model->formName()][$refAttribute] = $model->$refAttribute;
+                } else {
+                    $this->form->initialValues[$refAttribute] = $model->$refAttribute;
+                }
             }
         }
-        return parent::render($content);
+
+        $props = array_merge([
+            'layout' => $this->form->layout,
+            'layoutCols' => $this->form->layoutCols,
+        ], $this->componentProps);
+
+        // Render field
+        return \Yii::$app->types->renderField($model, $attribute, $this, $props);
+    }
+
+
+    /**
+     * @param array $props
+     * @return static
+     */
+    public function textInput($props = [])
+    {
+        return $this->setAppType('string', $props);
     }
 
     /**
-     * @param array $options
+     * @param array $props
      * @return static
      */
-    public function textInput($options = [])
+    public function passwordInput($props = [])
     {
-        static::getTypes()->string->renderFormField($this, $this->getMetaItem([
-            'appType' => 'string',
-            StringType::OPTION_TYPE => StringType::TYPE_TEXT,
-        ]), $options);
-        return $this;
+        return $this->setAppType('password', $props);
     }
 
     /**
-     * @param array $options
+     * @param array $props
      * @return static
      */
-    public function passwordInput($options = [])
+    public function email($props = [])
     {
-        static::getTypes()->string->renderFormField($this, $this->getMetaItem([
-            'appType' => 'string',
-            StringType::OPTION_TYPE => StringType::TYPE_PASSWORD,
-        ]), $options);
-        return $this;
+        return $this->setAppType('email', $props);
     }
 
     /**
-     * @param array $options
+     * @param array $props
      * @return static
      */
-    public function email($options = [])
+    public function phone($props = [])
     {
-        static::getTypes()->string->renderFormField($this, $this->getMetaItem([
-            'appType' => 'string',
-            StringType::OPTION_TYPE => StringType::TYPE_EMAIL,
-        ]), $options);
-        return $this;
+        return $this->setAppType('phone', $props);
     }
 
     /**
-     * @param array $options
+     * @param array $props
      * @return static
      */
-    public function phone($options = [])
+    public function file($props = [])
     {
-        static::getTypes()->string->renderFormField($this, $this->getMetaItem([
-            'appType' => 'string',
-            StringType::OPTION_TYPE => StringType::TYPE_PHONE,
-        ]), $options);
-        return $this;
+        return $this->setAppType('file', $props);
     }
 
     /**
-     * @param array $options
+     * @param array $props
      * @return static
      */
-    public function file($options = [])
+    public function files($props = [])
     {
-        static::getTypes()->file->renderFormField($this, $this->getMetaItem(['appType' => 'file']), $options);
-        return $this;
+        return $this->setAppType('files', $props);
     }
 
     /**
-     * @param array $options
+     * @param array $props
      * @return static
      */
-    public function files($options = [])
+    public function date($props = [])
     {
-        static::getTypes()->files->renderFormField($this, $this->getMetaItem(['appType' => 'files']), $options);
-        return $this;
+        return $this->setAppType('date', $props);
     }
 
     /**
-     * @param array $options
+     * @param array $props
      * @return static
      */
-    public function date($options = [])
+    public function dateTime($props = [])
     {
-        static::getTypes()->date->renderFormField($this, $this->getMetaItem(['appType' => 'date']), $options);
-        return $this;
+        return $this->setAppType('dateTime', $props);
     }
 
     /**
-     * @param array $options
+     * @param string|Enum $enumClassName
+     * @param array $props
      * @return static
      */
-    public function dateTime($options = [])
+    public function enum($enumClassName, $props = [])
     {
-        static::getTypes()->dateTime->renderFormField($this, $this->getMetaItem(['appType' => 'dateTime']), $options);
-        return $this;
+        return $this->setAppType('dropDown', $props, [
+            'items' => $enumClassName::getLabels(),
+        ]);
     }
 
     /**
-     * @param string $enumClassName
-     * @param array $options
+     * @param array $props
      * @return static
      */
-    public function enum($enumClassName, $options = [])
+    public function wysiwyg($props = [])
     {
-        static::getTypes()->enum->renderFormField($this, $this->getMetaItem([
-            'appType' => 'enum',
-            EnumType::OPTION_CLASS_NAME => $enumClassName,
-        ]), $options);
-        return $this;
-    }
-
-    /**
-     * @param array $options
-     * @return static
-     */
-    public function wysiwyg($options = [])
-    {
-        static::getTypes()->html->renderFormField($this, $this->getMetaItem(['appType' => 'html']), $options);
-        return $this;
+        return $this->setAppType('html', $props);
     }
 
     /**
      * @param string $currency
-     * @param array $options
+     * @param array $props
      * @return static
      */
-    public function money($currency, $options = [])
+    public function money($currency, $props = [])
     {
-        static::getTypes()->money->renderFormField($this, $this->getMetaItem([
-            'appType' => 'money',
+        return $this->setAppType('money', $props, [
             MoneyType::OPTION_CURRENCY => $currency,
-        ]), $options);
-        return $this;
+        ]);
     }
 
     /**
-     * @param array $custom
-     * @return array
+     * PHP magic method that returns the string representation of this object.
+     * @return string the string representation of this object.
      */
-    protected function getMetaItem($custom = []) {
-        $item = [];
-        if ($this->model instanceof Model) {
-            /** @var Model $modelClass */
-            $modelClass = get_class($this->model);
-
-            $meta = $modelClass::meta();
-            $attribute = Html::getAttributeName($this->attribute);
-            if (isset($meta[$attribute])) {
-                $item = $meta[$attribute];
-            }
+    public function __toString()
+    {
+        // __toString cannot throw exception
+        // use trigger_error to bypass this limitation
+        try {
+            return $this->render();
+        } catch (\Exception $e) {
+            ErrorHandler::convertExceptionToError($e);
+            return '';
         }
-
-        return array_merge($item, $custom);
     }
 
+    protected function setAppType($name, $props = [], $config = [])
+    {
+        $this->metaItem = array_merge($this->metaItem, [
+            'appType' => $name,
+        ], $config);
+        $this->componentProps = array_merge($this->componentProps, $props);
+        return $this;
+    }
 
 }

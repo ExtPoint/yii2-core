@@ -2,15 +2,102 @@
 
 namespace extpoint\yii2\widgets;
 
+use Yii;
 use app\core\base\AppModel;
 use extpoint\yii2\base\Model;
+use extpoint\yii2\base\Widget;
 use yii\bootstrap\Html;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Json;
+use yii\web\View;
 
-class ActiveForm extends \yii\bootstrap\ActiveForm
+class ActiveForm extends Widget
 {
-    public $fieldClass = 'extpoint\yii2\widgets\ActiveField';
+    /**
+     * @var array|string
+     */
+    public $action = '';
+
+    /**
+     * @var string
+     */
+    public $method = 'post';
+
+    /**
+     * @var array
+     */
+    public $options = [];
+
+    /**
+     * @var string
+     */
     public $layout = 'horizontal';
+
+    /**
+     * @var string
+     */
+    public $layoutCols = [3, 6];
+
+    /**
+     * @var string
+     */
+    public $fieldClass = 'extpoint\yii2\widgets\ActiveField';
+
+    /**
+     * @var array
+     */
+    public $fieldConfig = [];
+
+    /**
+     * @var array
+     */
+    public $initialValues = [];
+
+    /**
+     * Initializes the widget.
+     * This renders the form open tag.
+     */
+    public function init()
+    {
+        if (!isset($this->options['id'])) {
+            $this->options['id'] = $this->getId();
+        }
+        ob_start();
+        ob_implicit_flush(false);
+
+        $jsArgs = [
+            Json::encode($this->id),
+            Json::encode([
+                'formId' => $this->id,
+                'contentId' => $this->id . '-content',
+                'action' => $this->action,
+                'method' => $this->method,
+                'layout' => $this->layout,
+                'layoutCols' => $this->layoutCols,
+            ]),
+        ];
+        \Yii::$app->view->registerJs('__appForm.renderForm(' . implode(', ', $jsArgs) . ')', View::POS_END, $this->id . '-form');
+    }
+
+    /**
+     * Runs the widget.
+     */
+    public function run()
+    {
+        $content = ob_get_clean();
+        echo Html::tag('span','', ['id' => $this->id]);
+        echo Html::tag('span', $content, ['id' => $this->id . '-content']);
+
+        $state = [
+            'form' => [
+                $this->id => [
+                    'values' => $this->initialValues,
+                ],
+            ],
+        ];
+        \Yii::$app->view->registerJs('window.APP_REDUX_PRELOAD_STATES = [];', View::POS_HEAD);
+        \Yii::$app->view->registerJs('window.APP_REDUX_PRELOAD_STATES.push(' . Json::encode($state) . ')', View::POS_HEAD, $this->id . '-state');
+    }
 
     /**
      * @param Model $model
@@ -20,18 +107,18 @@ class ActiveForm extends \yii\bootstrap\ActiveForm
      */
     public function field($model, $attribute, $options = [])
     {
-        $prevLayout = $this->layout;
-        $layout = ArrayHelper::remove($options, 'layout');
-        if ($layout) {
-            $this->layout = $layout;
+        $config = $this->fieldConfig;
+        if ($config instanceof \Closure) {
+            $config = call_user_func($config, $model, $attribute);
         }
-        /** @var ActiveField $result */
-        $result = parent::field($model, $attribute, $options);
-        if ($layout) {
-            $this->layout = $prevLayout;
+        if (!isset($config['class'])) {
+            $config['class'] = $this->fieldClass;
         }
-
-        return $result;
+        return Yii::createObject(ArrayHelper::merge($config, $options, [
+            'model' => $model,
+            'attribute' => $attribute,
+            'form' => $this,
+        ]));
     }
 
     /**

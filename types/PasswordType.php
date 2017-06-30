@@ -2,11 +2,15 @@
 
 namespace extpoint\yii2\types;
 
+use extpoint\yii2\base\Type;
+use extpoint\yii2\gii\models\MetaItem;
 use yii\db\Schema;
-use yii\helpers\ArrayHelper;
 
-class DateTimeType extends DateType
+class PasswordType extends Type
 {
+    public $min = YII_ENV_DEV ? 1 : 3;
+    public $max = 32;
+
     /**
      * @return array
      */
@@ -14,7 +18,7 @@ class DateTimeType extends DateType
     {
         return [
             'field' => [
-                'component' => 'DateTimeField',
+                'component' => 'PasswordField',
             ]
         ];
     }
@@ -24,16 +28,16 @@ class DateTimeType extends DateType
      */
     public function renderValue($model, $attribute, $item, $options = [])
     {
-        $format = ArrayHelper::remove($item, self::OPTION_FORMAT);
-        return \Yii::$app->formatter->asDatetime($model->$attribute, $format);
+        return '********';
     }
 
     /**
-     * @inheritdoc
+     * @param MetaItem $metaItem
+     * @return string|false
      */
     public function giiDbType($metaItem)
     {
-        return Schema::TYPE_DATETIME;
+        return Schema::TYPE_STRING . '(' . $this->max . ')';
     }
 
     /**
@@ -42,7 +46,7 @@ class DateTimeType extends DateType
     public function giiRules($metaItem, &$useClasses = [])
     {
         return [
-            [$metaItem->name, 'date', 'format' => 'php:Y-m-d H:i'],
+            [$metaItem->name, 'string', 'min' => $this->min, 'max' => $this->max],
         ];
     }
 }

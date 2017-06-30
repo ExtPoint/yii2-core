@@ -2,15 +2,76 @@
 
 namespace extpoint\yii2\types;
 
-use extpoint\yii2\base\ArrayType;
+use extpoint\yii2\base\Model;
+use extpoint\yii2\base\Type;
+use yii\db\ActiveQuery;
 use yii\db\Schema;
+use yii\helpers\ArrayHelper;
+use arogachev\ManyToMany\behaviors\ManyToManyBehavior;
+use yii\helpers\Html;
+use yii\web\JsExpression;
 
-class RelationType extends ArrayType
+class RelationType extends Type
 {
+    const OPTION_RELATION_NAME = 'relationName';
+    const OPTION_LIST_RELATION_NAME = 'listRelationName';
+
+    /**
+     * @return array
+     */
+    public function frontendConfig()
+    {
+        return [
+            'field' => [
+                'component' => 'DropDownField',
+                'autoComplete' => new JsExpression('{}'),
+            ]
+        ];
+    }
+
     /**
      * @inheritdoc
      */
-    public function getGiiDbType($metaItem)
+    public function renderInputWidget($item, $class, $config)
+    {
+        /** @var Model $modelClass */
+        $modelClass = $config['model'];
+        $relationName = ArrayHelper::getValue($item, self::OPTION_RELATION_NAME);
+
+        $relation = $modelClass->getRelation($relationName);
+        $config['options']['multiple'] = $relation && $relation->multiple;
+
+        return $class::widget($config);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function renderValue($model, $attribute, $item, $options = [])
+    {
+        $relationName = ArrayHelper::remove($item, self::OPTION_RELATION_NAME);
+        $models = !is_array($model->$relationName) ? [$model->$relationName] : $model->$relationName;
+
+        return implode(', ', array_map(function ($model) use ($options) {
+            /** @type Model $model */
+            if (!($model instanceof Model)) {
+                return '';
+            }
+
+            foreach ($model->getModelLinks(\Yii::$app->user->model) as $url) {
+                if (\Yii::$app->megaMenu->isAllowAccess($url)) {
+                    return Html::a($model->modelLabel, $url, $options);
+                }
+            }
+
+            return $model->modelLabel;
+        }, $models));
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function giiDbType($metaItem)
     {
         $relation = $metaItem->metaClass->getRelation($metaItem->relationName);
         return $relation && $relation->isHasOne ? Schema::TYPE_INTEGER : false;
@@ -19,24 +80,57 @@ class RelationType extends ArrayType
     /**
      * @inheritdoc
      */
-    public function getGiiBehaviors($metaItem)
+    public function giiRules($metaItem, &$useClasses = [])
     {
-        return !$this->getGiiDbType($metaItem) ? parent::getGiiBehaviors($metaItem) : [];
+        return false;
     }
 
     /**
      * @inheritdoc
      */
-    public function getGiiRules($metaItem, &$useClasses = [])
+    public function giiBehaviors($metaItem)
     {
-        $relation = $metaItem->metaClass->getRelation($metaItem->relationName);
-        if (!$relation) {
-            return false;
+        if (!$this->giiDbType($metaItem)) {
+            return [
+                [
+                    'class' => ManyToManyBehavior::className(),
+                    'relations' => [
+                        [
+                            'name' => $metaItem->relationName,
+                            'editableAttribute' => $metaItem->name,
+                            'autoFill' => false,
+                        ]
+                    ]
+                ],
+            ];
         }
+
+        return [];
+    }
+
+    /**
+     * @return array
+     */
+    public function giiOptions()
+    {
         return [
-            $relation->isHasOne
-                ? [$metaItem->name, 'integer']
-                : [$metaItem->name, 'each', 'rule' => ['integer']]
+            self::OPTION_RELATION_NAME => [
+                'component' => 'input',
+                'label' => 'Relation name',
+                'list' => 'relations',
+                'style' => [
+                    'width' => '120px',
+                ],
+            ],
+            self::OPTION_LIST_RELATION_NAME => [
+                'component' => 'input',
+                'label' => 'List relation name',
+                'list' => 'relations',
+                'style' => [
+                    'width' => '120px',
+                ],
+            ]
         ];
     }
+
 }

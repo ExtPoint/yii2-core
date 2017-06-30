@@ -9,69 +9,42 @@ use extpoint\yii2\gii\models\ValueExpression;
 use yii\db\Schema;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use extpoint\yii2\gii\helpers\GiiHelper;
 use yii\helpers\StringHelper;
+use yii\web\JsExpression;
 
 class EnumType extends Type
 {
     const OPTION_CLASS_NAME = 'enumClassName';
 
     /**
+     * @return array
+     */
+    public function frontendConfig()
+    {
+        return [
+            'field' => [
+                'component' => 'DropDownField',
+                'multiple' => true,
+            ]
+        ];
+    }
+
+    /**
      * @inheritdoc
      */
-    public function renderField($model, $attribute, $item, $options = [])
+    public function renderInputWidget($item, $class, $config)
     {
         /** @var Enum $className */
         $className = ArrayHelper::getValue($item, self::OPTION_CLASS_NAME);
-        $items = $className::getLabels();
+        $config['options']['items'] = $className::getLabels();
 
-        if ($this->inputWidget) {
-            return $this->renderInputWidget($item, [
-                'model' => $model,
-                'attribute' => $attribute,
-                'items' => $items,
-                'options' => $options,
-            ]);
-        }
-
-        return Html::activeDropDownList($model, $attribute, $items, array_merge(['class' => 'form-control'], $options));
+        return $class::widget($config);
     }
 
     /**
      * @inheritdoc
      */
-    public function renderFormField($field, $item, $options = [])
-    {
-        /** @var Enum $className */
-        $className = ArrayHelper::getValue($item, self::OPTION_CLASS_NAME);
-        $items = $className::getLabels();
-
-        if ($this->inputWidget) {
-            return $this->renderInputWidget($item, [
-                'field' => $field,
-                'options' => $options,
-                'items' => $items,
-            ]);
-        }
-
-        return $this->renderField($field->model, $field->attribute, $item, $options);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function renderSearchField($model, $attribute, $item, $options = []) {
-        /** @var Enum $className */
-        $className = ArrayHelper::getValue($item, self::OPTION_CLASS_NAME);
-
-        $items = ['' => ''] + $className::getLabels();
-        return Html::activeDropDownList($model, $attribute, $items, array_merge(['class' => 'form-control'], $options));
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function renderForView($model, $attribute, $item, $options = [])
+    public function renderValue($model, $attribute, $item, $options = [])
     {
         /** @var Enum $className */
         $className = ArrayHelper::getValue($item, self::OPTION_CLASS_NAME);
@@ -85,7 +58,23 @@ class EnumType extends Type
     /**
      * @inheritdoc
      */
-    public function getGiiDbType($metaItem)
+    public function getGiiJsMetaItem($metaItem, &$import = [])
+    {
+        $item = parent::getGiiJsMetaItem($metaItem);
+        if ($metaItem->enumClassName) {
+            $enumClassMeta = EnumClass::findOne($metaItem->enumClassName);
+            if (file_exists($enumClassMeta->metaClass->jsFilePath)) {
+                $import[] = 'import ' . $enumClassMeta->metaClass->name . ' from \'' . str_replace('\\', '/', $enumClassMeta->metaClass->className) . '\';';
+            }
+            $item['enumClassName'] = new JsExpression($enumClassMeta->metaClass->name);
+        }
+        return $item;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function giiDbType($metaItem)
     {
         return Schema::TYPE_STRING;
     }
@@ -93,7 +82,7 @@ class EnumType extends Type
     /**
      * @inheritdoc
      */
-    public function getGiiRules($metaItem, &$useClasses = [])
+    public function giiRules($metaItem, &$useClasses = [])
     {
         /** @var Enum $className */
         $className = $metaItem->enumClassName;
@@ -109,7 +98,7 @@ class EnumType extends Type
     /**
      * @return array
      */
-    public function getGiiFieldProps()
+    public function giiOptions()
     {
         return [
             self::OPTION_CLASS_NAME => [
