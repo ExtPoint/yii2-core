@@ -28,6 +28,7 @@ use yii\base\Component;
 use yii\base\Exception;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Inflector;
 
 /**
  * @property-read AutoTimeType $autoTime
@@ -223,28 +224,17 @@ class Types extends Component
 
     protected function getDefaultTypes()
     {
-        return [
-            'autoTime' => '\extpoint\yii2\types\AutoTimeType',
-            'boolean' => '\extpoint\yii2\types\BooleanType',
-            'custom' => '\extpoint\yii2\types\CustomType',
-            'dateTime' => '\extpoint\yii2\types\DateTimeType',
-            'date' => '\extpoint\yii2\types\DateType',
-            'double' => '\extpoint\yii2\types\DoubleType',
-            'email' => '\extpoint\yii2\types\EmailType',
-            'enum' => '\extpoint\yii2\types\EnumType',
-            'files' => '\extpoint\yii2\types\FilesType',
-            'file' => '\extpoint\yii2\types\FileType',
-            'html' => '\extpoint\yii2\types\HtmlType',
-            'integer' => '\extpoint\yii2\types\IntegerType',
-            'money' => '\extpoint\yii2\types\MoneyType',
-            'password' => '\extpoint\yii2\types\PasswordType',
-            'phone' => '\extpoint\yii2\types\PhoneType',
-            'primaryKey' => '\extpoint\yii2\types\PrimaryKeyType',
-            'range' => '\extpoint\yii2\types\RangeType',
-            'relation' => '\extpoint\yii2\types\RelationType',
-            'size' => '\extpoint\yii2\types\SizeType',
-            'string' => '\extpoint\yii2\types\StringType',
-            'text' => '\extpoint\yii2\types\TextType',
-        ];
+        $types = [];
+        foreach (scandir(__DIR__ . '/../types') as $file) {
+            $name = preg_replace('/\.php$/', '', $file);
+            $id = lcfirst(preg_replace('/Type$/', '', $name));
+            $class = '\extpoint\yii2\types\\' . $name;
+            if (class_exists($class)) {
+                $types[$id] = [
+                    'class' => $class,
+                ];
+            }
+        }
+        return $types;
     }
 }

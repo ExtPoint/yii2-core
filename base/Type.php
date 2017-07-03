@@ -62,15 +62,12 @@ abstract class Type extends Object
 
     /**
      * @param MetaItem $metaItem
+     * @param array $item
      * @return array
      */
-    public function getGiiJsMetaItem($metaItem, &$import = [])
+    public function getGiiJsMetaItem($metaItem, $item, &$import = [])
     {
-        /** @var Model $metaClass */
-        $metaClass = $metaItem->metaClass->modelClass->className;
-        $meta = $metaClass::meta();
-
-        return isset($meta[$metaItem->name]) ? $meta[$metaItem->name] : [];
+        return $item;
     }
 
     /**

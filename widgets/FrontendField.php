@@ -29,7 +29,7 @@ class FrontendField extends InputWidget
             Json::encode($model::className()),
             Json::encode($model::meta()),
         ];
-        \Yii::$app->view->registerJs('__appForm.addModelMeta(' . implode(', ', $jsArgs) . ')', View::POS_END, 'app-form-' . $model::className());
+        \Yii::$app->view->registerJs('__appTypes.addModelMeta(' . implode(', ', $jsArgs) . ')', View::POS_END, 'app-form-' . $model::className());
 
         // Add enums
         foreach ($model::meta() as $item) {
@@ -43,7 +43,7 @@ class FrontendField extends InputWidget
                         'labels' => $enumClass::getLabels(),
                     ]),
                 ];
-                \Yii::$app->view->registerJs('__appForm.addEnum(' . implode(', ', $jsArgs) . ')', View::POS_END, 'app-enum-' . $enumClass::className());
+                \Yii::$app->view->registerJs('__appTypes.addEnum(' . implode(', ', $jsArgs) . ')', View::POS_END, 'app-enum-' . $enumClass::className());
             }
         }
 
@@ -57,7 +57,7 @@ class FrontendField extends InputWidget
                 'attribute' => Html::getAttributeName($this->attribute),
             ], $options)),
         ];
-        \Yii::$app->view->registerJs('__appForm.renderField(' . implode(', ', $jsArgs) . ')', View::POS_END, $this->id);
+        \Yii::$app->view->registerJs('__appTypes.renderField(' . implode(', ', $jsArgs) . ')', View::POS_END, $this->id);
         return Html::tag('span', '', ['id' => $this->id]);
     }
 

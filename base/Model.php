@@ -5,7 +5,9 @@ namespace extpoint\yii2\base;
 use arogachev\ManyToMany\components\ManyToManyRelation;
 use extpoint\yii2\exceptions\ModelDeleteException;
 use extpoint\yii2\exceptions\ModelSaveException;
+use extpoint\yii2\traits\MetaTrait;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -13,13 +15,7 @@ use yii\web\NotFoundHttpException;
  */
 class Model extends ActiveRecord
 {
-    /**
-     * @return array
-     */
-    public static function meta()
-    {
-        return [];
-    }
+    use MetaTrait;
 
     /**
      * @return string
@@ -50,33 +46,6 @@ class Model extends ActiveRecord
         return [];
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function attributeLabels()
-    {
-        $labels = [];
-        foreach (static::meta() as $attribute => $item) {
-            if (isset($item['label']) && is_string($item['label'])) {
-                $labels[$attribute] = $item['label'];
-            }
-        }
-        return $labels;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function attributeHints()
-    {
-        $hints = [];
-        foreach (static::meta() as $attribute => $item) {
-            if (isset($item['hint']) && is_string($item['hint'])) {
-                $hints[$attribute] = $item['hint'];
-            }
-        }
-        return $hints;
-    }
 
     /**
      * @inheritdoc
@@ -136,6 +105,49 @@ class Model extends ActiveRecord
                 }
             }
         }
+    }
+
+    /**
+     * @param array|null $fields
+     * @return array
+     */
+    public function toFrontend($fields = null)
+    {
+        $fields = $fields ?: ['*'];
+
+        // Detect *
+        foreach ($fields as $key => $name) {
+            if ($name === '*') {
+                unset($fields[$key]);
+                $fields = array_merge($fields, $this->fields());
+                break;
+            }
+        }
+
+        $entry = [];
+        foreach ($fields as $key => $name) {
+            if (is_int($key)) {
+                $key = $name;
+            }
+
+            if (is_array($name)) {
+                // Relations
+                $relation = $this->getRelation($key);
+                if ($relation->multiple) {
+                    $entry[$key] = [];
+                    foreach ($this->$key as $childModel) {
+                        /** @type Model $childModel */
+                        $entry[$key][] = $childModel->toFrontend($name);
+                    }
+                } else {
+                    $entry[$key] = $this->$key ? $this->$key->toFrontend($name) : null;
+                }
+            } else {
+                // Attributes
+                $entry[$name] = ArrayHelper::getValue($this, $name);
+            }
+        }
+        return $entry;
     }
 
     /**

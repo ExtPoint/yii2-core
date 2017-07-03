@@ -24,7 +24,6 @@ class EnumType extends Type
         return [
             'field' => [
                 'component' => 'DropDownField',
-                'multiple' => true,
             ]
         ];
     }
@@ -58,17 +57,17 @@ class EnumType extends Type
     /**
      * @inheritdoc
      */
-    public function getGiiJsMetaItem($metaItem, &$import = [])
+    public function getGiiJsMetaItem($metaItem, $item, &$import = [])
     {
-        $item = parent::getGiiJsMetaItem($metaItem);
+        $result = parent::getGiiJsMetaItem($metaItem, $item, $import);
         if ($metaItem->enumClassName) {
             $enumClassMeta = EnumClass::findOne($metaItem->enumClassName);
             if (file_exists($enumClassMeta->metaClass->jsFilePath)) {
                 $import[] = 'import ' . $enumClassMeta->metaClass->name . ' from \'' . str_replace('\\', '/', $enumClassMeta->metaClass->className) . '\';';
             }
-            $item['enumClassName'] = new JsExpression($enumClassMeta->metaClass->name);
+            $result['enumClassName'] = new JsExpression($enumClassMeta->metaClass->name);
         }
-        return $item;
+        return $result;
     }
 
     /**

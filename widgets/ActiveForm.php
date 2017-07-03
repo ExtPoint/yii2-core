@@ -76,7 +76,7 @@ class ActiveForm extends Widget
                 'layoutCols' => $this->layoutCols,
             ]),
         ];
-        \Yii::$app->view->registerJs('__appForm.renderForm(' . implode(', ', $jsArgs) . ')', View::POS_END, $this->id . '-form');
+        \Yii::$app->view->registerJs('__appTypes.renderForm(' . implode(', ', $jsArgs) . ')', View::POS_END, $this->id . '-form');
     }
 
     /**
