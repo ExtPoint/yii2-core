@@ -4,7 +4,7 @@ namespace extpoint\yii2\types;
 
 use extpoint\yii2\base\Model;
 use extpoint\yii2\base\Type;
-use yii\db\ActiveQuery;
+use extpoint\yii2\gii\models\ModelMetaClass;
 use yii\db\Schema;
 use yii\helpers\ArrayHelper;
 use arogachev\ManyToMany\behaviors\ManyToManyBehavior;
@@ -73,7 +73,9 @@ class RelationType extends Type
      */
     public function giiDbType($metaItem)
     {
-        $relation = $metaItem->metaClass->getRelation($metaItem->relationName);
+        $relation = $metaItem->metaClass instanceof ModelMetaClass
+            ? $metaItem->metaClass->getRelation($metaItem->relationName)
+            : null;
         return $relation && $relation->isHasOne ? Schema::TYPE_INTEGER : false;
     }
 

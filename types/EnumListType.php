@@ -2,6 +2,8 @@
 
 namespace extpoint\yii2\types;
 
+use extpoint\yii2\base\Enum;
+
 class EnumListType extends EnumType
 {
     /**
@@ -25,14 +27,13 @@ class EnumListType extends EnumType
         return 'varchar(255)[]';
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function renderGiiValidator($metaItem, $indent = '', &$useClasses = [])
+    public function giiRules($metaItem, &$useClasses = [])
     {
         /** @var Enum $className */
         $className = $metaItem->enumClassName;
 
         //TODO return "['in', 'range' => $className::getKeys()]";
+
+        return [];
     }
 }

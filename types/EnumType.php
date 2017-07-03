@@ -85,8 +85,13 @@ class EnumType extends Type
     {
         /** @var Enum $className */
         $className = $metaItem->enumClassName;
-        $shortClassName = StringHelper::basename($metaItem->enumClassName);
+        if (!$className) {
+            return [
+                [$metaItem->name, 'string'],
+            ];
+        }
 
+        $shortClassName = StringHelper::basename($metaItem->enumClassName);
         $useClasses[] = $className;
 
         return [

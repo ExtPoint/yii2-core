@@ -52,7 +52,7 @@ class FrontendField extends InputWidget
             Json::encode($this->id),
             Json::encode(array_merge([
                 'formId' => $this->field ? $this->field->form->id : 'f' . ++self::$idCounter,
-                'modelMeta' => $model::className(),
+                'model' => $model::className(),
                 'prefix' => $model->formName(),
                 'attribute' => Html::getAttributeName($this->attribute),
             ], $options)),
