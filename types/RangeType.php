@@ -2,19 +2,19 @@
 
 namespace extpoint\yii2\types;
 
-use extpoint\yii2\base\Model;
 use extpoint\yii2\base\Type;
-use extpoint\yii2\gii\models\ModelMetaClass;
-use yii\db\Schema;
+use extpoint\yii2\gii\models\MetaItem;
 use yii\helpers\ArrayHelper;
-use arogachev\ManyToMany\behaviors\ManyToManyBehavior;
-use yii\helpers\Html;
-use yii\web\JsExpression;
 
-class RelationType extends Type
+class RangeType extends Type
 {
-    const OPTION_RELATION_NAME = 'relationName';
-    const OPTION_LIST_RELATION_NAME = 'listRelationName';
+    const OPTION_SUB_APP_TYPE = 'subAppType';
+    const OPTION_REF_ATTRIBUTE = 'refAttribute';
+
+    const RANGE_POSITION_START = 'start';
+    const RANGE_POSITION_END = 'end';
+
+    public $template = '{start} — {end}';
 
     /**
      * @return array
@@ -23,25 +23,12 @@ class RelationType extends Type
     {
         return [
             'field' => [
-                'component' => 'DropDownField',
-                'autoComplete' => new JsExpression('{}'),
+                'component' => 'RangeField',
+                'refAttributeOptions' => [
+                    self::OPTION_REF_ATTRIBUTE,
+                ],
             ]
         ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function renderInputWidget($item, $class, $config)
-    {
-        /** @var Model $modelClass */
-        $modelClass = $config['model'];
-        $relationName = ArrayHelper::getValue($item, self::OPTION_RELATION_NAME);
-
-        $relation = $modelClass->getRelation($relationName);
-        $config['options']['multiple'] = $relation && $relation->multiple;
-
-        return $class::widget($config);
     }
 
     /**
@@ -49,23 +36,32 @@ class RelationType extends Type
      */
     public function renderValue($model, $attribute, $item, $options = [])
     {
-        $relationName = ArrayHelper::remove($item, self::OPTION_RELATION_NAME);
-        $models = !is_array($model->$relationName) ? [$model->$relationName] : $model->$relationName;
+        $subAppType = ArrayHelper::remove($item, self::OPTION_SUB_APP_TYPE);
+        $refAttribute = ArrayHelper::remove($item, self::OPTION_REF_ATTRIBUTE);
+        if ($refAttribute) {
+            return strtr($this->template, [
+                '{start}' => \Yii::$app->types->getType($subAppType)->renderValue($model, $attribute, $item, $options),
+                '{end}' => \Yii::$app->types->getType($subAppType)->renderValue($model, $refAttribute, $item, $options),
+            ]);
+        }
 
-        return implode(', ', array_map(function ($model) use ($options) {
-            /** @type Model $model */
-            if (!($model instanceof Model)) {
-                return '';
-            }
+        return '';
+    }
 
-            foreach ($model->getModelLinks(\Yii::$app->user->model) as $url) {
-                if (\Yii::$app->megaMenu->isAllowAccess($url)) {
-                    return Html::a($model->modelLabel, $url, $options);
-                }
-            }
-
-            return $model->modelLabel;
-        }, $models));
+    /**
+     * @inheritdoc
+     */
+    public function getItems($metaItem) {
+        if ($metaItem->refAttribute) {
+            return [
+                new MetaItem([
+                    'metaClass' => $metaItem->metaClass,
+                    'name' => $metaItem->refAttribute,
+                    'appType' => $metaItem->subAppType,
+                ]),
+            ];
+        }
+        return [];
     }
 
     /**
@@ -73,18 +69,7 @@ class RelationType extends Type
      */
     public function giiDbType($metaItem)
     {
-        $relation = $metaItem->metaClass instanceof ModelMetaClass
-            ? $metaItem->metaClass->getRelation($metaItem->relationName)
-            : null;
-        return $relation && $relation->isHasOne ? Schema::TYPE_INTEGER : false;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function giiRules($metaItem, &$useClasses = [])
-    {
-        return false;
+        return \Yii::$app->types->getType($metaItem->subAppType)->giiDbType($metaItem);
     }
 
     /**
@@ -92,47 +77,34 @@ class RelationType extends Type
      */
     public function giiBehaviors($metaItem)
     {
-        if ($metaItem->relationName && !$this->giiDbType($metaItem)) {
-            return [
-                [
-                    'class' => ManyToManyBehavior::className(),
-                    'relations' => [
-                        [
-                            'name' => $metaItem->relationName,
-                            'editableAttribute' => $metaItem->name,
-                            'autoFill' => false,
-                        ]
-                    ]
-                ],
-            ];
-        }
-
-        return [];
+        return \Yii::$app->types->getType($metaItem->subAppType)->giiBehaviors($metaItem);
     }
 
     /**
-     * @return array
+     * @inheritdoc
+     */
+    public function giiRules($metaItem, &$useClasses = [])
+    {
+        return \Yii::$app->types->getType($metaItem->subAppType)->giiRules($metaItem, $useClasses);
+    }
+
+    /**
+     * @inheritdoc
      */
     public function giiOptions()
     {
         return [
-            self::OPTION_RELATION_NAME => [
+            self::OPTION_SUB_APP_TYPE => [
                 'component' => 'input',
-                'label' => 'Relation name',
-                'list' => 'relations',
+                'list' => 'types',
                 'style' => [
-                    'width' => '120px',
+                    'width' => '90px',
                 ],
             ],
-            self::OPTION_LIST_RELATION_NAME => [
+            self::OPTION_REF_ATTRIBUTE => [
                 'component' => 'input',
-                'label' => 'List relation name',
-                'list' => 'relations',
-                'style' => [
-                    'width' => '120px',
-                ],
-            ]
+                'label' => 'Attribute "to"',
+            ],
         ];
     }
-
 }

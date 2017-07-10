@@ -92,7 +92,7 @@ class RelationType extends Type
      */
     public function giiBehaviors($metaItem)
     {
-        if (!$this->giiDbType($metaItem)) {
+        if ($metaItem->relationName && !$this->giiDbType($metaItem)) {
             return [
                 [
                     'class' => ManyToManyBehavior::className(),
