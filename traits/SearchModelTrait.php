@@ -7,6 +7,7 @@ use extpoint\yii2\base\Model;
 use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
 use yii\db\ActiveQuery;
+use yii\db\BaseActiveRecord;
 use yii\helpers\ArrayHelper;
 
 trait SearchModelTrait
@@ -81,7 +82,7 @@ trait SearchModelTrait
     {
         /** @var Model $className */
         $className = get_parent_class(static::className());
-        return $className::find();
+        return $className instanceof BaseActiveRecord ? $className::find() : null;
     }
 
     public function formName()
