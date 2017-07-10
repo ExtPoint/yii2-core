@@ -62,10 +62,13 @@ class EnumType extends Type
         $result = parent::getGiiJsMetaItem($metaItem, $item, $import);
         if ($metaItem->enumClassName) {
             $enumClassMeta = EnumClass::findOne($metaItem->enumClassName);
-            if (file_exists($enumClassMeta->metaClass->jsFilePath)) {
+            if (file_exists($enumClassMeta->metaClass->filePath)) {
                 $import[] = 'import ' . $enumClassMeta->metaClass->name . ' from \'' . str_replace('\\', '/', $enumClassMeta->metaClass->className) . '\';';
+                $result['enumClassName'] = new JsExpression($enumClassMeta->metaClass->name);
+            } elseif (file_exists($enumClassMeta->filePath)) {
+                $import[] = 'import ' . $enumClassMeta->name . ' from \'' . str_replace('\\', '/', $enumClassMeta->className) . '\';';
+                $result['enumClassName'] = new JsExpression($enumClassMeta->name);
             }
-            $result['enumClassName'] = new JsExpression($enumClassMeta->metaClass->name);
         }
         return $result;
     }

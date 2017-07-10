@@ -9,8 +9,12 @@ use yii\web\View;
 
 class Widget extends BaseWidget
 {
+    public $props = [];
+
     public function renderReact($props = [])
     {
+        $props = array_merge($props, $this->props);
+
         $jsArgs = [
             Json::encode($this->id),
             Json::encode(get_class($this)),

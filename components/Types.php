@@ -22,13 +22,11 @@ use extpoint\yii2\types\RelationType;
 use extpoint\yii2\types\SizeType;
 use extpoint\yii2\types\StringType;
 use extpoint\yii2\types\TextType;
-use extpoint\yii2\widgets\ActiveField;
 use extpoint\yii2\widgets\FrontendField;
 use yii\base\Component;
 use yii\base\Exception;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\helpers\Inflector;
 
 /**
  * @property-read AutoTimeType $autoTime

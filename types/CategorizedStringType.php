@@ -5,6 +5,7 @@ namespace extpoint\yii2\types;
 use extpoint\yii2\base\Type;
 use extpoint\yii2\gii\models\EnumClass;
 use yii\helpers\ArrayHelper;
+use yii\web\JsExpression;
 
 class CategorizedStringType extends Type
 {
@@ -24,6 +25,25 @@ class CategorizedStringType extends Type
                 ],
             ]
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getGiiJsMetaItem($metaItem, $item, &$import = [])
+    {
+        $result = parent::getGiiJsMetaItem($metaItem, $item, $import);
+        if ($metaItem->enumClassName) {
+            $enumClassMeta = EnumClass::findOne($metaItem->enumClassName);
+            if (file_exists($enumClassMeta->metaClass->filePath)) {
+                $import[] = 'import ' . $enumClassMeta->metaClass->name . ' from \'' . str_replace('\\', '/', $enumClassMeta->metaClass->className) . '\';';
+                $result['enumClassName'] = new JsExpression($enumClassMeta->metaClass->name);
+            } elseif (file_exists($enumClassMeta->filePath)) {
+                $import[] = 'import ' . $enumClassMeta->name . ' from \'' . str_replace('\\', '/', $enumClassMeta->className) . '\';';
+                $result['enumClassName'] = new JsExpression($enumClassMeta->name);
+            }
+        }
+        return $result;
     }
 
     /**
