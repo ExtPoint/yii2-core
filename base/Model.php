@@ -96,11 +96,15 @@ class Model extends ActiveRecord
      * @param string[]|null $names
      */
     public function fillManyMany($names = null) {
+        if (is_string($names)) {
+            $names = [$names];
+        }
+
         if (isset($this->manyToManyRelations)) {
             foreach ($this->manyToManyRelations as $relation) {
                 /** @type ManyToManyRelation $relation */
 
-                if ($names === null || in_array($relation->name, $names)) {
+                if ($names === null || in_array($relation->editableAttribute, $names) || in_array($relation->name, $names)) {
                     $relation->fill();
                 }
             }
@@ -144,7 +148,9 @@ class Model extends ActiveRecord
                 }
             } else {
                 // Attributes
-                $entry[$name] = ArrayHelper::getValue($this, $name);
+                $value = ArrayHelper::getValue($this, $name);
+                $name = is_string($name) ? $name : $key;
+                $entry[$name] = $value;
             }
         }
         return $entry;

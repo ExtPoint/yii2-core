@@ -58,6 +58,7 @@ class RangeType extends Type
                     'metaClass' => $metaItem->metaClass,
                     'name' => $metaItem->refAttribute,
                     'appType' => $metaItem->subAppType,
+                    'publishToFrontend' => $metaItem->publishToFrontend,
                 ]),
             ];
         }

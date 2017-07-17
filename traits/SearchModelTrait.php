@@ -41,7 +41,7 @@ trait SearchModelTrait
      * @param array $params
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params = [])
     {
         $this->page = ArrayHelper::getValue($params, 'page', $this->page);
         $this->pageSize = ArrayHelper::getValue($params, 'pageSize', $this->pageSize);
@@ -82,7 +82,7 @@ trait SearchModelTrait
     {
         /** @var Model $className */
         $className = get_parent_class(static::className());
-        return $className instanceof BaseActiveRecord ? $className::find() : null;
+        return method_exists($className, 'find') ? $className::find() : null;
     }
 
     public function formName()
