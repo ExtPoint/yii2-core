@@ -13,4 +13,14 @@ class DoubleType extends IntegerType
     {
         return Schema::TYPE_DOUBLE;
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function giiRules($metaItem, &$useClasses = [])
+    {
+        return [
+            [$metaItem->name, 'number'],
+        ];
+    }
 }

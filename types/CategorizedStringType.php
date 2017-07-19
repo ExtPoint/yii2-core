@@ -24,6 +24,16 @@ class CategorizedStringType extends EnumType
     /**
      * @inheritdoc
      */
+    public function giiRules($metaItem, &$useClasses = [])
+    {
+        return [
+            [$metaItem->name, 'string', 'max' => 255],
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function giiOptions()
     {
         return array_merge(
