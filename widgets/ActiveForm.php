@@ -2,6 +2,7 @@
 
 namespace extpoint\yii2\widgets;
 
+use extpoint\yii2\base\FormModel;
 use Yii;
 use app\core\base\AppModel;
 use extpoint\yii2\base\Model;
@@ -100,7 +101,7 @@ class ActiveForm extends Widget
     }
 
     /**
-     * @param Model $model
+     * @param Model|FormModel $model
      * @param string $attribute
      * @param array $options
      * @return ActiveField

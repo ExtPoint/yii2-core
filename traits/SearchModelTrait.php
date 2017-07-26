@@ -119,7 +119,7 @@ trait SearchModelTrait
         return [
             'meta' => !empty($this->meta) ? $this->meta : null,
             'total' => $this->dataProvider->getTotalCount(),
-            'entries' => array_map(function($model) use ($fields) {
+            'items' => array_map(function($model) use ($fields) {
                 /** @type AppModel $model */
                 return $model->toFrontend($fields);
             }, $this->dataProvider->models),

@@ -49,7 +49,9 @@ class AjaxResponseMiddleware extends Object
             }
 
             // Ajax redirect
-            $location = $response->headers->get('Location');
+            $location = $response->headers->get('Location')
+                ?: $response->headers->get('X-Pjax-Url')
+                    ?: $response->headers->get('X-Redirect');
             if ($location) {
                 $data['redirectUrl'] = $location;
                 $response->headers->remove('Location');
