@@ -28,7 +28,8 @@ class Model extends ActiveRecord
     /**
      * @return string
      */
-    public function getModelLabel() {
+    public function getModelLabel()
+    {
         foreach (['title', 'label', 'name'] as $attribute) {
             $label = $this->getAttribute($attribute);
             if ($label) {
@@ -42,7 +43,8 @@ class Model extends ActiveRecord
      * @param Model|null $user
      * @return array
      */
-    public function getModelLinks($user) {
+    public function getModelLinks($user)
+    {
         return [];
     }
 
@@ -95,7 +97,8 @@ class Model extends ActiveRecord
     /**
      * @param string[]|null $names
      */
-    public function fillManyMany($names = null) {
+    public function fillManyMany($names = null)
+    {
         if (is_string($names)) {
             $names = [$names];
         }
@@ -136,15 +139,30 @@ class Model extends ActiveRecord
 
             if (is_array($name)) {
                 // Relations
-                $relation = $this->getRelation($key);
-                if ($relation->multiple) {
-                    $entry[$key] = [];
-                    foreach ($this->$key as $childModel) {
-                        /** @type Model $childModel */
-                        $entry[$key][] = $childModel->toFrontend($name);
+                $relation = $this->getRelation($key, false);
+                if ($relation) {
+                    if ($relation->multiple) {
+                        $entry[$key] = [];
+                        foreach ($this->$key as $childModel) {
+                            /** @type Model $childModel */
+                            $entry[$key][] = $childModel->toFrontend($name);
+                        }
+                    } else {
+                        $entry[$key] = $this->$key ? $this->$key->toFrontend($name) : null;
                     }
                 } else {
-                    $entry[$key] = $this->$key ? $this->$key->toFrontend($name) : null;
+                    $child = $this->$key;
+                    if (is_array($child)) {
+                        $entry[$key] = [];
+                        foreach ($child as $childModel) {
+                            if ($childModel instanceof Model) {
+                                /** @type Model $childModel */
+                                $entry[$key][] = $childModel->toFrontend($name);
+                            }
+                        }
+                    } else {
+                        $entry[$key] = $child instanceof Model ? $child->toFrontend($name) : null;
+                    }
                 }
             } else {
                 // Attributes

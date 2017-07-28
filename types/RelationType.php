@@ -84,6 +84,14 @@ class RelationType extends Type
      */
     public function giiRules($metaItem, &$useClasses = [])
     {
+        $relation = $metaItem->metaClass instanceof ModelMetaClass
+            ? $metaItem->metaClass->getRelation($metaItem->relationName)
+            : null;
+        if ($relation && $relation->isHasOne) {
+            return [
+                [$metaItem->name, 'integer'],
+            ];
+        }
         return false;
     }
 
