@@ -42,7 +42,7 @@ class DateTimeType extends DateType
     public function giiRules($metaItem, &$useClasses = [])
     {
         return [
-            [$metaItem->name, 'date', 'format' => 'php:Y-m-d H:i'],
+            [$metaItem->name, 'date', 'format' => $metaItem->format ?: 'php:Y-m-d H:i'],
         ];
     }
 }
