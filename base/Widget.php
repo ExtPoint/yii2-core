@@ -5,6 +5,7 @@ namespace extpoint\yii2\base;
 use yii\base\Widget as BaseWidget;
 use yii\helpers\Html;
 use yii\helpers\Json;
+use yii\web\JsExpression;
 use yii\web\View;
 
 class Widget extends BaseWidget
@@ -14,14 +15,17 @@ class Widget extends BaseWidget
     public function renderReact($props = [])
     {
         $props = array_merge($props, $this->props);
+        $className = get_class($this);
+        $scriptUrl = '@static/assets/bundle-' . $this->getBundleName() . '.js';
 
-        $jsArgs = [
-            Json::encode($this->id),
-            Json::encode(get_class($this)),
-            !empty($props) ? Json::encode($props) : '{}',
-        ];
-        $this->view->registerJs('__appWidget.render(' . implode(', ', $jsArgs) . ')', View::POS_END, $this->id);
-        $this->view->registerJsFile('@static/assets/bundle-' . $this->getBundleName() . '.js', ['position' => View::POS_END]);
+        if (\Yii::$app->has('frontendState')) {
+            \Yii::$app->frontendState->add('config.backendWidget.toRender', [$this->id, $className, !empty($props) ? $props : new JsExpression('{}')]);
+            \Yii::$app->frontendState->add('config.backendWidget.scripts', $scriptUrl);
+        } else {
+            $jsArgs = implode(', ', [Json::encode($this->id), Json::encode($className), !empty($props) ? Json::encode($props) : '{}']);
+            $this->view->registerJs("__appWidget.render($jsArgs)", View::POS_END, $this->id);
+            $this->view->registerJsFile($scriptUrl, ['position' => View::POS_END]);
+        }
 
         return Html::tag('span', '', ['id' => $this->id]);
     }

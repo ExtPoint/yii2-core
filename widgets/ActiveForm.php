@@ -66,18 +66,21 @@ class ActiveForm extends Widget
         ob_start();
         ob_implicit_flush(false);
 
-        $jsArgs = [
-            Json::encode($this->id),
-            Json::encode([
-                'formId' => $this->id,
-                'contentId' => $this->id . '-content',
-                'action' => $this->action,
-                'method' => $this->method,
-                'layout' => $this->layout,
-                'layoutCols' => $this->layoutCols,
-            ]),
+        $props = [
+            'formId' => $this->id,
+            'contentId' => $this->id . '-content',
+            'action' => $this->action,
+            'method' => $this->method,
+            'layout' => $this->layout,
+            'layoutCols' => $this->layoutCols,
         ];
-        \Yii::$app->view->registerJs('__appTypes.renderForm(' . implode(', ', $jsArgs) . ')', View::POS_END, $this->id . '-form');
+
+        if (Yii::$app->has('frontendState')) {
+            Yii::$app->frontendState->add('config.types.toRenderForm', [$this->id, $props]);
+        } else {
+            $jsArgs = [Json::encode($this->id), Json::encode($props)];
+            \Yii::$app->view->registerJs('__appTypes.renderForm(' . implode(', ', $jsArgs) . ')', View::POS_END, $this->id . '-form');
+        }
     }
 
     /**
@@ -89,15 +92,19 @@ class ActiveForm extends Widget
         echo Html::tag('span','', ['id' => $this->id]);
         echo Html::tag('span', $content, ['id' => $this->id . '-content']);
 
-        $state = [
-            'form' => [
-                $this->id => [
-                    'values' => $this->initialValues,
+        if (Yii::$app->has('frontendState')) {
+            Yii::$app->frontendState->add('form.' . $this->id . '.values', $this->initialValues);
+        } else {
+            $state = [
+                'form' => [
+                    $this->id => [
+                        'values' => $this->initialValues,
+                    ],
                 ],
-            ],
-        ];
-        \Yii::$app->view->registerJs('window.APP_REDUX_PRELOAD_STATES = [];', View::POS_HEAD);
-        \Yii::$app->view->registerJs('window.APP_REDUX_PRELOAD_STATES.push(' . Json::encode($state) . ')', View::POS_HEAD, $this->id . '-state');
+            ];
+            \Yii::$app->view->registerJs('window.APP_REDUX_PRELOAD_STATES = [];', View::POS_HEAD);
+            \Yii::$app->view->registerJs('window.APP_REDUX_PRELOAD_STATES.push(' . Json::encode($state) . ')', View::POS_HEAD, $this->id . '-state');
+        }
     }
 
     /**
