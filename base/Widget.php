@@ -19,13 +19,13 @@ class Widget extends BaseWidget
         $scriptUrl = '@static/assets/bundle-' . $this->getBundleName() . '.js';
 
         if (\Yii::$app->has('frontendState')) {
-            \Yii::$app->frontendState->add('config.backendWidget.scripts', $scriptUrl);
             \Yii::$app->frontendState->add('config.backendWidget.toRender', [$this->id, $className, !empty($props) ? $props : new JsExpression('{}')]);
+            \Yii::$app->frontendState->add('config.backendWidget.scripts', $scriptUrl);
         } else {
             $jsArgs = implode(', ', [Json::encode($this->id), Json::encode($className), !empty($props) ? Json::encode($props) : '{}']);
             $this->view->registerJs("__appWidget.render($jsArgs)", View::POS_END, $this->id);
+            $this->view->registerJsFile($scriptUrl, ['position' => View::POS_END]);
         }
-        $this->view->registerJsFile($scriptUrl, ['position' => View::POS_END]);
 
         return Html::tag('span', '', ['id' => $this->id]);
     }
