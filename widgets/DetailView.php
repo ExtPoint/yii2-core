@@ -13,6 +13,11 @@ class DetailView extends \yii\widgets\DetailView
      */
     public $model;
 
+    /**
+     * @var array
+     */
+    public $controllerMeta;
+
     protected function renderAttribute($attribute, $index)
     {
         if (is_string($this->template)) {
@@ -32,8 +37,7 @@ class DetailView extends \yii\widgets\DetailView
     protected function normalizeAttributes()
     {
         if ($this->model instanceof Model && $this->attributes === null) {
-            $modelClass = $this->model;
-            $this->attributes = array_keys(array_filter($modelClass::meta(), function($item) {
+            $this->attributes = array_keys(array_filter(ArrayHelper::getValue($this->controllerMeta, 'modelAttributes'), function($item) {
                 return !empty($item['showInView']);
             }));
         }

@@ -8,6 +8,7 @@ use app\core\base\AppModel;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
 use yii\grid\ActionColumn;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 
 class GridView extends \yii\grid\GridView
@@ -31,6 +32,11 @@ class GridView extends \yii\grid\GridView
      */
     public $pkParam;
 
+    /**
+     * @var array
+     */
+    public $controllerMeta;
+
     protected function guessColumns()
     {
         if ($this->dataProvider instanceof ActiveDataProvider
@@ -42,8 +48,9 @@ class GridView extends \yii\grid\GridView
             $modelClass = $query->modelClass;
 
             foreach ($modelClass::meta() as $attribute => $item) {
-                if (!empty($item['showInTable'])) {
+                if (ArrayHelper::getValue($this->controllerMeta, 'modelAttributes.' . $attribute . '.showInTable')) {
                     $this->columns[] = [
+                        'controllerMeta' => $this->controllerMeta,
                         'attribute' => $attribute,
                         'label' => $item['label'],
                         'format' => !empty($item['formatter']) ? $item['formatter'] : 'text',
