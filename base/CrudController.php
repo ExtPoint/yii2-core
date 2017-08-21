@@ -30,36 +30,54 @@ class CrudController extends Controller
 
         $controllerId = static::getControllerId();
 
-        return [
-            $controllerId => [
-                'label' => ArrayHelper::getValue($meta, 'title'),
-                'url' => static::generateRoute('index'),
-                'urlRule' => $prefix,
-                'roles' => ArrayHelper::getValue($meta, 'roles'),
-                'items' => [
-                    'create' => [
-                        'label' => \Yii::t('app', 'Добавление'),
-                        'url' => static::generateRoute('create'),
-                        'urlRule' => $prefix . '/create',
-                    ],
-                    'update' => [
-                        'label' => \Yii::t('app', 'Редактирование'),
-                        'url' => static::generateRoute('update'),
-                        'urlRule' => $prefix . '/<' . $idName . ':\d+>/update',
-                    ],
-                    'view' => [
-                        'label' => \Yii::t('app', 'Просмотр'),
-                        'url' => static::generateRoute('view'),
-                        'urlRule' => $prefix . '/<' . $idName . ':\d+>',
-                        'modelClass' => $modelClass::className(),
-                    ],
-                    'delete' => [
-                        'url' => static::generateRoute('delete'),
-                        'urlRule' => $prefix . '/<' . $idName . ':\d+>/delete',
-                    ],
+        $items = [];
+        if (ArrayHelper::getValue($meta, 'createActionCreate')) {
+            $items['create'] = [
+                'label' => \Yii::t('app', 'Добавление'),
+                'url' => static::generateRoute('create'),
+                'urlRule' => $prefix . '/create',
+            ];
+        }
+        if (ArrayHelper::getValue($meta, 'createActionUpdate')) {
+            $items['update'] = [
+                'label' => \Yii::t('app', 'Редактирование'),
+                'url' => static::generateRoute('update'),
+                'urlRule' => $prefix . '/<' . $idName . ':\d+>/update',
+            ];
+        }
+        if (ArrayHelper::getValue($meta, 'createActionView')) {
+            $items['view'] = [
+                'label' => \Yii::t('app', 'Просмотр'),
+                'url' => static::generateRoute('view'),
+                'urlRule' => $prefix . '/<' . $idName . ':\d+>',
+                'modelClass' => $modelClass::className(),
+            ];
+        }
+
+        if (ArrayHelper::getValue($meta, 'createActionIndex')) {
+            if (ArrayHelper::getValue($meta, 'withDelete')) {
+                $items['delete'] = [
+                    'url' => static::generateRoute('delete'),
+                    'urlRule' => $prefix . '/<' . $idName . ':\d+>/delete',
+                ];
+            }
+
+            return [
+                $controllerId => [
+                    'label' => ArrayHelper::getValue($meta, 'title'),
+                    'url' => static::generateRoute('index'),
+                    'urlRule' => $prefix,
+                    'roles' => ArrayHelper::getValue($meta, 'roles'),
+                    'items' => $items,
                 ],
-            ],
-        ];
+            ];
+        } else {
+            $result = [];
+            foreach ($items as $key => $item) {
+                $result[$controllerId . '_' . $key] = $item;
+            }
+            return $result;
+        }
     }
 
     public function actionIndex()
@@ -187,7 +205,7 @@ class CrudController extends Controller
      * @return string
      */
     public static function getControllerId() {
-        preg_match('/([^\\\\]+)Controller$/', static::className(), $match);
+        preg_match('/([^\\\\]+)Controller(Meta)?$/', static::className(), $match);
         return lcfirst($match[1]);
     }
 

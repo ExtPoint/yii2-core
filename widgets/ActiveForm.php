@@ -54,7 +54,7 @@ class ActiveForm extends Widget
     public $initialValues = [];
 
     /**
-     * @param Model $model
+     * @param Model|FormModel $model
      * @return array
      */
     public static function renderAjax($model)
@@ -162,12 +162,16 @@ class ActiveForm extends Widget
     }
 
     /**
-     * @param Model $model
+     * @param Model|FormModel $model
      * @param string[] $attributes
      * @return string
      */
-    public function fields($model, $attributes = [])
+    public function fields($model, $attributes = null)
     {
+        if ($attributes === null) {
+            $attributes = $model->attributes();
+        }
+
         $html = [];
         foreach ($attributes as $attribute) {
             $html[] = $this->field($model, $attribute);

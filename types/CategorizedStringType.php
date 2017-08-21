@@ -2,6 +2,9 @@
 
 namespace extpoint\yii2\types;
 
+use extpoint\yii2\base\Enum;
+use yii\helpers\ArrayHelper;
+
 class CategorizedStringType extends EnumType
 {
     const OPTION_REF_ATTRIBUTE = 'refAttribute';
@@ -19,6 +22,18 @@ class CategorizedStringType extends EnumType
                 ],
             ]
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function renderValue($model, $attribute, $item, $options = [])
+    {
+        /** @var Enum $enumClass */
+        $enumClass = ArrayHelper::getValue($item, self::OPTION_CLASS_NAME);
+        $refAttribute = ArrayHelper::getValue($item, self::OPTION_REF_ATTRIBUTE);
+
+        return $model->$attribute . ' ' . $enumClass::getLabel($model->$refAttribute);
     }
 
     /**
