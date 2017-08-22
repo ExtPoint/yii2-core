@@ -6,6 +6,7 @@ use arogachev\ManyToMany\components\ManyToManyRelation;
 use extpoint\yii2\exceptions\ModelDeleteException;
 use extpoint\yii2\exceptions\ModelSaveException;
 use extpoint\yii2\traits\MetaTrait;
+use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
