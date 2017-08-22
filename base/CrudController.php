@@ -6,6 +6,7 @@ use extpoint\yii2\widgets\ActiveForm;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Inflector;
 use yii\web\ForbiddenHttpException;
 
 class CrudController extends Controller
@@ -206,7 +207,7 @@ class CrudController extends Controller
      */
     public static function getControllerId() {
         preg_match('/([^\\\\]+)Controller(Meta)?$/', static::className(), $match);
-        return lcfirst($match[1]);
+        return Inflector::camel2id($match[1]);
     }
 
     /**
@@ -219,7 +220,7 @@ class CrudController extends Controller
         // Get module id
         $namespace = preg_replace('/\\\\[^\\\\]+$/', '', static::className());
         $namespace = preg_replace('/^app\\\\/', '', $namespace);
-        $namespace = preg_replace('/\\\\controllers$/', '', $namespace);
+        $namespace = preg_replace('/\\\\controllers(\\\\meta)?$/', '', $namespace);
         $moduleId = str_replace('\\', '/', $namespace);
 
         // Get controller id
