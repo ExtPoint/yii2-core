@@ -22,7 +22,12 @@ class Model extends ActiveRecord
      */
     public static function getRequestParamName()
     {
-        return lcfirst(substr(strrchr(static::className(), "\\"), 1)) . ucfirst(static::primaryKey()[0]);
+        try {
+            $pk = static::primaryKey()[0];
+        } catch (InvalidConfigException $e) {
+            $pk = 'id';
+        }
+        return lcfirst(substr(strrchr(static::className(), "\\"), 1)) . ucfirst($pk);
     }
 
     /**
