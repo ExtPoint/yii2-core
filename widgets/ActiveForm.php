@@ -169,7 +169,7 @@ class ActiveForm extends Widget
     public function fields($model, $attributes = null)
     {
         if ($attributes === null) {
-            $attributes = $model->attributes();
+            $attributes = $model->safeAttributes();
         }
 
         $html = [];
