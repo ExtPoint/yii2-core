@@ -17,10 +17,12 @@ class DataColumn extends \yii\grid\DataColumn
     {
         $model = $this->grid->filterModel;
         if ($this->filter === null && $this->attribute && ($model instanceof Model || $model instanceof FormModel)) {
-            if (!ArrayHelper::getValue($this->controllerMeta, 'formModelAttributes.' . $this->attribute . '.showInFilter')) {
+            if ($this->controllerMeta && !ArrayHelper::getValue($this->controllerMeta, 'formModelAttributes.' . $this->attribute . '.showInFilter')) {
                 return $this->grid->emptyCell;
             }
-            return \Yii::$app->types->renderField($model, $this->attribute, null, ['layout' => 'inline']);
+            if ($this->filter !== false && $model instanceof Model && $this->attribute !== null && $model->isAttributeActive($this->attribute)) {
+                return \Yii::$app->types->renderField($model, $this->attribute, null, ['layout' => 'inline']);
+            }
         }
 
         return parent::renderFilterCellContent();
