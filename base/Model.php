@@ -6,6 +6,7 @@ use arogachev\ManyToMany\components\ManyToManyRelation;
 use extpoint\yii2\exceptions\ModelDeleteException;
 use extpoint\yii2\exceptions\ModelSaveException;
 use extpoint\yii2\traits\MetaTrait;
+use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
@@ -22,7 +23,12 @@ class Model extends ActiveRecord
      */
     public static function getRequestParamName()
     {
-        return lcfirst(substr(strrchr(static::className(), "\\"), 1)) . ucfirst(static::primaryKey()[0]);
+        try {
+            $pk = static::primaryKey()[0];
+        } catch (InvalidConfigException $e) {
+            $pk = 'id';
+        }
+        return lcfirst(substr(strrchr(static::className(), "\\"), 1)) . ucfirst($pk);
     }
 
     /**

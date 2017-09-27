@@ -4,7 +4,6 @@ namespace extpoint\yii2\widgets;
 
 use extpoint\yii2\base\FormModel;
 use Yii;
-use app\core\base\AppModel;
 use extpoint\yii2\base\Model;
 use extpoint\yii2\base\Widget;
 use yii\bootstrap\Html;
@@ -55,6 +54,24 @@ class ActiveForm extends Widget
     public $initialValues = [];
 
     /**
+     * @param Model|FormModel $model
+     * @return array
+     */
+    public static function renderAjax($model)
+    {
+        $result = [];
+        if ($model->hasErrors()) {
+            $formName = $model->formName();
+            if ($formName) {
+                $result['errors'][$formName] = $model->getErrors();
+            } else {
+                $result['errors'] = $model->getErrors();
+            }
+        }
+        return $result;
+    }
+
+    /**
      * Initializes the widget.
      * This renders the form open tag.
      */
@@ -89,11 +106,11 @@ class ActiveForm extends Widget
     public function run()
     {
         $content = ob_get_clean();
-        echo Html::tag('span','', ['id' => $this->id]);
+        echo Html::tag('span', '', ['id' => $this->id]);
         echo Html::tag('span', $content, ['id' => $this->id . '-content']);
 
         if (Yii::$app->has('frontendState')) {
-            Yii::$app->frontendState->add('form.' . $this->id . '.values', $this->initialValues);
+            Yii::$app->frontendState->set('form.' . $this->id . '.values', $this->initialValues);
         } else {
             $state = [
                 'form' => [
@@ -134,7 +151,8 @@ class ActiveForm extends Widget
      * @param array $options
      * @return string
      */
-    public function submitButton($label = 'Сохранить', $options = []) {
+    public function submitButton($label = 'Сохранить', $options = [])
+    {
         $buttonStr = Html::submitButton($label, array_merge($options, ['class' => 'btn btn-primary']));
         if ($this->layout == 'horizontal') {
             return "<div class=\"form-group\"><div class=\"col-sm-offset-3 col-sm-6\">$buttonStr</div></div>";
@@ -144,22 +162,30 @@ class ActiveForm extends Widget
     }
 
     /**
-     * @param AppModel $model
+     * @param Model|FormModel $model
+     * @param string[] $attributes
+     * @return string
      */
-    public function fields($model) {
-        foreach ($model::meta() as $attribute => $item) {
-            if (!empty($item['showInForm'])) {
-                echo $this->field($model, $attribute);
-            }
+    public function fields($model, $attributes = null)
+    {
+        if ($attributes === null) {
+            $attributes = $model->safeAttributes();
         }
+
+        $html = [];
+        foreach ($attributes as $attribute) {
+            $html[] = $this->field($model, $attribute);
+        }
+        return implode("\n", $html);
     }
 
     /**
-     * @param AppModel $model
+     * @param Model $model
      * @param array $buttons
      * @return string
      */
-    public function controls($model, $buttons = []) {
+    public function controls($model, $buttons = [])
+    {
         $defaultButtons = [
             'submit' => [
                 'label' => $model->isNewRecord ? 'Добавить' : 'Сохранить',
@@ -203,7 +229,8 @@ class ActiveForm extends Widget
         }
     }
 
-    public function beginFieldset($title, $options = []) {
+    public function beginFieldset($title, $options = [])
+    {
         $optionsStr = '';
         foreach ($options as $key => $value) {
             $optionsStr .= " $key=\"$value\"";
@@ -212,7 +239,8 @@ class ActiveForm extends Widget
         return "<fieldset $optionsStr><div class=\"form-group\"><div class=\"col-sm-offset-3 col-sm-6\"><b>$title</b></div></div><div style=\"margin-left: 30px\">";
     }
 
-    public function endFieldset() {
+    public function endFieldset()
+    {
         return "</div></fieldset>";
     }
 

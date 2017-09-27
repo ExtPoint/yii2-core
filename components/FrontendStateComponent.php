@@ -15,27 +15,13 @@ class FrontendStateComponent extends Component
      */
     public $state = [];
 
-    public function init()
-    {
-        parent::init();
-
-        $this->set('config.locale', [
-            'language' => \Yii::$app->language,
-            'backendTimeZone' => Utils::parseTimeZone(\Yii::$app->timeZone),
-        ]);
-
-        if (\Yii::$app->has('types')) {
-            $this->set('config.types.config', \Yii::$app->types->frontendConfig);
-        }
-    }
-
     /**
-     * @param string $path
+     * @param string|string[] $path
      * @param mixed $value
      */
     public function set($path, $value)
     {
-        $pathNames = explode('.', $path);
+        $pathNames = is_string($path) ? explode('.', $path) : $path;
         $name = array_pop($pathNames);
 
         $state = &$this->state;
@@ -67,6 +53,15 @@ class FrontendStateComponent extends Component
      */
     public function register($view)
     {
+        $this->set('config.locale', [
+            'language' => \Yii::$app->language,
+            'backendTimeZone' => Utils::parseTimeZone(\Yii::$app->timeZone),
+        ]);
+
+        if (\Yii::$app->has('types')) {
+            $this->set('config.types.config', \Yii::$app->types->frontendConfig);
+        }
+
         $view->registerJs('window.APP_REDUX_PRELOAD_STATES = [];', View::POS_HEAD);
         $view->registerJs('window.APP_REDUX_PRELOAD_STATES.push(' . Json::encode($this->state) . ')', View::POS_HEAD);
     }

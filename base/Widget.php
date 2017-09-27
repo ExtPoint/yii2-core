@@ -2,6 +2,7 @@
 
 namespace extpoint\yii2\base;
 
+use Yii;
 use yii\base\Widget as BaseWidget;
 use yii\helpers\Html;
 use yii\helpers\Json;
@@ -16,7 +17,7 @@ class Widget extends BaseWidget
     {
         $props = array_merge($props, $this->props);
         $className = get_class($this);
-        $scriptUrl = '@static/assets/bundle-' . $this->getBundleName() . '.js';
+        $scriptUrl = Yii::getAlias('@static/assets/bundle-' . $this->getBundleName() . '.js');
 
         if (\Yii::$app->has('frontendState')) {
             \Yii::$app->frontendState->add('config.backendWidget.toRender', [$this->id, $className, !empty($props) ? $props : new JsExpression('{}')]);

@@ -2,20 +2,26 @@
 
 namespace extpoint\yii2\widgets;
 
+use extpoint\yii2\base\FormModel;
 use extpoint\yii2\base\Model;
+use yii\helpers\ArrayHelper;
 
 class DataColumn extends \yii\grid\DataColumn
 {
+    /**
+     * @var array
+     */
+    public $controllerMeta;
+
     protected function renderFilterCellContent()
     {
         $model = $this->grid->filterModel;
-        if ($this->filter === null && $this->attribute && $model instanceof Model) {
-            $meta = $model::meta();
-            if (isset($meta[$this->attribute])) {
-                if (empty($meta[$this->attribute]['showInFilter'])) {
-                    return $this->grid->emptyCell;
-                }
-                return \Yii::$app->types->renderField($model, $this->attribute);
+        if ($this->filter === null && $this->attribute && ($model instanceof Model || $model instanceof FormModel)) {
+            if ($this->controllerMeta && !ArrayHelper::getValue($this->controllerMeta, 'formModelAttributes.' . $this->attribute . '.showInFilter')) {
+                return $this->grid->emptyCell;
+            }
+            if ($this->filter !== false && $model instanceof Model && $this->attribute !== null && $model->isAttributeActive($this->attribute)) {
+                return \Yii::$app->types->renderField($model, $this->attribute, null, ['layout' => 'inline']);
             }
         }
 

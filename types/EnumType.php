@@ -51,7 +51,7 @@ class EnumType extends Type
         $label = $className::getLabel($model->$attribute);
         $cssClass = $className::getCssClass($model->$attribute);
 
-        return $cssClass ? Html::tag('span', $label, ['class' => $cssClass]) : $label;
+        return $cssClass ? Html::tag('span', $label, ['class' => 'label label-' . $cssClass]) : $label;
     }
 
     /**
