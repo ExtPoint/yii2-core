@@ -96,7 +96,7 @@ class Model extends ActiveRecord
     public function deleteOrPanic()
     {
         if (!$this->delete()) {
-            throw new ModelDeleteException($this);
+            throw new ModelDeleteException();
         }
     }
 
