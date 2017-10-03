@@ -90,6 +90,9 @@ class CrudController extends Controller
         if ($formModelClass) {
             $searchModel = new $formModelClass();
             $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+            if (Yii::$app->request->isAjax) {
+                return $this->redirect(['index'] + Yii::$app->request->post());
+            }
         } else {
             $modelClass = static::getModelClass();
             $dataProvider = new ActiveDataProvider([
