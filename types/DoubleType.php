@@ -21,7 +21,7 @@ class DoubleType extends IntegerType
      */
     public function renderValue($model, $attribute, $item, $options)
     {
-        $scale = ArrayHelper::getValue($item, self::OPTION_SCALE, 2);
+        $scale = ArrayHelper::getValue($item, self::OPTION_SCALE) ?: 2;
         return \Yii::$app->formatter->asDecimal($model->$attribute, $scale);
     }
 

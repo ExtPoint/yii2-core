@@ -2,6 +2,7 @@
 
 namespace extpoint\yii2\validators;
 
+use extpoint\yii2\base\Model;
 use yii\validators\ExistValidator;
 
 class RecordExistValidator extends ExistValidator
@@ -9,8 +10,8 @@ class RecordExistValidator extends ExistValidator
     /**
      * Consider attribute value successfully validated if it is an instance of the given targetClass and this
      * instance was just created
-     *
-     * @inheritdoc
+     * @param Model $model
+     * @param string $attribute
      */
     public function validateAttribute($model, $attribute)
     {
@@ -19,6 +20,10 @@ class RecordExistValidator extends ExistValidator
             && $model->$attribute instanceof $this->targetClass
             && !empty($model->$attribute->isNewRecord)
         ) {
+            return;
+        }
+
+        if ($model->isRelationPopulated($attribute)) {
             return;
         }
 
