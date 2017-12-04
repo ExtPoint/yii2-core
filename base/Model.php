@@ -173,8 +173,7 @@ class Model extends ActiveRecord
             } else {
                 // Attributes
                 $value = ArrayHelper::getValue($this, $name);
-                $name = is_string($name) ? $name : $key;
-                $entry[$name] = $value;
+                $entry[is_string($key) ? $key : $name] = $value;
             }
         }
         return $entry;
