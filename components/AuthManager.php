@@ -4,6 +4,7 @@ namespace extpoint\yii2\components;
 
 use extpoint\megamenu\MegaMenuItem;
 use extpoint\yii2\base\Model;
+use yii\base\Object;
 use yii\helpers\ArrayHelper;
 use yii\rbac\Assignment;
 use yii\rbac\PhpManager;
@@ -26,15 +27,43 @@ class AuthManager extends PhpManager
 
     /**
      * @param Model|null $user
-     * @param Model|string $modelClass
+     * @param Model|string $model
      * @param string $rule
      * @return bool
      */
-    public function checkModelAccess($user, $modelClass, $rule)
+    public function checkModelAccess($user, $model, $rule)
     {
+        if ($model instanceof Object) {
+            $model = $model::className();
+        }
+
         $permissionName = implode(self::RULE_SEPARATOR, [
             self::RULE_PREFIX_MODEL,
-            $modelClass,
+            $model,
+            $rule,
+        ]);
+        $userId = $user ? $user->primaryKey : null;
+
+        return $this->checkAccess($userId, $permissionName);
+    }
+
+    /**
+     * @param Model|null $user
+     * @param Model|string $model
+     * @param string $attribute
+     * @param string $rule
+     * @return bool
+     */
+    public function checkAttributeAccess($user, $model, $attribute, $rule)
+    {
+        if ($model instanceof Object) {
+            $model = $model::className();
+        }
+
+        $permissionName = implode(self::RULE_SEPARATOR, [
+            self::RULE_PREFIX_MODEL,
+            $model,
+            $attribute,
             $rule,
         ]);
         $userId = $user ? $user->primaryKey : null;

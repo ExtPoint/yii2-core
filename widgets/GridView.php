@@ -2,6 +2,7 @@
 
 namespace extpoint\yii2\widgets;
 
+use extpoint\yii2\components\AuthManager;
 use Yii;
 use alexantr\datetimepicker\DateTimePicker;
 use app\core\base\AppModel;
@@ -65,6 +66,27 @@ class GridView extends \yii\grid\GridView
     protected function initColumns()
     {
         parent::initColumns();
+
+        // Column access
+        if ($this->dataProvider instanceof ActiveDataProvider) {
+            $authManager = Yii::$app->has('authManager') && Yii::$app->authManager instanceof AuthManager
+                ? Yii::$app->authManager
+                : null;
+            if ($authManager) {
+                /** @var ActiveQuery $query */
+                $query = $this->dataProvider->query;
+
+                foreach ($this->columns as $i => $column) {
+                    /** @type DataColumn $column */
+                    if (!$column->attribute) {
+                        continue;
+                    }
+                    if ($column->attribute && !$authManager->checkAttributeAccess(Yii::$app->user->model, $query->modelClass, $column->attribute, AuthManager::RULE_MODEL_VIEW)) {
+                        unset($this->columns[$i]);
+                    }
+                }
+            }
+        }
 
         if (!empty($this->actions)) {
             $buttons = [];

@@ -48,6 +48,11 @@ class ActiveField extends Component
      */
     public $componentProps = [];
 
+    /**
+     * @var bool
+     */
+    public $visible = true;
+
     public function init()
     {
         parent::init();
@@ -71,6 +76,10 @@ class ActiveField extends Component
 
     public function render()
     {
+        if (!$this->visible) {
+            return '';
+        }
+
         // Get meta item
         $model = $this->model;
         $meta = $model::meta();
