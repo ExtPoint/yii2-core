@@ -3,6 +3,7 @@
 namespace extpoint\yii2\base;
 
 use arogachev\ManyToMany\components\ManyToManyRelation;
+use extpoint\yii2\components\AuthManager;
 use extpoint\yii2\exceptions\ModelDeleteException;
 use extpoint\yii2\exceptions\ModelSaveException;
 use extpoint\yii2\traits\MetaTrait;
@@ -183,8 +184,23 @@ class Model extends ActiveRecord
      * @param Model $user
      * @return bool
      */
+    public function canView($user)
+    {
+        if (\Yii::$app->has('authManager')) {
+            return \Yii::$app->authManager->checkModelAccess($user, static::className(), AuthManager::RULE_MODEL_VIEW);
+        }
+        return $this->canUpdate($user);
+    }
+
+    /**
+     * @param Model $user
+     * @return bool
+     */
     public function canCreate($user)
     {
+        if (\Yii::$app->has('authManager')) {
+            return \Yii::$app->authManager->checkModelAccess($user, static::className(), AuthManager::RULE_MODEL_CREATE);
+        }
         return true;
     }
 
@@ -194,6 +210,9 @@ class Model extends ActiveRecord
      */
     public function canUpdate($user)
     {
+        if (\Yii::$app->has('authManager')) {
+            return \Yii::$app->authManager->checkModelAccess($user, static::className(), AuthManager::RULE_MODEL_UPDATE) && $this->canUpdated();
+        }
         return $this->canUpdated();
     }
 
@@ -203,16 +222,10 @@ class Model extends ActiveRecord
      */
     public function canDelete($user)
     {
+        if (\Yii::$app->has('authManager')) {
+            return \Yii::$app->authManager->checkModelAccess($user, static::className(), AuthManager::RULE_MODEL_DELETE) && $this->canDeleted();
+        }
         return $this->canDeleted();
-    }
-
-    /**
-     * @param Model $user
-     * @return bool
-     */
-    public function canView($user)
-    {
-        return $this->canUpdate($user);
     }
 
     /**
