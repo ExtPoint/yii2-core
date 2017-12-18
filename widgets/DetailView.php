@@ -22,12 +22,14 @@ class DetailView extends \yii\widgets\DetailView
 
     protected function renderAttribute($attribute, $index)
     {
-        $authManager = Yii::$app->has('authManager') && Yii::$app->authManager instanceof AuthManager
-            ? Yii::$app->authManager
-            : null;
-        if ($authManager && isset($attribute['attribute'])
-            && !$authManager->checkAttributeAccess(Yii::$app->user->model, $this->model, $attribute['attribute'], AuthManager::RULE_MODEL_VIEW)) {
-            return '';
+        if ($this->model instanceof Model) {
+            $authManager = Yii::$app->has('authManager') && Yii::$app->authManager instanceof AuthManager
+                ? Yii::$app->authManager
+                : null;
+            if ($authManager && isset($attribute['attribute'])
+                && !$authManager->checkAttributeAccess(Yii::$app->user->model, $this->model, $attribute['attribute'], AuthManager::RULE_MODEL_VIEW)) {
+                return '';
+            }
         }
 
         if (is_string($this->template)) {

@@ -33,18 +33,19 @@ class AuthManager extends PhpManager
      */
     public function checkModelAccess($user, $model, $rule)
     {
-        if ($model instanceof Object) {
-            $model = $model::className();
+        if ($this->checkModelAccessInternal($user, $model, $rule)) {
+            return true;
         }
 
-        $permissionName = implode(self::RULE_SEPARATOR, [
-            self::RULE_PREFIX_MODEL,
-            $model,
-            $rule,
-        ]);
-        $userId = $user ? $user->primaryKey : null;
+        if (is_object($model) && $model instanceof \yii\base\Model) {
+            foreach ($model->attributes() as $attribute) {
+                if ($this->checkAttributeAccessInternal($user, $model, $attribute, $rule)) {
+                    return true;
+                }
+            }
+        }
 
-        return $this->checkAccess($userId, $permissionName);
+        return false;
     }
 
     /**
@@ -56,19 +57,8 @@ class AuthManager extends PhpManager
      */
     public function checkAttributeAccess($user, $model, $attribute, $rule)
     {
-        if ($model instanceof Object) {
-            $model = $model::className();
-        }
-
-        $permissionName = implode(self::RULE_SEPARATOR, [
-            self::RULE_PREFIX_MODEL,
-            $model,
-            $attribute,
-            $rule,
-        ]);
-        $userId = $user ? $user->primaryKey : null;
-
-        return $this->checkAccess($userId, $permissionName);
+        return $this->checkAttributeAccessInternal($user, $model, $attribute, $rule)
+            || $this->checkModelAccessInternal($user, $model, $rule);
     }
 
     /**
@@ -138,5 +128,51 @@ class AuthManager extends PhpManager
                 'role' => $roleName,
             ])
             ->column();
+    }
+
+    /**
+     * @param Model|null $user
+     * @param Model|string $model
+     * @param string $rule
+     * @return bool
+     */
+    protected function checkModelAccessInternal($user, $model, $rule)
+    {
+        if ($model instanceof Object) {
+            $model = $model::className();
+        }
+
+        $permissionName = implode(self::RULE_SEPARATOR, [
+            self::RULE_PREFIX_MODEL,
+            $model,
+            $rule,
+        ]);
+        $userId = $user ? $user->primaryKey : null;
+
+        return $this->checkAccess($userId, $permissionName);
+    }
+
+    /**
+     * @param Model|null $user
+     * @param Model|string $model
+     * @param string $attribute
+     * @param string $rule
+     * @return bool
+     */
+    protected function checkAttributeAccessInternal($user, $model, $attribute, $rule)
+    {
+        if ($model instanceof Object) {
+            $model = $model::className();
+        }
+
+        $permissionName = implode(self::RULE_SEPARATOR, [
+            self::RULE_PREFIX_MODEL,
+            $model,
+            $attribute,
+            $rule,
+        ]);
+        $userId = $user ? $user->primaryKey : null;
+
+        return $this->checkAccess($userId, $permissionName);
     }
 }

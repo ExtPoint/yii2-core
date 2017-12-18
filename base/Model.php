@@ -187,7 +187,7 @@ class Model extends ActiveRecord
     public function canView($user)
     {
         if (\Yii::$app->has('authManager')) {
-            return \Yii::$app->authManager->checkModelAccess($user, static::className(), AuthManager::RULE_MODEL_VIEW);
+            return \Yii::$app->authManager->checkModelAccess($user, $this, AuthManager::RULE_MODEL_VIEW);
         }
         return $this->canUpdate($user);
     }
@@ -199,7 +199,7 @@ class Model extends ActiveRecord
     public function canCreate($user)
     {
         if (\Yii::$app->has('authManager')) {
-            return \Yii::$app->authManager->checkModelAccess($user, static::className(), AuthManager::RULE_MODEL_CREATE);
+            return \Yii::$app->authManager->checkModelAccess($user, $this, AuthManager::RULE_MODEL_CREATE);
         }
         return true;
     }
@@ -211,7 +211,7 @@ class Model extends ActiveRecord
     public function canUpdate($user)
     {
         if (\Yii::$app->has('authManager')) {
-            return \Yii::$app->authManager->checkModelAccess($user, static::className(), AuthManager::RULE_MODEL_UPDATE) && $this->canUpdated();
+            return \Yii::$app->authManager->checkModelAccess($user, $this, AuthManager::RULE_MODEL_UPDATE) && $this->canUpdated();
         }
         return $this->canUpdated();
     }
@@ -223,7 +223,7 @@ class Model extends ActiveRecord
     public function canDelete($user)
     {
         if (\Yii::$app->has('authManager')) {
-            return \Yii::$app->authManager->checkModelAccess($user, static::className(), AuthManager::RULE_MODEL_DELETE) && $this->canDeleted();
+            return \Yii::$app->authManager->checkModelAccess($user, $this, AuthManager::RULE_MODEL_DELETE) && $this->canDeleted();
         }
         return $this->canDeleted();
     }

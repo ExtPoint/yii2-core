@@ -140,12 +140,14 @@ class ActiveForm extends Widget
             $config['class'] = $this->fieldClass;
         }
 
-        $authManager = Yii::$app->has('authManager') && get_class(Yii::$app->authManager) === 'extpoint\yii2\components\AuthManager'
-            ? Yii::$app->authManager
-            : null;
-        $ruleName = $model->isNewRecord ? 'create' : 'update';
-        if ($authManager && !$authManager->checkAttributeAccess(Yii::$app->user->model, $model, $attribute, $ruleName)) {
-            $config['visible'] = false;
+        if ($model instanceof Model) {
+            $authManager = Yii::$app->has('authManager') && get_class(Yii::$app->authManager) === 'extpoint\yii2\components\AuthManager'
+                ? Yii::$app->authManager
+                : null;
+            $ruleName = $model->isNewRecord ? 'create' : 'update';
+            if ($authManager && !$authManager->checkAttributeAccess(Yii::$app->user->model, $model, $attribute, $ruleName)) {
+                $config['visible'] = false;
+            }
         }
 
         return Yii::createObject(ArrayHelper::merge($config, $options, [
