@@ -30,7 +30,7 @@ class FrontendField extends InputWidget
         if (\Yii::$app->has('frontendState')) {
             \Yii::$app->frontendState->set('config.types.metas.' . $modelClassName, $modelMeta);
         } else {
-            $jsArgs = [Json::encode($modelClassName), Json::encode($modelClassName)];
+            $jsArgs = [Json::encode($modelClassName), Json::encode($modelMeta)];
             \Yii::$app->view->registerJs('__appTypes.addModelMeta(' . implode(', ', $jsArgs) . ')', View::POS_END, 'app-form-' . $model::className());
         }
 
