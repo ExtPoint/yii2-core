@@ -69,7 +69,9 @@ trait SearchModelTrait
         }
 
         if (!$this->validate()) {
-            $query->emulateExecution();
+            if ($this->dataProvider instanceof ActiveDataProvider) {
+                $query->emulateExecution();
+            }
         }
 
         return $this->dataProvider;
