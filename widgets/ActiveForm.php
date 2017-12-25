@@ -55,13 +55,14 @@ class ActiveForm extends Widget
 
     /**
      * @param Model|FormModel $model
+     * @param string|null $formName
      * @return array
      */
-    public static function renderAjax($model)
+    public static function renderAjax($model, $formName = null)
     {
         $result = [];
         if ($model->hasErrors()) {
-            $formName = $model->formName();
+            $formName = $formName !== null ? $formName : $model->formName();
             if ($formName) {
                 $result['errors'][$formName] = $model->getErrors();
             } else {
