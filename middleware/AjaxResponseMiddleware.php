@@ -65,8 +65,11 @@ class AjaxResponseMiddleware extends Object
                 }
             }
 
-            $response->format = Response::FORMAT_JSON;
             $event->result = $data;
+        }
+
+        if (is_array($event->result)) {
+            $response->format = Response::FORMAT_JSON;
         }
     }
 }
