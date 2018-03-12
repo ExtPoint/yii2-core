@@ -39,7 +39,7 @@ class AjaxResponseMiddleware extends Object
             $contentType = $rawContentType;
         }
 
-        if ($contentType === 'application/json' && isset($request->parsers[$contentType])) {
+        if (($contentType === 'application/json' && isset($request->parsers[$contentType])) || $response->format === Response::FORMAT_JSON) {
 
             // Detect data provider
             if ($event->result instanceof ISearchModelTrait) {
