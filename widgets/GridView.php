@@ -4,13 +4,13 @@ namespace extpoint\yii2\widgets;
 
 use extpoint\yii2\components\AuthManager;
 use Yii;
-use alexantr\datetimepicker\DateTimePicker;
 use app\core\base\AppModel;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveQuery;
 use yii\grid\ActionColumn;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
+use yii\widgets\BaseListView;
 
 class GridView extends \yii\grid\GridView
 {
@@ -37,6 +37,15 @@ class GridView extends \yii\grid\GridView
      * @var array
      */
     public $controllerMeta;
+
+    /**
+     * @inheritdoc
+     */
+    public function run()
+    {
+        // Disabled js register in original GridView
+        BaseListView::run();
+    }
 
     protected function guessColumns()
     {
