@@ -19,7 +19,7 @@ $controller = $this->context;
 $meta = $controller::meta();
 
 ?>
-<h1><?= \Yii::$app->megaMenu->getTitle() ?></h1>
+<h1><?= \Yii::$app->siteMap->getTitle() ?></h1>
 
 <?= CrudControls::widget([
     'model' => $model,

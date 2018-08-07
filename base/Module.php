@@ -33,13 +33,6 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public function bootstrap($app)
     {
-        $app->urlManager->addRules($this->coreUrlRules(), false);
-
-        $megaMenuClassName = '\extpoint\megamenu\MenuHelper';
-        if (class_exists($megaMenuClassName)) {
-            $app->urlManager->addRules($megaMenuClassName::menuToRules($this->coreMenu()), false);
-        }
-
         // Bootstrap submodules
         foreach ($this->modules as $module) {
             if (is_array($module)) {

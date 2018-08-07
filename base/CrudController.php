@@ -68,7 +68,6 @@ class CrudController extends Controller
                     'label' => ArrayHelper::getValue($meta, 'title'),
                     'url' => static::generateRoute('index'),
                     'urlRule' => $prefix,
-                    'roles' => ArrayHelper::getValue($meta, 'roles'),
                     'items' => $items,
                 ],
             ];

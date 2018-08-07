@@ -127,21 +127,21 @@ class GridView extends \yii\grid\GridView
                         $pkParam = $this->pkParam ?: $model::getRequestParamName();
                         $url = array_merge(['view', $pkParam => $model->primaryKey], $this->actionParams);
 
-                        return \Yii::$app->megaMenu->isAllowAccess($url) && $model->canView(Yii::$app->user->model);
+                        return \Yii::$app->siteMap->isAllowAccess($url) && $model->canView(Yii::$app->user->model);
                     },
                     'update' => function($model) {
                         /** @type AppModel $model */
                         $pkParam = $this->pkParam ?: $model::getRequestParamName();
                         $url = array_merge(['update', $pkParam => $model->primaryKey], $this->actionParams);
 
-                        return \Yii::$app->megaMenu->isAllowAccess($url) && $model->canUpdate(Yii::$app->user->model);
+                        return \Yii::$app->siteMap->isAllowAccess($url) && $model->canUpdate(Yii::$app->user->model);
                     },
                     'delete' => function($model) {
                         /** @type AppModel $model */
                         $pkParam = $this->pkParam ?: $model::getRequestParamName();
                         $url = array_merge(['delete', $pkParam => $model->primaryKey], $this->actionParams);
 
-                        return \Yii::$app->megaMenu->isAllowAccess($url) && $model->canDelete(Yii::$app->user->model);
+                        return \Yii::$app->siteMap->isAllowAccess($url) && $model->canDelete(Yii::$app->user->model);
                     },
                 ],
             ]);
