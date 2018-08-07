@@ -130,9 +130,6 @@ class ModuleLoader {
         if (!class_exists($name)) {
             throw new \Exception('Not found module class: ' . $name);
         }
-        if (!is_subclass_of($name, '\extpoint\yii2\base\Module')) {
-            throw new \Exception('Module class `' . $name . '` is not extends from `\extpoint\yii2\base\Module`');
-        }
 
     }
 
