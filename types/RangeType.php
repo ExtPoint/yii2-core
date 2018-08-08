@@ -40,8 +40,8 @@ class RangeType extends Type
         $refAttribute = ArrayHelper::remove($item, self::OPTION_REF_ATTRIBUTE);
         if ($refAttribute) {
             return strtr($this->template, [
-                '{start}' => \Yii::$app->types->getType($subAppType)->renderValue($model, $attribute, $item, $options),
-                '{end}' => \Yii::$app->types->getType($subAppType)->renderValue($model, $refAttribute, $item, $options),
+                '{start}' => \Yii::$app->typesLegacy->getType($subAppType)->renderValue($model, $attribute, $item, $options),
+                '{end}' => \Yii::$app->typesLegacy->getType($subAppType)->renderValue($model, $refAttribute, $item, $options),
             ]);
         }
 
@@ -70,7 +70,7 @@ class RangeType extends Type
      */
     public function giiDbType($metaItem)
     {
-        return \Yii::$app->types->getType($metaItem->subAppType)->giiDbType($metaItem);
+        return \Yii::$app->typesLegacy->getType($metaItem->subAppType)->giiDbType($metaItem);
     }
 
     /**
@@ -78,7 +78,7 @@ class RangeType extends Type
      */
     public function giiBehaviors($metaItem)
     {
-        return \Yii::$app->types->getType($metaItem->subAppType)->giiBehaviors($metaItem);
+        return \Yii::$app->typesLegacy->getType($metaItem->subAppType)->giiBehaviors($metaItem);
     }
 
     /**
@@ -86,7 +86,7 @@ class RangeType extends Type
      */
     public function giiRules($metaItem, &$useClasses = [])
     {
-        return \Yii::$app->types->getType($metaItem->subAppType)->giiRules($metaItem, $useClasses);
+        return \Yii::$app->typesLegacy->getType($metaItem->subAppType)->giiRules($metaItem, $useClasses);
     }
 
     /**

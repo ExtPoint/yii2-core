@@ -21,7 +21,7 @@ class DataColumn extends \yii\grid\DataColumn
                 return $this->grid->emptyCell;
             }
             if ($this->filter !== false && $model instanceof Model && $this->attribute !== null && $model->isAttributeActive($this->attribute)) {
-                return \Yii::$app->types->renderField($model, $this->attribute, null, ['layout' => 'inline']);
+                return \Yii::$app->typesLegacy->renderField($model, $this->attribute, null, ['layout' => 'inline']);
             }
         }
 
@@ -33,7 +33,7 @@ class DataColumn extends \yii\grid\DataColumn
         if ($this->content === null && $this->value === null && $this->format === 'text' && $this->attribute && $model instanceof Model) {
             $options = $this->options;
             $options['forTable'] = true;
-            return \Yii::$app->types->renderValue($model, $this->attribute, $options);
+            return \Yii::$app->typesLegacy->renderValue($model, $this->attribute, $options);
         }
 
         return parent::renderDataCellContent($model, $this->attribute, $index);

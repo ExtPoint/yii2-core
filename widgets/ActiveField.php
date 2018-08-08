@@ -89,7 +89,7 @@ class ActiveField extends Component
 
         // Get app type
         $appType = !empty($metaItem['appType']) ? $metaItem['appType'] : 'string';
-        $type = \Yii::$app->types->getType($appType);
+        $type = \Yii::$app->typesLegacy->getType($appType);
         if (!$type) {
             throw new Exception('Not found app type `' . $appType . '`');
         }
@@ -117,7 +117,7 @@ class ActiveField extends Component
         ], $this->componentProps);
 
         // Render field
-        return \Yii::$app->types->renderField($model, $attribute, $this, $props);
+        return \Yii::$app->typesLegacy->renderField($model, $attribute, $this, $props);
     }
 
 
