@@ -148,7 +148,6 @@ class CrudController extends Controller
         $modelClass = static::getModelClass();
         $id = Yii::$app->request->get($modelClass::getRequestParamName());
         $model = $modelClass::findOrPanic($id);
-        $model->fillManyMany();
 
         if ($model->load(Yii::$app->request->post()) && $model->canUpdate(Yii::$app->user->model) && $model->save()) {
             Yii::$app->session->setFlash('success', Yii::t('app', 'Запись обновлена'));
