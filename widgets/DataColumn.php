@@ -16,11 +16,11 @@ class DataColumn extends \yii\grid\DataColumn
     protected function renderFilterCellContent()
     {
         $model = $this->grid->filterModel;
-        if ($this->filter === null && $this->attribute && ($model instanceof Model || $model instanceof FormModel)) {
+        if ($this->filter === null && $this->attribute && ($model instanceof \steroids\base\Model || $model instanceof Model || $model instanceof FormModel)) {
             if ($this->controllerMeta && !ArrayHelper::getValue($this->controllerMeta, 'formModelAttributes.' . $this->attribute . '.showInFilter')) {
                 return $this->grid->emptyCell;
             }
-            if ($this->filter !== false && $model instanceof Model && $this->attribute !== null && $model->isAttributeActive($this->attribute)) {
+            if ($this->filter !== false && ($model instanceof \steroids\base\Model || $model instanceof Model) && $this->attribute !== null && $model->isAttributeActive($this->attribute)) {
                 return \Yii::$app->typesLegacy->renderField($model, $this->attribute, null, ['layout' => 'inline']);
             }
         }
@@ -30,7 +30,7 @@ class DataColumn extends \yii\grid\DataColumn
 
     protected function renderDataCellContent($model, $key, $index)
     {
-        if ($this->content === null && $this->value === null && $this->format === 'text' && $this->attribute && $model instanceof Model) {
+        if ($this->content === null && $this->value === null && $this->format === 'text' && $this->attribute && ($model instanceof \steroids\base\Model || $model instanceof Model)) {
             $options = $this->options;
             $options['forTable'] = true;
             return \Yii::$app->typesLegacy->renderValue($model, $this->attribute, $options);

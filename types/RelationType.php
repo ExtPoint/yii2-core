@@ -54,7 +54,7 @@ class RelationType extends Type
 
         return implode(', ', array_map(function ($model) use ($options) {
             /** @type Model $model */
-            if (!($model instanceof Model)) {
+            if (!($model instanceof \steroids\base\Model || $model instanceof Model)) {
                 return '';
             }
 
