@@ -5,12 +5,12 @@ namespace extpoint\yii2\middleware;
 use extpoint\yii2\base\Controller;
 use extpoint\yii2\traits\ISearchModelTrait;
 use yii\base\ActionEvent;
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\web\Application;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
-class AjaxResponseMiddleware extends Object
+class AjaxResponseMiddleware extends BaseObject
 {
     /**
      * @param Application $app

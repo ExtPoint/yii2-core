@@ -3,11 +3,11 @@
 namespace extpoint\yii2\base;
 
 use extpoint\yii2\gii\models\MetaItem;
-use yii\base\Object;
+use yii\base\BaseObject;
 use yii\db\Schema;
 use yii\base\Widget;
 
-abstract class Type extends Object
+abstract class Type extends BaseObject
 {
     /**
      * @var string

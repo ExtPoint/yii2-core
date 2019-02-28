@@ -4,7 +4,6 @@ namespace extpoint\yii2\components;
 
 use extpoint\megamenu\MegaMenuItem;
 use extpoint\yii2\base\Model;
-use yii\base\Object;
 use yii\helpers\ArrayHelper;
 use yii\rbac\Assignment;
 use yii\rbac\PhpManager;
